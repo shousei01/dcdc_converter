@@ -38,6 +38,7 @@ FP = {
     "TP8": "custom_fp:TestPads_1x08_P2.54mm_D2.0mm",
     "SWD10": "Connector_PinHeader_1.27mm:PinHeader_2x05_P1.27mm_Vertical_SMD",
     "H1x2": "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+    "H2x2": "Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical",
     "H1x3": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical",
     "H1x6": "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical",
     "H1x8": "Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical",
@@ -266,11 +267,11 @@ C("C51", "1u 10V", "+3V3", "GND", fp="C0402", block=B, note="VCCL pin 7")
 C("C52", "10u 10V", "VISO", "GND_ISO", fp="C0805", block=B)
 C("C53", "100n", "VISO", "GND_ISO", fp="C0402", block=B, note="Pin 16")
 C("C54", "100n", "VISO", "GND_ISO", fp="C0402", block=B, note="Pin 11")
-R("R30", "60.4R", "CANH", "CAN_MID", fp="R0603", block=B, note="Split termination, enabled by JP1")
+R("R30", "60.4R", "CAN_TH", "CAN_MID", fp="R0603", block=B, note="Split termination, enabled by JP1 (both jumpers)")
 R("R31", "60.4R", "CAN_MID", "CAN_TL", fp="R0603", block=B)
 C("C55", "4.7n", "CAN_MID", "GND_ISO", fp="C0603", block=B)
-add("JP1", "Connector_Generic:Conn_01x02", "TERM", "H1x2", {"1": "CAN_TL", "2": "CANL"}, B,
-    note="Fit jumper on end-of-bus node")
+add("JP1", "Connector_Generic:Conn_02x02_Odd_Even", "TERM", "H2x2", {"1": "CAN_TH", "2": "CANH", "3": "CANL", "4": "CAN_TL"}, B,
+    note="2x2 header: fit 2 shunts (1-2 CANH, 3-4 CANL) on end-of-bus node; open = termination fully disconnected from both lines")
 add("D3", "Power_Protection:NUP2105L", "NUP2105L", "SOT23", {"1": "CANH", "2": "CANL", "3": "GND_ISO"}, B,
     mpn="NUP2105LT1G", note="24 V CAN bus ESD/TVS")
 add("J3", "Connector_Generic:Conn_01x03", "CAN A", "H1x3", {"1": "CANH", "2": "CANL", "3": "GND_ISO"}, B,

@@ -182,10 +182,11 @@ put("C51", 121.92, 76.2)
 put("C52", 182.88, 73.66)
 put("C53", 195.58, 73.66)
 put("C54", 208.28, 73.66)
-put("R30", 210.82, 106.68)           # CANH -> CAN_MID (split termination)
+put("R30", 210.82, 106.68)           # CAN_TH -> CAN_MID (split termination)
 put("R31", 210.82, 121.92)           # CAN_MID -> CAN_TL
 put("C55", 220.98, 121.92)           # CAN_MID -> GND_ISO
-put("JP1", 198.12, 128.27, 180)      # TERM jumper: CAN_TL / CANL
+put("JP1", 195.58, 114.3)            # TERM 2x2: 1 CAN_TH-2 CANH, 3 CANL-4 CAN_TL (shunts across rows)
+NOWIRE |= {("JP1", "2"), ("JP1", "3")}
 put("D3", 241.3, 109.22)             # NUP2105 TVS under the bus
 put("J3", 299.72, 99.06)             # bus straight into J3 pins 1/2
 put("J4", 299.72, 114.3)             # daisy-chain connector: named pins
