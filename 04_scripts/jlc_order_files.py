@@ -46,7 +46,8 @@ ROT = {**dict.fromkeys(["Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8"], 270),  
        "U7": 0, "U8": 270,                                                          # INA181A1 / INA181A2
        **dict.fromkeys(["U15", "U17", "U18"], 180),                                 # LMV331 SOT-23-5
        **dict.fromkeys(["Q9", "Q10", "U16", "U19"], 180), "D3": 270,                # SOT-23
-       **dict.fromkeys(["U5", "U14"], 180)}                                         # AMS1117 SOT-223
+       **dict.fromkeys(["U5", "U14"], 180),                                         # AMS1117 SOT-223
+       "SW1": 270}                                                                  # DIP-6 C6331172: 90 deg CW per JLC viewer (user, 2026-10-18)
 # Centroid offsets (mm, in the footprint's own axes, KiCad orientation 0) where JLC's 3D model of the
 # chosen part is not centred on the KiCad footprint. NCEP0160AG (C503012): body sits ~1.0 mm toward the
 # drain side, measured in JLC's 2D placement view on 2026-10-18 (Q6 1.03 mm, Q2 0.83 mm).
