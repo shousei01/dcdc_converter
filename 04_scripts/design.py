@@ -499,6 +499,7 @@ BLOCK_TITLES = {
 # LCSC numbers checked in the JLCPCB parts library on 2026-10-18 (package, rating, stock) for the 5-board
 # assembly order. Applied to every part so the BOMs, schematic and PCB fields agree.
 JLC_LCSC = {
+    "SW1": "C6331172",  # SHOU HAN 2.54-6P TPGT SMD DIP-6 (assembled by JLC from 18 Oct)
     **dict.fromkeys(['FB1'], 'C1002'),
     **dict.fromkeys(['C45'], 'C106259'),
     **dict.fromkeys(['C81'], 'C107001'),

@@ -73,7 +73,7 @@ R107,1,100k,,C25741,R_0402_1005Metric,,0.003,0.003,est,
 R110,1,4.7M,,C227116,R_0402_1005Metric,,0.003,0.003,est,~10 mV hysteresis on the divider side; does not load the ramp
 RS1,1,4m 1% 2W,,C500738,R_2512_6332Metric,,0.08,0.08,est,Bridge-return current sense (both low-side FET sources). Kelvin traces to U7. Low-ESL 2512 wide-terminal preferred
 RSH1,1,10m 1% 1W,,C500718,R_2512_6332Metric,,0.05,0.05,est,"Output current shunt (CC loop), Kelvin to U8"
-SW1,1,DIP-6,,,SW_DIP_SPSTx06_Slide_6.7x16.8mm_W8.61mm_P2.54mm_LowProfile,,0.25,0.25,est,ON = 0. Address = ~ADDR[5:0]
+SW1,1,DIP-6,,C6331172,SW_DIP_SPSTx06_Slide_6.7x16.8mm_W8.61mm_P2.54mm_LowProfile,,0.25,0.25,est,ON = 0. Address = ~ADDR[5:0]
 T1,1,PQ2620 4:8+8,,,TX_PQ2620_12P,,2.5,2.5,"est, custom wound PQ2620 + bobbin, 1k qty","CUSTOM: PQ2620 N97/PC95, Np=4 (litz), Ns=8+8 centre-tap (TIW), Lm=50uH +/-10% (gapped), Llk=1.0uH +/-20% (is Lr), fr~205 kHz, 3 kVrms basic pri-sec, 10.1 A rms pri / 3.6 A rms per sec half"
 TH1,1,10k B3950,,C2892547,R_0603_1608Metric,,0.02,0.02,est,Place at hottest FET
 U1,1,STM32G474RBT6,STM32G474RBT6,C529413,LQFP-64_10x10mm_P0.5mm,,7.24,7.24,LCSC C529413 (out of stock; RET6 C521608 $10.24),Pin-compatible STM32G474RET6 (C521608) if RB is out of stock

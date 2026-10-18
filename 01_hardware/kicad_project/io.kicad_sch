@@ -1613,7 +1613,7 @@
     (property "Datasheet" "" (id 3) (at 165.1 101.6 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "LCSC" "" (id 4) (at 165.1 101.6 0)
+    (property "LCSC" "C6331172" (id 4) (at 165.1 101.6 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "MPN" "DIP-6" (id 5) (at 165.1 101.6 0)
