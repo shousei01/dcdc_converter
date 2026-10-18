@@ -31,6 +31,10 @@ PRICE = {
     "PROG PADS": (0.0, "PCB pads, no part"),
     "ARM SWD 10": (0.40, "est, 2x5 1.27 mm SMD header"),
     "M3": (0.0, "PCB hole, no part"),
+    "LMV331IDBVR": (0.08, "est, LCSC LMV331 SOT-23-5 class"),
+    "TL431AIDBZR": (0.03, "est"),
+    "SS110": (0.03, "est"),
+    "16MHz 9pF": (0.12, "est, 3225 crystal"),
 }
 def price(p):
     if p.value in PRICE: return PRICE[p.value]
@@ -41,7 +45,7 @@ def price(p):
 
 groups = collections.OrderedDict()
 for p in D.P:
-    if p.value in ("M3", "PROG PADS"):
+    if p.value in ("M3", "PROG PADS") or p.mpn == "PCB pad, no part":
         continue
     key = (p.value, p.fp, p.lcsc, p.mpn, p.dnp)
     groups.setdefault(key, []).append(p)

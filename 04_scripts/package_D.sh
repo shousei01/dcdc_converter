@@ -4,13 +4,13 @@ set -e
 cd /home/claude/dcdc
 SRC=$1
 N=DCDC_LLC_4SBB_G474
-OUT=/home/claude/dcdc/release_C
+OUT=/home/claude/dcdc/release_D
 rm -rf $OUT; mkdir -p $OUT/$N/custom_fp.pretty $OUT/gerbers
-cp sch2/*.kicad_sch $OUT/$N/
+cp sch3/*.kicad_sch $OUT/$N/
 cp out/custom.kicad_sym $OUT/$N/
 cp out/custom_fp.pretty/*.kicad_mod $OUT/$N/custom_fp.pretty/
 printf '(sym_lib_table\n  (lib (name "custom")(type "KiCad")(uri "${KIPRJMOD}/custom.kicad_sym")(options "")(descr "UCC27211, UCC27524, CA-IS3062VW, CA-IS3642LVW"))\n)\n' > $OUT/$N/sym-lib-table
-printf '(fp_lib_table\n  (lib (name "custom_fp")(type "KiCad")(uri "${KIPRJMOD}/custom_fp.pretty")(options "")(descr "PQ2620 transformer, programming pads"))\n)\n' > $OUT/$N/fp-lib-table
+printf '(fp_lib_table\n  (lib (name "custom_fp")(type "KiCad")(uri "${KIPRJMOD}/custom_fp.pretty")(options "")(descr "PQ2620 transformer (Rev D pin pitch), programming pads"))\n)\n' > $OUT/$N/fp-lib-table
 cp $SRC $OUT/$N/$N.kicad_pcb
 cat > $OUT/$N/$N.kicad_pro <<EOF
 {
@@ -54,3 +54,4 @@ for r,_,fs in os.walk('$N'):
     for f in fs: z.write(os.path.join(r,f))
 z.close()" )
 ls -la $OUT
+cp out_revD/pin-map.xlsx $OUT/

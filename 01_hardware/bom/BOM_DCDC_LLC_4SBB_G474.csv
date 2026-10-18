@@ -10,10 +10,10 @@ C22,1,100n 100V,,,C_0603_1608Metric,,0.03,0.03,est,
 "C24,C25,C26,C72",4,10u 25V X5R,,,C_0805_2012Metric,,0.03,0.12,est,
 "C27,C73",2,22u 10V X5R,,,C_0805_2012Metric,,0.003,0.006,est,
 "C28,C36,C51,C76",4,1u 10V,,,C_0402_1005Metric,,0.003,0.012,est,
-"C29,C30,C31,C32,C33,C34,C37,C40,C43,C44,C46,C48,C50,C53,C54,C75,C77",17,100n,,,C_0402_1005Metric,,0.003,0.051,est,
+"C29,C30,C31,C32,C33,C34,C37,C40,C43,C44,C46,C48,C50,C53,C54,C75,C77,C80",18,100n,,,C_0402_1005Metric,,0.003,0.054,est,
 C35,1,4.7u 10V,,,C_0603_1608Metric,,0.003,0.003,est,
-"C38,C39",2,18p C0G,,,C_0402_1005Metric,,0.003,0.006,est,
-"C41,C42",2,1n C0G,,,C_0402_1005Metric,,0.003,0.006,est,
+"C38,C39",2,12p C0G,,,C_0402_1005Metric,,0.003,0.006,est,
+"C41,C42,C79",3,1n C0G,,,C_0402_1005Metric,,0.003,0.009,est,
 C45,1,470p C0G,,,C_0402_1005Metric,,0.003,0.003,est,Keep RC fast (~47 ns) for comparator OCP
 C47,1,10n C0G,,,C_0402_1005Metric,,0.003,0.003,est,
 "C49,C52,C74",3,10u 10V,,,C_0805_2012Metric,,0.003,0.009,est,
@@ -24,7 +24,7 @@ C66,1,1n Y1 DNP,,,C_Disc_D8.0mm_W5.0mm_P7.50mm,DNP,0.15,0,est,Optional pri-sec Y
 C78,1,47u 6.3V,,,C_1206_3216Metric,,0.05,0.05,est,VISO bulk (datasheet recommends 47 uF)
 "CR1,CR2,CR3,CR4,CR5,CR6",6,100n 100V C0G,,,C_1206_3216Metric,,0.08,0.48,"est, 1206 C0G","Split resonant cap, upper half (3 x 100 nF)"
 D1,1,SMBJ51A,SMBJ51A,,D_SMB,,0.05,0.05,est,"Unidirectional TVS, 51 V standoff, 82 V clamp; with F1 also clears reverse polarity"
-"D2,D6",2,B1100,B1100 / SS110,,D_SOD-123F,,0.03,0.06,est,100 V 1 A Schottky catch diode
+"D2,D6",2,SS110,SS110,C224219,D_SMA,,0.03,0.06,est,100 V 1 A Schottky catch diode
 D3,1,NUP2105L,NUP2105LT1G,,SOT-23,,0.06,0.06,est,24 V CAN bus ESD/TVS
 D4,1,GREEN RUN,,,LED_0603_1608Metric,,0.01,0.01,est,
 D5,1,RED FAULT,,,LED_0603_1608Metric,,0.01,0.01,est,
@@ -45,19 +45,21 @@ L1,1,22u 23A sat,PSPMAA1770-220M-CGP,C49308184,L_Bourns_SRP1770TA_16.9x16.9mm,,1
 R1,1,47k,,,R_1206_3216Metric,,0.003,0.003,est,Output pre-load / bleeder (49 mW at 48 V)
 "R2,R3",2,2R2 DNP,,,R_1206_3216Metric,DNP,0.003,0,est,
 "R4,R5,R10,R11,R68,R69",6,4R7,,,R_0603_1608Metric,,0.003,0.018,est,High-side gate resistor
-"R6,R7,R8,R9,R12,R13,R14,R15,R20,R32,R33,R34,R35,R36,R37,R64,R65,R66,R67,R70,R71,R72,R73,R74,R79,R80",26,10k,,,R_0402_1005Metric,,0.003,0.078,est,Gate-source pull-down
+"R6,R7,R8,R9,R12,R13,R14,R15,R20,R32,R33,R34,R35,R36,R37,R64,R65,R66,R67,R70,R71,R72,R73,R74,R79,R80,R83,R90,R91,R92,R93,R94,R95,R96,R97,R98,R99,R100,R101,R102,R103,R104,R105",43,10k,,,R_0402_1005Metric,,0.003,0.129,est,Gate-source pull-down
 "R16,R75",2,470k,,,R_0603_1608Metric,,0.003,0.006,est,EN divider: start ~9.7 V on the isolated bus
 "R17,R76",2,68k,,,R_0402_1005Metric,,0.003,0.006,est,
 "R18,R77",2,120k 1%,,,R_0402_1005Metric,,0.003,0.006,est,Vout = 0.765*(1+120k/10k) = 9.95 V
-"R19,R29,R78",3,10k 1%,,,R_0402_1005Metric,,0.003,0.009,est,
+"R19,R29,R78,R82",4,10k 1%,,,R_0402_1005Metric,,0.003,0.012,est,
 "R21,R23",2,100k 0.1%,,,R_0603_1608Metric,,0.02,0.04,est,Isolated bus ~= VIN (DCX ratio 1); FS 68 V at 3.3 V VREF+
 "R22,R24",2,5.1k 0.1%,,,R_0402_1005Metric,,0.02,0.04,est,
 "R25,R26",2,1k 0.1%,,,R_0402_1005Metric,,0.02,0.04,est,
 R27,1,100R,,,R_0402_1005Metric,,0.003,0.003,est,
-"R28,R38,R39,R40,R41,R42,R43,R44,R45",9,1k,,,R_0402_1005Metric,,0.003,0.027,est,
+"R28,R38,R39,R40,R41,R42,R43,R44,R45,R85",10,1k,,,R_0402_1005Metric,,0.003,0.03,est,
 "R30,R31",2,60.4R,,,R_0603_1608Metric,,0.003,0.006,est,"Split termination, enabled by JP1"
 "R60,R61",2,4R7 DNP,,,R_1206_3216Metric,DNP,0.003,0,est,"SR snubber, fit only if ringing measured"
 "R62,R63",2,2R2,,,R_0603_1608Metric,,0.003,0.006,est,
+R81,1,191k 1%,,,R_1206_3216Metric,,0.003,0.003,est,OVP divider top: 2.495 V x (1+191k/10k) = 50.15 V trip
+R84,1,2.2M,,,R_0402_1005Metric,,0.003,0.003,est,Hysteresis ~0.4 V at VIN
 RS1,1,4m 1% 2W,,,R_2512_6332Metric,,0.08,0.08,est,Bridge-return current sense (both low-side FET sources). Kelvin traces to U7. Low-ESL 2512 wide-terminal preferred
 RSH1,1,10m 1% 1W,,,R_2512_6332Metric,,0.05,0.05,est,"Output current shunt (CC loop), Kelvin to U8"
 SW1,1,DIP-6,,,SW_DIP_SPSTx06_Slide_6.7x16.8mm_W8.61mm_P2.54mm_LowProfile,,0.25,0.25,est,ON = 0. Address = ~ADDR[5:0]
@@ -72,4 +74,6 @@ U8,1,INA181A2IDBVR,INA181A2IDBVR,C2058784,SOT-23-6,,0.2407,0.241,LCSC C2058784 @
 U9,1,CA-IS3062VW,CA-IS3062VW,C5338808,SOIC-16W_7.5x10.3mm_P1.27mm,,2.5056,2.506,LCSC C5338808,5 kVrms isolated CAN with integrated isolated DC-DC; VCCL=3.3 V logic
 U11,1,UCC27524DR,UCC27524DR,C465729,SOIC-8_3.9x4.9mm_P1.27mm,,0.2143,0.214,LCSC C465729,Dual 5 A low-side driver for the SRs; EN low = body-diode rectification
 U12,1,CA-IS3642LVW,CA-IS3642LVW,C7422564,SOIC-16W_7.5x10.3mm_P1.27mm,,2.5056,2.506,LCSC C7422564,"5 kVrms isolator, 2 fwd + 2 rev, 650 mW isolated 3.3 V (SEL=GNDB) for the MCU; L = outputs default low"
-Y1,1,8MHz 12pF,,,Crystal_SMD_3225-4Pin_3.2x2.5mm,,0.12,0.12,est,HSE for FDCAN bit timing; 3225 4-pin
+U15,1,LMV331IDBVR,LMV331IDBVR,,SOT-23-5,,0.08,0.08,"est, LCSC LMV331 SOT-23-5 class",Open-drain comparator; output high (released) = OVP
+U16,1,TL431AIDBZR,"TL431AIDBZR (TI pinout: 1 K, 2 REF, 3 A)",,SOT-23,,0.03,0.03,est,"2.495 V reference, 0.5 %"
+Y1,1,16MHz 9pF,X322516MLB4SI,C13738,Crystal_SMD_3225-4Pin_3.2x2.5mm,,0.12,0.12,"est, 3225 crystal","16 MHz HSE, 9 pF load, ESR 50 Ohm; PLL /4 x85 /2 = 170 MHz"

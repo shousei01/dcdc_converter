@@ -21,9 +21,9 @@ def put(ref, x, y, rot=0, mirror=False):
 # ============================ LLC (H_LLC) ============================
 put("J1", 25.4, 63.5, 180)
 put("F1", 43.18, 63.5, 90)
-put("D1", 55.88, 78.74, 270)
+put("D1", 48.26, 78.74, 270)
 for i, r in enumerate(["C60", "C61", "C62", "C63"]):
-    put(r, 66.04 + 12.7 * i, 78.74)
+    put(r, 58.42 + 17.78 * i, 78.74)
 put("Q5", 139.7, 63.5)
 put("Q6", 139.7, 101.6)
 put("R62", 121.92, 63.5, 90)      # HOP -> G5
@@ -36,9 +36,9 @@ put("C68", 66.04, 104.14)         # +10V_P
 put("R66", 68.58, 132.08)         # LLC_HI_P pulldown
 put("R67", 76.2, 132.08)          # LLC_LO_P pulldown
 for i, r in enumerate(["CR1", "CR2", "CR3"]):
-    put(r, 162.56 + 12.7 * i, 101.6)
+    put(r, 157.48 + 17.78 * i, 101.6)
 for i, r in enumerate(["CR4", "CR5", "CR6"]):
-    put(r, 162.56 + 12.7 * i, 121.92)
+    put(r, 157.48 + 17.78 * i, 121.92)
 put("T1", 218.44, 88.9)
 put("Q7", 271.78, 106.68)          # SR_D1
 put("Q8", 271.78, 68.58)           # SR_D2
@@ -81,7 +81,7 @@ put("C78", 322.58, 93.98)
 
 # ============================ 4SBB power + drivers (A_POWER + B_DRIVE) ============================
 for i, r in enumerate(["C1", "C2", "C3", "C4", "C5", "C6"]):
-    put(r, 25.4 + 12.7 * i, 45.72)
+    put(r, 25.4 + 17.78 * i, 45.72)
 put("Q1", 116.84, 76.2)
 put("Q2", 116.84, 114.3)
 put("L1", 152.4, 96.52, 90)
@@ -115,13 +115,13 @@ put("C20", 284.48, 86.36)
 put("R14", 276.86, 116.84)
 put("R15", 284.48, 116.84)
 for i, r in enumerate(["C7", "C8", "C9", "C10", "C11", "C12", "R1"]):
-    put(r, 205.74 + 12.7 * i, 167.64)
+    put(r, 190.5 + 17.78 * i, 167.64)
 put("RSH1", 307.34, 180.34)
 put("J2", 330.2, 167.64)
 
 # ============================ Secondary aux (C_AUX) ============================
 put("C21", 40.64, 83.82)
-put("C22", 27.94, 83.82)
+put("C22", 22.86, 83.82)
 put("R16", 58.42, 81.28)
 put("R17", 58.42, 96.52)
 put("U4", 83.82, 83.82)
@@ -145,10 +145,11 @@ for i, r in enumerate(["C30", "C31", "C32", "C33", "C34", "C35"]):
     put(r, 129.54 + 12.7 * i, 63.5)
 put("C36", 218.44, 63.5)
 put("C37", 231.14, 63.5)
-put("Y1", 152.4, 113.03, 90)
-put("C38", 144.78, 127.0)
-put("C39", 160.02, 127.0)
-put("C40", 165.1, 96.52)
+put("Y1", 149.86, 96.52, 0)
+put("C38", 137.16, 102.87)
+put("C39", 162.56, 102.87)
+put("C40", 175.26, 78.74)
+NOWIRE = {("C40", "1")}
 put("R20", 246.38, 177.8)
 
 # ============================ Sensing (E_SENSE) ============================
@@ -181,26 +182,93 @@ put("C51", 121.92, 76.2)
 put("C52", 182.88, 73.66)
 put("C53", 195.58, 73.66)
 put("C54", 208.28, 73.66)
-put("R30", 228.6, 109.22)
-put("R31", 228.6, 124.46)
-put("C55", 238.76, 137.16)
-put("JP1", 220.98, 142.24, 180)
-put("D3", 259.08, 116.84)
-put("J3", 289.56, 96.52)
-put("J4", 289.56, 119.38)
+put("R30", 210.82, 106.68)           # CANH -> CAN_MID (split termination)
+put("R31", 210.82, 121.92)           # CAN_MID -> CAN_TL
+put("C55", 220.98, 121.92)           # CAN_MID -> GND_ISO
+put("JP1", 198.12, 128.27, 180)      # TERM jumper: CAN_TL / CANL
+put("D3", 241.3, 109.22)             # NUP2105 TVS under the bus
+put("J3", 299.72, 99.06)             # bus straight into J3 pins 1/2
+put("J4", 299.72, 114.3)             # daisy-chain connector: named pins
+NOWIRE |= {("J4", "1"), ("J4", "2")}
 put("C56", 152.4, 152.4)
 
 # ============================ IO (G_IO) ============================
 put("SW1", 165.1, 101.6)
 for i in range(6):
-    put(f"R{32 + i}", 66.04 + 12.7 * i, 71.12, 180)    # pull-ups, +3V3 on top
-    put(f"R{38 + i}", 66.04 + 12.7 * i, 129.54, 180)   # header series, ADDR on top
+    put(f"R{32 + i}", 66.04 + 12.7 * (5 - i), 71.12, 180)    # pull-ups, +3V3 on top (ADDR0 column nearest SW1)
+    put(f"R{38 + i}", 66.04 + 12.7 * (5 - i), 129.54, 180)   # header series, ADDR on top
 put("J5", 96.52, 157.48, 270)
 put("J6", 172.72, 180.34)
 put("J7", 228.6, 180.34)
 put("D4", 274.32, 76.2)
-put("R44", 254.0, 76.2, 90)
+put("R44", 254.0, 76.2, 270)
 put("D5", 274.32, 96.52)
-put("R45", 254.0, 96.52, 90)
+put("R45", 254.0, 96.52, 270)
 for i, (x, y) in enumerate([(40.64, 210.82), (60.96, 210.82), (81.28, 210.82), (101.6, 210.82)]):
     put(f"H{i + 1}", x, y)
+
+# ============================ Rev D additions ============================
+FIELDS = {}     # ref -> {"ref": (x, y) or None, "value": (x, y) or None (hidden)}
+NOTES = {}      # sheet -> [(x, y, text)]
+
+# --- primary input OVP comparator (pri_aux sheet, below the aux buck) ---
+put("R81", 200.66, 152.4)            # VIN -> OVP_DIV
+put("R82", 200.66, 172.72)           # OVP_DIV -> GNDP
+put("C79", 190.5, 172.72)            # OVP_DIV filter
+put("U15", 226.06, 162.56)           # LMV331: + = OVP_DIV, - = VREF_P
+put("R84", 222.25, 142.24, 270)      # hysteresis OVP_P (right) -> OVP_DIV (left)
+put("R83", 241.3, 152.4)             # pull-up +5V_P -> OVP_P
+put("C80", 248.92, 175.26)           # comparator decoupling
+put("U16", 213.36, 185.42)           # TL431 2.495 V reference
+put("R85", 228.6, 179.07)            # TL431 bias from +5V_P
+NOTES["pri_aux"] = [(124.46, 152.4, "INPUT OVP (primary side)\n"
+                                     "Trip = 2.495 V x (1 + 191k/10k) = 50.2 V rising\n"
+                                     "Hysteresis ~0.4 V (R84 2.2M)\n"
+                                     "OVP_P high = over-voltage -> U12 VI1 -> VO1\n"
+                                     "-> VIN_OVP -> PA15 (HRTIM1_FLT2 / EXTI15)")]
+for i, (r, net) in enumerate([("TP1", "VIN"), ("TP2", "GNDP"), ("TP3", "+10V_P"), ("TP4", "+5V_P")]):
+    put(r, 284.48 + 12.7 * i, 152.4, 0 if net == "GNDP" else 180)
+
+# --- secondary rail test points (sec_aux sheet) ---
+for i, (r, net) in enumerate([("TP5", "VBUS"), ("TP6", "+10V"), ("TP7", "+5V"), ("TP8", "+3V3"), ("TP9", "+3V3A"), ("TP10", "GND")]):
+    put(r, 40.64 + 12.7 * i, 139.7, 0 if net == "GND" else 180)
+
+# --- output test points (sbb sheet) ---
+put("TP11", 355.6, 160.02, 180)
+put("TP12", 368.3, 160.02, 0)
+
+# --- sense test points ---
+put("TP13", 152.4, 71.12, 180)
+put("TP14", 152.4, 142.24, 180)
+
+# --- MCU: VIN_OVP test point and in-line 10k pull-downs on every unused pin ---
+put("TP15", 248.92, 134.62, 180)
+
+
+def _pulldowns():
+    import design as D
+    import gen_sch as G0
+    import math
+    u1 = next(p for p in D.P if p.ref == "U1")
+    sym = G0.get_symbol(u1.sym)
+    pins = {sp.number: sp for sp in G0.all_pins(sym)}
+    ux, uy = PLACE["U1"][0], PLACE["U1"][1]
+    for p in D.P:
+        if not (p.block == "D_MCU" and p.pins.get("1", "").startswith("SP_")):
+            continue
+        num = next(k for k, v in u1.pins.items() if v == p.pins["1"])
+        sp = pins[num]
+        tx, ty = ux + sp.position.X, uy - sp.position.Y
+        a = (sp.position.angle + 180) % 360
+        vx, vy = round(math.cos(math.radians(a))), -round(math.sin(math.radians(a)))
+        d = 2.54 + 8.89 + 2.54 + 3.81          # MCU stub, wire (room for the net label), R stub, half R
+        cx, cy = tx + vx * d, ty + vy * d
+        rot = {(-1, 0): 270, (1, 0): 90, (0, -1): 180, (0, 1): 0}[(vx, vy)]
+        put(p.ref, round(cx, 3), round(cy, 3), rot)
+        far = 3.81 + 2.54 + 7.0
+        FIELDS[p.ref] = {"ref": (round(cx + vx * far, 3), round(cy + vy * far, 3), "left" if vx > 0 else "right"), "value": None}
+
+
+_pulldowns()
+NOTES["mcu"] = [(129.54, 203.2, "Unused GPIOs (PC13-15, PA2-4, PA7, PA10, PB2, PB4, PB5, PB10, PC6, PC7, PC12, PD2):\n"
+                                 "10k pull-down to GND each (R90-R105). PA4 is kept free for DAC1_OUT1 (Test_pin_DAC).")]

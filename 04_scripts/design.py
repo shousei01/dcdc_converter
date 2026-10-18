@@ -25,10 +25,12 @@ FP = {
     "SOIC16W": "Package_SO:SOIC-16W_7.5x10.3mm_P1.27mm",
     "SOT23-6": "Package_TO_SOT_SMD:SOT-23-6",
     "SOT23": "Package_TO_SOT_SMD:SOT-23",
+    "SOT23-5": "Package_TO_SOT_SMD:SOT-23-5",
     "SOT223": "Package_TO_SOT_SMD:SOT-223-3_TabPin2",
     "LQFP64": "Package_QFP:LQFP-64_10x10mm_P0.5mm",
     "SMB": "Diode_SMD:D_SMB",
     "SOD123F": "Diode_SMD:D_SOD-123F",
+    "SMA": "Diode_SMD:D_SMA",
     "LED0603": "LED_SMD:LED_0603_1608Metric",
     "XTAL3225": "Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm",
     "FUSE2512": "Fuse:Fuse_2512_6332Metric",
@@ -149,7 +151,7 @@ C("C22", "100n 100V", "VBUS", "GND", fp="C0603", block=B)
 R("R16", "470k", "VBUS", "EN_AUX", fp="R0603", block=B, note="EN divider: start ~9.7 V on the isolated bus")
 R("R17", "68k", "EN_AUX", "GND", fp="R0402", block=B)
 C("C23", "100n 25V", "CB_AUX", "SW_AUX", fp="C0402", block=B, note="LMR16006 boot cap")
-add("D2", "Device:D_Schottky", "B1100", "SOD123F", {"1": "SW_AUX", "2": "GND"}, B, mpn="B1100 / SS110",
+add("D2", "Device:D_Schottky", "SS110", "SMA", {"1": "SW_AUX", "2": "GND"}, B, lcsc="C224219", mpn="SS110",
     note="100 V 1 A Schottky catch diode")
 add("L2", "Device:L", "47u 1A", "L5030", {"1": "SW_AUX", "2": "+10V"}, B, note="47 uH, Isat >= 1 A, 5x5 mm shielded")
 R("R18", "120k 1%", "+10V", "FB_AUX", fp="R0402", block=B, note="Vout = 0.765*(1+120k/10k) = 9.95 V")
@@ -188,7 +190,8 @@ mcu = {
     "33": "VOUT_SNS",     # PB11 ADC1_IN14 / ADC2_IN14 + COMP6_INP (fast OVP)
     "25": "IL_SNS",       # PB1  ADC1_IN12 + COMP1_INP (positive OCP, boost)
     "24": "IL_SNS",       # PB0  COMP4_INP (negative OCP, buck; output polarity inverted)
-    "18": "NTC_SNS",      # PA4  ADC2_IN17
+    "20": "NTC_SNS",      # PA6  ADC2_IN3 (PA4 reserved for DAC1_OUT1)
+    "51": "VIN_OVP",      # PA15 HRTIM1_FLT2 / EXTI15, input over-voltage from primary
     "19": "TP_DAC",       # PA5  DAC1_OUT2 test output
     "59": "TP_GPIO1",     # PB6  test GPIO
     "60": "TP_GPIO2",     # PB7  test GPIO
@@ -208,10 +211,10 @@ for ref in ["C30", "C31", "C32", "C33", "C34"]:
 C("C35", "4.7u 10V", "+3V3", "GND", fp="C0603", block=B)
 C("C36", "1u 10V", "+3V3A", "GND", fp="C0402", block=B, note="VREF+ decoupling (VREF+ = VDDA = 3.3 V)")
 C("C37", "100n", "+3V3A", "GND", fp="C0402", block=B, note="VREF+ pin 28")
-add("Y1", "Device:Crystal_GND24", "8MHz 12pF", "XTAL3225", {"1": "OSC_IN", "3": "OSC_OUT", "2": "GND", "4": "GND"}, B,
-    note="HSE for FDCAN bit timing; 3225 4-pin")
-C("C38", "18p C0G", "OSC_IN", "GND", fp="C0402", block=B)
-C("C39", "18p C0G", "OSC_OUT", "GND", fp="C0402", block=B)
+add("Y1", "Device:Crystal_GND24", "16MHz 9pF", "XTAL3225", {"1": "OSC_IN", "3": "OSC_OUT", "2": "GND", "4": "GND"}, B,
+    lcsc="C13738", mpn="X322516MLB4SI", note="16 MHz HSE, 9 pF load, ESR 50 Ohm; PLL /4 x85 /2 = 170 MHz")
+C("C38", "12p C0G", "OSC_IN", "GND", fp="C0402", block=B)
+C("C39", "12p C0G", "OSC_OUT", "GND", fp="C0402", block=B)
 C("C40", "100n", "NRST", "GND", fp="C0402", block=B)
 R("R20", "10k", "BOOT0", "GND", fp="R0402", block=B, note="Boot from flash")
 
@@ -373,7 +376,7 @@ C("C70", "2.2u 100V X7R", "VIN", "GNDP", fp="C1210", block=B)
 R("R75", "470k", "VIN", "EN_P", fp="R0603", block=B, note="Primary UVLO ~9.7 V")
 R("R76", "68k", "EN_P", "GNDP", fp="R0402", block=B)
 C("C71", "100n 25V", "CB_P", "SW_P", fp="C0402", block=B)
-add("D6", "Device:D_Schottky", "B1100", "SOD123F", {"1": "SW_P", "2": "GNDP"}, B, mpn="B1100 / SS110")
+add("D6", "Device:D_Schottky", "SS110", "SMA", {"1": "SW_P", "2": "GNDP"}, B, lcsc="C224219", mpn="SS110", note="100 V 1 A Schottky catch diode")
 add("L3", "Device:L", "47u 1A", "L5030", {"1": "SW_P", "2": "+10V_P"}, B)
 R("R77", "120k 1%", "+10V_P", "FB_P", fp="R0402", block=B)
 R("R78", "10k 1%", "FB_P", "GNDP", fp="R0402", block=B)
@@ -382,8 +385,8 @@ add("U14", "Regulator_Linear:AMS1117-5.0", "AMS1117-5.0", "SOT223", {"1": "GNDP"
     lcsc="C6187", mpn="AMS1117-5.0", note="5 V for the isolator (about 0.6 W in)")
 C("C73", "22u 10V X5R", "+5V_P", "GNDP", fp="C0805", block=B)
 add("U12", "custom:CA-IS3642LVW", "CA-IS3642LVW", "SOIC16W",
-    {"1": "+5V_P", "2": "GNDP", "3": "GNDP", "4": "GNDP", "5": "LLC_HI_P", "6": "LLC_LO_P", "7": "+5V_P", "8": "GNDP",
-     "9": "GND", "10": "GND", "11": "LLC_B", "12": "LLC_A", "13": "NC", "14": "NC", "15": "GND", "16": "+3V3"}, B,
+    {"1": "+5V_P", "2": "GNDP", "3": "OVP_P", "4": "GNDP", "5": "LLC_HI_P", "6": "LLC_LO_P", "7": "+5V_P", "8": "GNDP",
+     "9": "GND", "10": "GND", "11": "LLC_B", "12": "LLC_A", "13": "NC", "14": "VIN_OVP", "15": "GND", "16": "+3V3"}, B,
     lcsc="C7422564", mpn="CA-IS3642LVW",
     note="5 kVrms isolator, 2 fwd + 2 rev, 650 mW isolated 3.3 V (SEL=GNDB) for the MCU; L = outputs default low")
 C("C74", "10u 10V", "+5V_P", "GNDP", fp="C0805", block=B)
@@ -393,6 +396,46 @@ C("C77", "100n", "+3V3", "GND", fp="C0402", block=B, note="VISO pin 16, within 2
 C("C78", "47u 6.3V", "+3V3", "GND", fp="C1206", block=B, note="VISO bulk (datasheet recommends 47 uF)")
 R("R79", "10k", "LLC_A", "GND", fp="R0402", block=B, note="Holds isolator input low while MCU in reset")
 R("R80", "10k", "LLC_B", "GND", fp="R0402", block=B)
+
+
+# --------------------------------------------------------------------------------------------
+# I (cont.) INPUT OVP: VIN > 50 V -> OVP_P high -> U12 ch1 -> VIN_OVP (PA15 / HRTIM1_FLT2)
+# --------------------------------------------------------------------------------------------
+B = "I_PRI"
+R("R81", "191k 1%", "VIN", "OVP_DIV", fp="R1206", block=B, note="OVP divider top: 2.495 V x (1+191k/10k) = 50.15 V trip")
+R("R82", "10k 1%", "OVP_DIV", "GNDP", fp="R0402", block=B)
+C("C79", "1n C0G", "OVP_DIV", "GNDP", fp="C0402", block=B, note="Noise filter, ~10 us")
+add("U15", "Comparator:LMV331", "LMV331IDBVR", "SOT23-5", {"1": "OVP_DIV", "2": "GNDP", "3": "VREF_P", "4": "OVP_P", "5": "+5V_P"}, B,
+    mpn="LMV331IDBVR", note="Open-drain comparator; output high (released) = OVP")
+C("C80", "100n", "+5V_P", "GNDP", fp="C0402", block=B)
+R("R83", "10k", "+5V_P", "OVP_P", fp="R0402", block=B, note="Pull-up for open-drain output")
+R("R84", "2.2M", "OVP_P", "OVP_DIV", fp="R0402", block=B, note="Hysteresis ~0.4 V at VIN")
+add("U16", "Reference_Voltage:TL431DBZ", "TL431AIDBZR", "SOT23", {"1": "VREF_P", "2": "VREF_P", "3": "GNDP"}, B,
+    mpn="TL431AIDBZR (TI pinout: 1 K, 2 REF, 3 A)", note="2.495 V reference, 0.5 %")
+R("R85", "1k", "+5V_P", "VREF_P", fp="R0402", block=B, note="TL431 bias 2.5 mA")
+
+# --------------------------------------------------------------------------------------------
+# D (cont.) unused MCU pins: 10k to GND each
+# --------------------------------------------------------------------------------------------
+B = "D_MCU"
+UNUSED = [("2", "PC13"), ("3", "PC14"), ("4", "PC15"), ("14", "PA2"), ("17", "PA3"), ("18", "PA4"), ("21", "PA7"), ("26", "PB2"),
+          ("30", "PB10"), ("38", "PC6"), ("39", "PC7"), ("44", "PA10"), ("54", "PC12"), ("55", "PD2"), ("57", "PB4"), ("58", "PB5")]
+for i, (pin, port) in enumerate(UNUSED):
+    n = f"SP_{port}"
+    mcu[pin] = n
+    R(f"R{90 + i}", "10k", n, "GND", fp="R0402", block=B, note=f"Unused {port} pull-down" + (" (PA4 reserved for DAC1_OUT1)" if port == "PA4" else ""))
+
+# --------------------------------------------------------------------------------------------
+# T. TEST POINTS (rails and filtered analog nodes only; no switch nodes / gates / high-Z dividers)
+# --------------------------------------------------------------------------------------------
+B = "T_TP"
+TPS = [("TP1", "VIN", "I_PRI"), ("TP2", "GNDP", "I_PRI"), ("TP3", "+10V_P", "I_PRI"), ("TP4", "+5V_P", "I_PRI"),
+       ("TP5", "VBUS", "C_AUX"), ("TP6", "+10V", "C_AUX"), ("TP7", "+5V", "C_AUX"), ("TP8", "+3V3", "C_AUX"),
+       ("TP9", "+3V3A", "C_AUX"), ("TP10", "GND", "C_AUX"), ("TP11", "VOUT", "A_POWER"), ("TP12", "GND", "A_POWER"),
+       ("TP13", "IL_SNS", "E_SENSE"), ("TP14", "IOUT_SNS", "E_SENSE"), ("TP15", "VIN_OVP", "D_MCU")]
+for ref, net, blk in TPS:
+    add(ref, "Connector:TestPoint", net, "TestPoint:TestPoint_Pad_D1.5mm", {"1": net}, blk, mpn="PCB pad, no part",
+        note="1.5 mm SMD test pad")
 
 # Mounting: 4 x M3 corner holes for standoffs (no electrical connection)
 for i in range(1, 5):

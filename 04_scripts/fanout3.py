@@ -3,7 +3,8 @@ Usage: fanout.py in.kicad_pcb out.kicad_pcb"""
 import math, sys
 import pcbnew
 sys.path.insert(0, "/home/claude/dcdc")
-import gen_pcb2 as GP
+import gen_pcb3 as GP
+NO_FANOUT = {("U7", "4"), ("U8", "4")}
 
 mm, MM = pcbnew.FromMM, pcbnew.ToMM
 PLANE = {"GND": "S", "GNDP": "P", "GND_ISO": "C"}
@@ -26,7 +27,13 @@ def run(src, dst):
             pads.append((pd, MM(bb.GetX()), MM(bb.GetY()), MM(bb.GetRight()), MM(bb.GetBottom()),
                          pd.GetNetname(), pd.GetAttribute() == pcbnew.PAD_ATTRIB_SMD, fp.GetReference()))
     holes = [(MM(fp.GetPosition().x), MM(fp.GetPosition().y)) for fp in b.GetFootprints() if fp.GetReference().startswith("H")]
-    vias, segs = [], []          # (x, y, net) ; (x1,y1,x2,y2,net)
+    vias, segs = [], []          # (x, y, net, d) ; (x1,y1,x2,y2,net,w,layer)
+    for t in b.GetTracks():
+        if t.Type() == pcbnew.PCB_VIA_T:
+            vias.append((MM(t.GetPosition().x), MM(t.GetPosition().y), t.GetNetname(), MM(t.GetWidth())))
+        else:
+            segs.append((MM(t.GetStart().x), MM(t.GetStart().y), MM(t.GetEnd().x), MM(t.GetEnd().y), t.GetNetname(),
+                         MM(t.GetWidth()), t.GetLayer()))
     added = missing = 0
 
     def box_dist(x, y, x0, y0, x1, y1):
@@ -54,19 +61,26 @@ def run(src, dst):
                 half = max(x1 - x0, y1 - y0) / 2
                 if seg_point_dist(cx, cy, px, py, vx, vy) < half + TW / 2 + CLR and box_dist(cx, cy, min(px, vx), min(py, vy), max(px, vx), max(py, vy)) < half + CLR:
                     return False
-        for (x, y, n) in vias:
-            if math.hypot(vx - x, vy - y) < VIA_D + (0.15 if n == net else CLR):
+        for (x, y, n, d) in vias:
+            if math.hypot(vx - x, vy - y) < r + d / 2 + (0.15 if n == net else CLR):
                 return False
-        for (x1, y1, x2, y2, n) in segs:
-            if n != net and seg_point_dist(vx, vy, x1, y1, x2, y2) < r + TW / 2 + CLR:
+        for (x1, y1, x2, y2, n, w, L) in segs:
+            if n == net:
+                continue
+            if seg_point_dist(vx, vy, x1, y1, x2, y2) < r + w / 2 + CLR:
                 return False
-            if n != net and (seg_point_dist(x1, y1, px, py, vx, vy) < TW + CLR or seg_point_dist(x2, y2, px, py, vx, vy) < TW + CLR):
-                return False
+            if L == pcbnew.F_Cu:
+                # the F.Cu stub pad->via must clear other-net tracks too (sampled)
+                for k in range(0, 11):
+                    qx, qy = px + (vx - px) * k / 10, py + (vy - py) * k / 10
+                    if seg_point_dist(qx, qy, x1, y1, x2, y2) < TW / 2 + w / 2 + CLR:
+                        return False
         return True
 
     for (pd, x0, y0, x1, y1, net, smd, ref) in pads:
-        if net not in PLANE or not smd:
+        if net not in PLANE or not smd or (ref, pd.GetNumber()) in NO_FANOUT:
             continue
+        want = 3 if (x1 - x0) * (y1 - y0) > 2.0 else 1
         px, py = MM(pd.GetPosition().x), MM(pd.GetPosition().y)
         hw, hh = (x1 - x0) / 2, (y1 - y0) / 2
         placed = False
@@ -88,11 +102,13 @@ def run(src, dst):
                     tr.SetStart(pd.GetPosition()); tr.SetEnd(pcbnew.VECTOR2I(mm(vx), mm(vy)))
                     tr.SetWidth(mm(TW)); tr.SetLayer(pcbnew.F_Cu); tr.SetNet(pd.GetNet())
                     b.Add(tr)
-                    vias.append((vx, vy, net)); segs.append((px, py, vx, vy, net))
-                    placed = True
+                    vias.append((vx, vy, net, VIA_D)); segs.append((px, py, vx, vy, net, TW, pcbnew.F_Cu))
                     added += 1
-                    break
-            if placed:
+                    want -= 1
+                    placed = True
+                    if want <= 0:
+                        break
+            if placed and want <= 0:
                 break
         if not placed:
             missing += 1

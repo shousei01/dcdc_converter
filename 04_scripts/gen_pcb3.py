@@ -17,65 +17,90 @@ YC = 62.0            # top of CAN bus region
 BAND = 2.0           # half-width of the no-copper band (4 mm total)
 SPACING = 0.9        # min gap between auto-placed parts (routing room)
 
-PRI = {"VIN_RAW", "VIN", "GNDP", "HB_SW", "CR_MID", "G5", "G6", "HBP", "HOP", "LOP", "LLC_HI_P", "LLC_LO_P",
+PRI = {"OVP_DIV", "OVP_P", "VREF_P", "VIN_RAW", "VIN", "GNDP", "HB_SW", "CR_MID", "G5", "G6", "HBP", "HOP", "LOP", "LLC_HI_P", "LLC_LO_P",
        "+10V_P", "+5V_P", "CB_P", "FB_P", "EN_P", "SW_P"}
 CANB = {"CANH", "CANL", "CAN_MID", "CAN_TL", "GND_ISO", "VISO"}
 RAILS = {"GND", "GNDP", "PGND", "GND_ISO", "+3V3", "+3V3A", "+5V", "+5V_P", "+10V", "+10V_P", "VISO", "VIN", "VBUS", "VOUT"}
 BRIDGE = {"T1", "U12", "U9", "C66", "C56"}
 
 # ---------------------------------------------------------------- hand placement (x, y, rot)
+# Rev D: power stages re-placed for minimum hot-loop area.
+#  * LLC half-bridge: Q5 (HS, rot180: source->T1) above Q6 (LS, rot0: drain->T1); C61-63 straddle Q5 drain / Q6 source.
+#  * Resonant caps CR1-6 in one column against the T1 CR_MID pins.
+#  * SR: Q8/Q7 drains face T1 SR pins; VBUS ceramics C2-4 between T1 centre tap and the SR sources.
+#  * 4SBB (LM5175-style): L1 on top, Q1/Q2 left, Q3/Q4 right, low-side sources face each other with RS1 between;
+#    input ceramics C5/C6 at Q1 drain, output ceramics C7-C10/C12 at Q3 drain; U7 Kelvin-sensed next to RS1.
 HAND = {
-    # primary power
+    # ---- primary input + LLC half-bridge
     "J1": (12.5, 26.0, 270), "F1": (22.0, 20.0, 90), "D1": (22.0, 34.0, 90),
-    "C60": (30.0, 46.0, 0),
-    "Q5": (46.0, 18.0, 180), "Q6": (46.0, 36.0, 180),
-    "U10": (36.0, 27.0, 0),
-    "T1": (XB, 28.0, 90),
-    # primary aux + isolator (bottom left)
+    "C60": (30.0, 47.0, 0),
+    "Q5": (51.0, 34.0, 180), "Q6": (51.0, 42.0, 0),
+    "C61": (45.4, 38.0, 270), "C62": (42.1, 38.0, 270), "C63": (38.8, 38.0, 270),
+    "CR1": (53.5, 15.2, 0), "CR2": (53.5, 17.9, 0), "CR3": (53.5, 20.6, 0),
+    "CR4": (53.5, 23.3, 180), "CR5": (53.5, 26.0, 180), "CR6": (53.5, 28.7, 180),
+    "U10": (44.0, 25.0, 180),
+    "T1": (XB, 30.0, 90),
+    # ---- primary aux + isolator (bottom left)
     "U13": (18.0, 68.0, 0), "L3": (30.0, 68.0, 0), "D6": (24.0, 76.0, 0), "U14": (44.0, 70.0, 0),
     "U12": (XB, 78.0, 0), "C66": (XB - 3.75, 96.0, 0),
-    # secondary LLC side
-    "Q8": (90.0, 17.0, 0), "Q7": (90.0, 39.0, 0), "U11": (92.0, 28.0, 90),
-    # 4SBB
-    "C1": (95.0, 49.0, 0),
-    "Q1": (106.0, 17.0, 0), "Q2": (106.0, 33.0, 0),
-    "L1": (120.0, 25.0, 0),
-    "Q3": (134.0, 17.0, 180), "Q4": (134.0, 33.0, 180),
-    "RS1": (120.0, 40.0, 0),
-    "U2": (106.0, 45.0, 0), "U3": (134.0, 45.0, 0),
-    "C11": (146.0, 49.0, 90), "J2": (148.0, 26.0, 90), "RSH1": (146.0, 38.0, 90),
-    # secondary aux
-    "U4": (82.0, 58.0, 0), "L2": (90.0, 58.0, 0), "U5": (98.0, 66.0, 0),
-    # MCU + sensing
-    "U1": (112.0, 80.0, 0), "Y1": (100.0, 86.0, 0),
-    "U7": (122.0, 54.0, 0), "U8": (132.0, 60.0, 0),
-    # CAN (bus side right of XC, below YC)
+    # ---- synchronous rectifier
+    "Q8": (88.0, 20.5, 180), "Q7": (88.0, 39.5, 180),
+    "C2": (88.5, 26.2, 0), "C3": (88.5, 29.5, 0), "C4": (88.5, 32.8, 0),
+    "U11": (95.5, 29.5, 0),
+    # ---- 4SBB
+    "L1": (122.0, 19.0, 0),
+    "Q1": (106.0, 24.0, 180), "Q2": (110.0, 32.0, 90),
+    "Q3": (138.0, 22.0, 0), "Q4": (134.0, 32.0, 90),
+    "RS1": (122.0, 38.0, 0), "U7": (122.0, 44.0, 0),
+    "C5": (100.3, 24.0, 270), "C6": (96.8, 24.0, 270),
+    "C7": (143.6, 23.0, 270), "C8": (146.9, 23.0, 270), "C9": (150.2, 23.0, 270), "C10": (153.5, 23.0, 270),
+    "C12": (156.8, 23.0, 270),
+    "C11": (150.0, 34.0, 0), "C1": (100.0, 56.0, 0),
+    "U2": (106.0, 43.0, 0), "U3": (138.0, 43.0, 0),
+    "J2": (148.0, 54.0, 90), "RSH1": (142.0, 50.0, 90), "U8": (136.5, 50.0, 90),
+    # ---- secondary aux
+    "U4": (80.0, 58.0, 0), "L2": (88.0, 58.0, 0), "U5": (98.0, 67.0, 0),
+    # ---- MCU
+    "U1": (113.0, 81.0, 90),          # rotated: HRTIM/sense pins (33-48) face the power stage above
+    "TH1": (114.0, 38.8, 90),           # NTC at the 4SBB low-side FETs / shunt (hottest spot)
+    # ---- CAN (bus side right of XC, below YC)
     "U9": (XC, 84.0, 0), "C56": (XC - 3.75, 97.0, 0), "J3": (156.0, 72.0, 0), "J4": (156.0, 86.0, 0), "D3": (150.0, 78.0, 0),
-    # IO
+    # ---- IO
     "SW1": (88.0, 90.0, 90), "J5": (80.0, 101.0, 90), "J6": (108.0, 101.0, 0), "J7": (126.0, 98.0, 0),
     "D4": (124.0, 70.0, 0), "D5": (124.0, 74.0, 0),
-    # mounting holes, 4 mm from each edge
+    # ---- mounting holes, 4 mm from each edge
     "H1": (4.0, 4.0, 0), "H2": (W - 4.0, 4.0, 0), "H3": (4.0, H - 4.0, 0), "H4": (W - 4.0, H - 4.0, 0),
 }
 
+# copper corridors kept free of auto-placed parts (pre-routed power paths)
+RESERVE = [(91.4, 31.8, 93.0, 42.0),        # Q7 source -> C4 GND return
+           (137.6, 24.0, 141.2, 35.4),      # Q3 drain -> C11 (VOUT)
+           (138.0, 33.0, 146.0, 35.2),      # VOUT to C11
+           (143.4, 33.0, 145.8, 55.4),      # C11 -> J2 (VOUT)
+           (112.0, 33.6, 132.0, 36.2),      # PGND bar between Q2 and Q4
+           (118.6, 39.0, 125.2, 46.0),      # RS1 Kelvin lines + U7
+           (138.4, 46.6, 140.4, 53.0)]      # RSH1 Kelvin lines
+
 # anchor for parts whose nets are all rails: (ref, pad)
 ANCHOR = {
-    "C61": ("Q5", "5"), "C62": ("Q5", "5"), "C63": ("Q6", "1"),
-    "C1": None, "C2": ("Q1", "5"), "C3": ("Q1", "5"), "C4": ("Q1", "5"), "C5": ("Q2", "1"), "C6": ("Q1", "5"),
-    "C7": ("Q3", "5"), "C8": ("Q3", "5"), "C9": ("Q3", "5"), "C10": ("Q4", "1"), "C12": ("Q3", "5"), "R1": ("J2", "1"),
-    "C16": ("U2", "1"), "C17": ("U2", "1"), "C19": ("U3", "1"), "C20": ("U3", "1"),
+    "C16": ("U2", "1"), "C17": ("U2", "1"), "C19": ("U3", "1"), "C20": ("U3", "1"), "R1": ("J2", "1"),
     "C21": ("U4", "5"), "C22": ("U4", "5"), "C24": ("L2", "2"), "C25": ("L2", "2"), "C26": ("U5", "2"),
     "C27": ("U12", "16"), "C28": ("U1", "29"), "C29": ("U1", "29"),
     "C30": ("U1", "1"), "C31": ("U1", "16"), "C32": ("U1", "32"), "C33": ("U1", "48"), "C34": ("U1", "64"),
     "C35": ("U1", "16"), "C36": ("U1", "28"), "C37": ("U1", "28"),
     "C44": ("U7", "6"), "C46": ("U8", "6"),
     "C49": ("U9", "1"), "C50": ("U9", "1"), "C51": ("U9", "7"), "C52": ("U9", "16"), "C53": ("U9", "16"), "C54": ("U9", "11"),
-    "C56": ("U9", "15"),
     "C68": ("U10", "1"), "C69": ("U11", "6"),
     "C70": ("U13", "5"), "C72": ("L3", "2"), "C73": ("U14", "2"),
     "C74": ("U12", "1"), "C75": ("U12", "1"), "C76": ("U12", "7"), "C77": ("U12", "16"), "C78": ("U12", "16"),
-    "D1": None, "C60": None, "FB1": ("U1", "29"),
+    "FB1": ("U1", "29"), "C80": ("U15", "5"),
+    # test points: rails at their source, near the board edge where possible
+    "TP1": ("F1", "2"), "TP2": ("C60", "2"), "TP3": ("L3", "2"), "TP4": ("U14", "2"),
+    "TP5": ("C1", "1"), "TP6": ("L2", "2"), "TP7": ("U5", "2"), "TP8": ("C27", "1"), "TP9": ("FB1", "2"),
+    "TP10": ("C27", "2"), "TP11": ("J2", "1"), "TP12": ("RSH1", "2"),
+    "TP13": ("R27", "2"), "TP14": ("R28", "2"), "TP15": ("U12", "14"),
 }
+MCU_SPACING = 1.3       # extra routing room around the MCU / sense passives
 
 
 def region_of(p):
@@ -182,6 +207,9 @@ def build(out, uuid_paths):
         for k in keep:
             if x0 < k[2] and x1 > k[0] and y0 < k[3] and y1 > k[1]:
                 return True
+        for k in RESERVE:
+            if x0 < k[2] and x1 > k[0] and y0 < k[3] and y1 > k[1]:
+                return True
         return False
 
     # hand placement
@@ -202,6 +230,70 @@ def build(out, uuid_paths):
         order_refs.append(ref)
         placed_boxes.append(bb)
     placed = set(HAND)
+
+    # unused-pin 10k pull-downs: radial, staggered, pad 1 toward the pin, GND end outward
+    u1 = fps["U1"]
+    ux, uy = MM(u1.GetPosition().x), MM(u1.GetPosition().y)
+    upads = {pd.GetNumber(): (MM(pd.GetPosition().x), MM(pd.GetPosition().y)) for pd in u1.Pads()}
+    pulls = sorted([p for p in D.P if p.block == "D_MCU" and p.pins.get("1", "").startswith("SP_")],
+                   key=lambda p: int(next(k for k, v in next(q for q in D.P if q.ref == "U1").pins.items() if v == p.pins["1"])))
+    u1p = next(q for q in D.P if q.ref == "U1").pins
+    # crystal: centred on PF0/PF1 (pins 5/6), 4.3 mm outward
+    (p5x, p5y), (p6x, p6y) = upads["5"], upads["6"]
+    mx_, my_ = (p5x + p6x) / 2, (p5y + p6y) / 2
+    ox, oy = mx_ - ux, my_ - uy
+    if abs(ox) > abs(oy):
+        yx, yy, yrot = mx_ + (4.3 if ox > 0 else -4.3), my_, 90
+    else:
+        yx, yy, yrot = mx_, my_ + (4.3 if oy > 0 else -4.3), 0
+    set_fp(None, fps["Y1"], yx, yy, yrot); board.Add(fps["Y1"]); placed_boxes.append(bbox_mm(fps["Y1"])); placed.add("Y1")
+
+    # group consecutive pins on the same side into runs, then fan each run out laterally (1.6 mm pitch)
+    info = []
+    for p in pulls:
+        num = next(kk for kk, v in u1p.items() if v == p.pins["1"])
+        px, py = upads[num]
+        dx, dy = px - ux, py - uy
+        if abs(dx) > abs(dy):
+            side = "L" if dx < 0 else "R"
+        else:
+            side = "T" if dy < 0 else "B"
+        info.append((p, int(num), side, px, py))
+    runs = []
+    for it in info:
+        if runs and runs[-1][-1][2] == it[2] and it[1] - runs[-1][-1][1] <= 3:
+            runs[-1].append(it)
+        else:
+            runs.append([it])
+    ROT = {"L": 180, "R": 0, "T": 90, "B": 270}
+    for run in runs:
+        n = len(run)
+        cxr = sum(i[3] for i in run) / n; cyr = sum(i[4] for i in run) / n
+        run = sorted(run, key=lambda i: (i[4] if i[2] in ("L", "R") else i[3]))     # keep pin order -> no crossings
+        ybb = bbox_mm(fps["Y1"])
+        yc = ((ybb[0] + ybb[2]) / 2, (ybb[1] + ybb[3]) / 2)
+        shift = 0.0
+        for _try in range(30):
+            pos = []
+            for k, (p, num, side, px, py) in enumerate(run):
+                lat = (k - (n - 1) / 2) * 1.6 + shift
+                d = 3.4
+                if side in ("L", "R"):
+                    x = px + (-d if side == "L" else d); y = cyr + lat
+                else:
+                    y = py + (-d if side == "T" else d); x = cxr + lat
+                pos.append((p, x, y, ROT[side]))
+            clash = any(ybb[0] - 0.6 < x + 0.6 and x - 0.6 < ybb[2] + 0.6 and ybb[1] - 0.6 < y + 1.0 and y - 1.0 < ybb[3] + 0.6 for _, x, y, _r in pos)
+            if not clash:
+                break
+            lat_dir = (cxr - yc[0]) if side in ("T", "B") else (cyr - yc[1])
+            shift += 0.4 if lat_dir >= 0 else -0.4
+        for p, x, y, r in pos:
+            fp = fps[p.ref]
+            set_fp(None, fp, x, y, r)
+            board.Add(fp)
+            placed_boxes.append(bbox_mm(fp))
+            placed.add(p.ref)
 
     def pad_pos(ref, num):
         for pad in fps[ref].Pads():
@@ -237,7 +329,7 @@ def build(out, uuid_paths):
                 for rot in (0, 90):
                     set_fp(p, fp, x, y, rot)
                     bb = bbox_mm(fp)
-                    if in_region(bb, reg) and not overlaps(bb, SPACING):
+                    if in_region(bb, reg) and not overlaps(bb, MCU_SPACING if p.block in ("D_MCU", "E_SENSE") else SPACING):
                         board.Add(fp)
                         placed_boxes.append(bb)
                         placed.add(p.ref)
@@ -312,6 +404,6 @@ if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "/home/claude/dcdc/pcb2/DCDC_LLC_4SBB_G474.kicad_pcb"
     import os
     os.makedirs(os.path.dirname(out), exist_ok=True)
-    up = json.load(open("/home/claude/dcdc/sch2/uuid_paths.json"))
+    up = json.load(open("/home/claude/dcdc/sch3/uuid_paths.json"))
     probs = build(out, up)
     print("problems:", *(probs or ["none"]), sep="\n  ")

@@ -46,7 +46,7 @@ print("nets:", len([n for n in by if not n.startswith("unconnected-")]), "compon
 if errs: sys.exit(1)
 
 # ---- isolation check: only T1, U12 (isolator) and the DNP Y-cap may join primary and secondary nets
-PRI = {"VIN_RAW", "VIN", "GNDP", "HB_SW", "CR_MID", "G5", "G6", "HBP", "HOP", "LOP", "LLC_HI_P", "LLC_LO_P",
+PRI = {"OVP_DIV", "OVP_P", "VREF_P", "VIN_RAW", "VIN", "GNDP", "HB_SW", "CR_MID", "G5", "G6", "HBP", "HOP", "LOP", "LLC_HI_P", "LLC_LO_P",
        "+10V_P", "+5V_P", "CB_P", "FB_P", "EN_P", "SW_P"}
 BRIDGES = {"T1", "U12", "C66"}
 iso_err = 0

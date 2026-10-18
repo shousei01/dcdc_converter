@@ -5,7 +5,7 @@ import pcbnew
 PWR_HI = ["VIN_RAW", "VIN", "HB_SW", "CR_MID", "SR_D1", "SR_D2", "VBUS", "SW1", "SW2", "VOUT", "VOUT_N", "PGND"]
 PWR_MED = ["GND", "GNDP", "GND_ISO", "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "HO1", "HO2", "LO1", "LO2",
            "HOP", "LOP", "SR_OA", "SR_OB", "HB1", "HB2", "HBP", "+10V", "+10V_P", "SW_AUX", "SW_P", "+5V", "+5V_P",
-           "+3V3", "VISO", "SNB1", "SNB2", "SNB3", "SNB4", "CANH", "CANL"]
+           "VISO", "SNB1", "SNB2", "SNB3", "SNB4", "CANH", "CANL"]
 CLASSES = [("PWR_HI", PWR_HI, 1500, 300, "Via_PWR_800:400_um"), ("PWR_MED", PWR_MED, 500, 250, "Via[0-3]_600:300_um")]
 
 

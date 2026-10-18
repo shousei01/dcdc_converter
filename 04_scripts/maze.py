@@ -15,13 +15,23 @@ TW, CLR, VIA_R = 0.2, 0.205, 0.30
 LAYERS = [pcbnew.F_Cu, pcbnew.In2_Cu, pcbnew.B_Cu]
 
 
-def raster(b):
+def raster(b, skip=None):
     """label image per routing layer: net code of copper inflated by clearance + half track width."""
     infl = CLR + TW / 2
     imgs = {L: Image.new("I", (W, H), 0) for L in LAYERS}
-    drw = {L: ImageDraw.Draw(imgs[L]) for L in LAYERS}
+    drw0 = {L: ImageDraw.Draw(imgs[L]) for L in LAYERS}
+    OPS = []
+
+    class Rec:
+        def __init__(self, L): self.L = L
+        def ellipse(self, xy, fill): OPS.append((self.L, "e", xy, fill)); drw0[self.L].ellipse(xy, fill=fill)
+        def line(self, xy, fill, width): OPS.append((self.L, "l", xy, fill, width)); drw0[self.L].line(xy, fill=fill, width=width)
+        def rectangle(self, xy, fill): OPS.append((self.L, "r", xy, fill)); drw0[self.L].rectangle(xy, fill=fill)
+    drw = {L: Rec(L) for L in LAYERS}
     P = lambda x, y: (MM(x) * RES, MM(y) * RES)
     for t in b.GetTracks():
+        if skip and skip(t):
+            continue
         nc = t.GetNetCode() or -1
         if t.Type() == pcbnew.PCB_VIA_T:
             x, y = P(t.GetPosition().x, t.GetPosition().y)
@@ -49,6 +59,7 @@ def raster(b):
                 for L in LAYERS:
                     drw[L].rectangle(box, fill=-2)
     lab = {L: np.array(imgs[L], dtype=np.int32) for L in LAYERS}
+    lab["ops"] = OPS
     hole = Image.new("L", (W, H), 0); hd = ImageDraw.Draw(hole)
     for t in b.GetTracks():
         if t.Type() == pcbnew.PCB_VIA_T:
@@ -73,7 +84,17 @@ def raster(b):
 
 
 def route(lab, nc, a, la, c, lc, plane=False):
-    free = {L: (lab[L] == 0) | (lab[L] == nc) for L in LAYERS}
+    # per-net obstacle map: every item of another net, drawn inflated, regardless of drawing order
+    blk = {L: Image.new("1", (W, H), 0) for L in LAYERS}
+    bd = {L: ImageDraw.Draw(blk[L]) for L in LAYERS}
+    for op in lab["ops"]:
+        L, kind, xy, fill = op[:4]
+        if fill == nc:
+            continue
+        if kind == "e": bd[L].ellipse(xy, fill=1)
+        elif kind == "r": bd[L].rectangle(xy, fill=1)
+        else: bd[L].line(xy, fill=1, width=op[4])
+    free = {L: ~np.array(blk[L], dtype=bool) & (lab[L] != -2) for L in LAYERS}
     vr = int(math.ceil((VIA_R + CLR - (CLR + TW / 2)) * RES)) + 1
     # via-ok: free on all layers within radius vr (approx with a square erosion)
     allf = free[LAYERS[0]] & free[LAYERS[1]] & free[LAYERS[2]] & ~lab["holes"]
