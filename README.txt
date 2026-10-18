@@ -5,21 +5,32 @@ DCDC converter - LLC (isolated) + 4-switch buck-boost, STM32G474RBT6          Re
   kicad_project\   KiCad 6/7 project (9-sheet wired schematic + routed 4-layer PCB). Open in KiCad, or import
                    into EasyEDA Pro (File > Import > KiCad) - same files as easyeda\*.zip
   easyeda\         DCDC_LLC_4SBB_G474_EasyEDA_import.zip
-  docs\            schematic PDF, PCB layer PDF, DRC report, pin-map.xlsx (every MCU pin + all AFs + what we use)
+  docs\            DCDC_Design_Notes.docx / .pdf (design notes: sizing, full scales, firmware notes, review),
+                   schematic PDF, PCB layer PDF, DRC report, pin-map.xlsx (every MCU pin + all AFs + what we use),
+                   T1_PQ2620_winding_guide.html (hand-winding guide, 2D/3D, dots), layout_review_layers.png
   fabrication\     JLCPCB Gerber/drill zip, CPL (pick & place), JLCPCB BOM
   bom\             grouped BOM with prices / sources
-02_firmware        firmware workspace + README (pin map, clocks, start-up, OVP)
+02_firmware        firmware workspace + README (pin map, clocks, ADC full scales, VIN monitor, OVP, start-up)
 03_calculations    loss / LLC sizing scripts (unchanged in Rev D)
-04_scripts         generator and routing scripts that build this release
+04_scripts         generator, routing and clean-up scripts that build this release
 
 Rev D changes
   - NTC moved PA4 -> PA6 (ADC2_IN3); PA4 kept free for DAC1_OUT1
-  - 10k pull-down to GND on every unused MCU pin (R90-R105)
+  - 10k pull-down to GND on every unused MCU pin (R90-R105; R93 is now the PA2 / VIN_PWM pull-down)
   - HSE crystal 16 MHz (Y1 + 12 pF C0G)
-  - Primary input OVP: TL431 + LMV331, trip 50.2 V, through the spare U12 isolator channel -> PA15 (HRTIM1_FLT2)
+  - ADC / DAC / comparator reference: external REF3030 (U19, 3.000 V +/-0.2 %) on VREF+, no longer the
+    isolator's 3.3 V rail. Full scales: VBUS / VOUT 61.8 V, IL +/-18.75 A, IOUT 6.0 A (see design notes)
+  - Primary input OVP: TL431 + LMV331, trips 50.26 V rising / 49.83 V falling, through U12 isolator
+    channel 1 -> PA15 (HRTIM1_FLT2)
+  - Isolated VIN monitor: primary ramp (~200 Hz) + comparator PWM through U12 channel 2 -> PA2 (TIM15_CH1);
+    divider R81/R82 0.1 %. Monitoring only, about +/-0.5 % after a two-point calibration
   - Test pads TP1-TP15 on rails / filtered signals only (no switch nodes)
-  - PQ2620 footprint: 3.8 mm pitch inside each 3-pin group, 7.5 mm between pins 3 and 4
-    (row-to-row spacing is still a 22.5 mm placeholder - confirm with your bobbin)
-  - Schematic text overlaps removed; PCB re-placed for tight power loops, re-routed, silkscreen cleaned
-PCB status: 160 x 105 mm, 4 layers, 0 DRC errors, 0 unconnected, 0 silkscreen warnings
-(199 "footprint differs from library" notices only appear because the KiCad libraries were not installed where DRC ran).
+  - T1 footprint fits the vendor PQ2620 and PQ2625 6+6 bobbins: 3.8 mm pitch inside each 3-pin group,
+    7.5 mm between pins 3 and 4, 25.4 mm row-to-row, 1.2 mm holes
+  - JP1 is a 2x2 header that switches both legs of the CAN split termination
+  - Silkscreen: VIN+/-, VOUT+/-, CAN_H / CAN_L / CAN_GND, JP1 shunt boxes, J7 notch + pin 1, DIP A0-A5 / ON=1
+  - Layout review (18 Oct): smaller switch-node pours, tighter gate loops, Kelvin taps, output pour,
+    straightened routing, 5 mm ground stitching
+PCB status: 160 x 105 mm, 4 layers, 257 footprints, 0 DRC errors, 0 unconnected, 0 silkscreen warnings,
+primary-secondary copper gap 4.0 mm on every layer. The 199 "footprint differs from library" notices only appear
+because the KiCad libraries were not installed where DRC ran.

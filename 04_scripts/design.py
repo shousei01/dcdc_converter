@@ -177,7 +177,7 @@ mcu = {
     "16": "+3V3", "32": "+3V3", "48": "+3V3", "64": "+3V3",
     "15": "GND", "31": "GND", "47": "GND", "63": "GND", "27": "GND",   # VSS x4, VSSA
     "29": "+3V3A",        # VDDA
-    "28": "+3V3A",        # VREF+ used as input, tied to VDDA 3.3 V
+    "28": "VREF_ADC",     # VREF+ from external REF3030 (3.000 V, 0.2 %); VREFBUF must stay off (HIZ)
     "5": "OSC_IN", "6": "OSC_OUT",
     "7": "NRST", "61": "BOOT0",
     "42": "PWM_A1",       # PA8  HRTIM1_CHA1 -> Q1 (input high side)
@@ -211,8 +211,11 @@ add("U1", "MCU_ST_STM32G4:STM32G474RBTx", "STM32G474RBT6", "LQFP64", mcu, B, lcs
 for ref in ["C30", "C31", "C32", "C33", "C34"]:
     C(ref, "100n", "+3V3", "GND", fp="C0402", block=B, note="One per VDD pin + VBAT")
 C("C35", "4.7u 10V", "+3V3", "GND", fp="C0603", block=B)
-C("C36", "1u 10V", "+3V3A", "GND", fp="C0402", block=B, note="VREF+ decoupling (VREF+ = VDDA = 3.3 V)")
-C("C37", "100n", "+3V3A", "GND", fp="C0402", block=B, note="VREF+ pin 28")
+C("C36", "1u 10V", "VREF_ADC", "GND", fp="C0402", block=B, note="VREF+ decoupling, ADC charge reservoir")
+C("C37", "100n", "VREF_ADC", "GND", fp="C0402", block=B, note="VREF+ pin 28")
+add("U19", "Reference_Voltage:REF3030", "REF3030AIDBZR", "SOT23", {"1": "+3V3A", "2": "VREF_ADC", "3": "GND"}, B,
+    lcsc="C38423", mpn="REF3030AIDBZR", note="ADC reference 3.000 V +/-0.2 %, 50 ppm/C (0-70 C); dropout 50 mV max, 25 mA out; VDDA min 3.13 V")
+C("C85", "1u 10V", "+3V3A", "GND", fp="C0402", block=B, note="REF3030 input bypass (> 0.47 uF)")
 add("Y1", "Device:Crystal_GND24", "16MHz 9pF", "XTAL3225", {"1": "OSC_IN", "3": "OSC_OUT", "2": "GND", "4": "GND"}, B,
     lcsc="C13738", mpn="X322516MLB4SI", note="16 MHz HSE, 9 pF load, ESR 50 Ohm; PLL /4 x85 /2 = 170 MHz")
 C("C38", "12p C0G", "OSC_IN", "GND", fp="C0402", block=B)
@@ -224,7 +227,7 @@ R("R20", "10k", "BOOT0", "GND", fp="R0402", block=B, note="Boot from flash")
 # E. SENSING
 # --------------------------------------------------------------------------------------------
 B = "E_SENSE"
-R("R21", "100k 0.1%", "VBUS", "VBUS_SNS", fp="R0603", block=B, note="Isolated bus ~= VIN (DCX ratio 1); FS 68 V at 3.3 V VREF+")
+R("R21", "100k 0.1%", "VBUS", "VBUS_SNS", fp="R0603", block=B, note="Isolated bus ~= VIN (DCX ratio 1); FS 61.8 V at 3.0 V VREF+")
 R("R22", "5.1k 0.1%", "VBUS_SNS", "GND", fp="R0402", block=B)
 C("C41", "1n C0G", "VBUS_SNS", "GND", fp="C0402", block=B)
 R("R23", "100k 0.1%", "VOUT", "VOUT_SNS", fp="R0603", block=B, note="Divider referenced to GND; firmware adds Iout*RSH1")
@@ -234,8 +237,8 @@ C("C42", "1n C0G", "VOUT_SNS", "GND", fp="C0402", block=B)
 add("U7", "Amplifier_Current:INA181", "INA181A1IDBVR", "SOT23-6",
     {"1": "IL_AMP", "2": "GND", "3": "PGND", "4": "GND", "5": "IL_REF", "6": "+3V3A"}, B,
     lcsc="C2058943", mpn="INA181A1IDBVR",
-    note="Gain 20: IL_SNS = 1.65 V + 0.08 V/A * IL (+ in boost, - in buck). IN+/IN- Kelvin to RS1 pads")
-R("R25", "1k 0.1%", "+3V3A", "IL_REF", fp="R0402", block=B)
+    note="Gain 20: IL_SNS = 1.50 V + 0.08 V/A * IL (+ in boost, - in buck), FS +/-18.75 A. IN+/IN- Kelvin to RS1 pads")
+R("R25", "1k 0.1%", "VREF_ADC", "IL_REF", fp="R0402", block=B, note="IL zero = VREF+/2, ratiometric")
 R("R26", "1k 0.1%", "IL_REF", "GND", fp="R0402", block=B)
 C("C43", "100n", "IL_REF", "GND", fp="C0402", block=B)
 C("C44", "100n", "+3V3A", "GND", fp="C0402", block=B)
@@ -244,12 +247,12 @@ C("C45", "470p C0G", "IL_SNS", "GND", fp="C0402", block=B, note="Keep RC fast (~
 # output current
 add("U8", "Amplifier_Current:INA181", "INA181A2IDBVR", "SOT23-6",
     {"1": "IOUT_AMP", "2": "GND", "3": "VOUT_N", "4": "GND", "5": "GND", "6": "+3V3A"}, B,
-    lcsc="C2058784", mpn="INA181A2IDBVR", note="Gain 50: 0.5 V/A, 5 A = 2.5 V")
+    lcsc="C2058784", mpn="INA181A2IDBVR", note="Gain 50: 0.5 V/A, 5 A = 2.5 V, FS 6.0 A")
 C("C46", "100n", "+3V3A", "GND", fp="C0402", block=B)
 R("R28", "1k", "IOUT_AMP", "IOUT_SNS", fp="R0402", block=B)
 C("C47", "10n C0G", "IOUT_SNS", "GND", fp="C0402", block=B)
 # temperature (place NTC between Q1 and Q4)
-R("R29", "10k 1%", "+3V3A", "NTC_SNS", fp="R0402", block=B)
+R("R29", "10k 1%", "VREF_ADC", "NTC_SNS", fp="R0402", block=B, note="Pull-up from VREF+, ratiometric")
 add("TH1", "Device:Thermistor_NTC", "10k B3950", "R0603", {"1": "NTC_SNS", "2": "GND"}, B, note="Place at hottest FET")
 C("C48", "100n", "NTC_SNS", "GND", fp="C0402", block=B)
 

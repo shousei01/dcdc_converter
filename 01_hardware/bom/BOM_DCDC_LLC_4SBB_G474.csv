@@ -9,7 +9,7 @@ Designator,Qty,Value,MPN,LCSC,Footprint,DNP,Unit_USD,Ext_USD,Price_source,Note
 C22,1,100n 100V,,,C_0603_1608Metric,,0.03,0.03,est,
 "C24,C25,C26,C72",4,10u 25V X5R,,,C_0805_2012Metric,,0.03,0.12,est,
 "C27,C73",2,22u 10V X5R,,,C_0805_2012Metric,,0.003,0.006,est,
-"C28,C36,C51,C76",4,1u 10V,,,C_0402_1005Metric,,0.003,0.012,est,
+"C28,C36,C51,C76,C85",5,1u 10V,,,C_0402_1005Metric,,0.003,0.015,est,
 "C29,C30,C31,C32,C33,C34,C37,C40,C43,C44,C46,C48,C50,C53,C54,C75,C77,C80,C83,C84",20,100n,,,C_0402_1005Metric,,0.003,0.06,est,
 C35,1,4.7u 10V,,,C_0603_1608Metric,,0.003,0.003,est,
 "C38,C39",2,12p C0G,,,C_0402_1005Metric,,0.003,0.006,est,
@@ -55,9 +55,9 @@ R1,1,47k,,,R_1206_3216Metric,,0.003,0.003,est,Output pre-load / bleeder (49 mW a
 "R17,R76",2,68k,,,R_0402_1005Metric,,0.003,0.006,est,
 "R18,R77",2,120k 1%,,,R_0402_1005Metric,,0.003,0.006,est,Vout = 0.765*(1+120k/10k) = 9.95 V
 "R19,R29,R78,R87",4,10k 1%,,,R_0402_1005Metric,,0.003,0.012,est,
-"R21,R23",2,100k 0.1%,,,R_0603_1608Metric,,0.02,0.04,est,Isolated bus ~= VIN (DCX ratio 1); FS 68 V at 3.3 V VREF+
+"R21,R23",2,100k 0.1%,,,R_0603_1608Metric,,0.02,0.04,est,Isolated bus ~= VIN (DCX ratio 1); FS 61.8 V at 3.0 V VREF+
 "R22,R24",2,5.1k 0.1%,,,R_0402_1005Metric,,0.02,0.04,est,
-"R25,R26",2,1k 0.1%,,,R_0402_1005Metric,,0.02,0.04,est,
+"R25,R26",2,1k 0.1%,,,R_0402_1005Metric,,0.02,0.04,est,"IL zero = VREF+/2, ratiometric"
 R27,1,100R,,,R_0402_1005Metric,,0.003,0.003,est,
 "R28,R38,R39,R40,R41,R42,R43,R44,R45,R85,R106,R109",12,1k,,,R_0402_1005Metric,,0.003,0.036,est,
 "R30,R31",2,60.4R,,,R_0603_1608Metric,,0.003,0.006,est,"Split termination, enabled by JP1 (both jumpers)"
@@ -80,11 +80,12 @@ U1,1,STM32G474RBT6,STM32G474RBT6,C529413,LQFP-64_10x10mm_P0.5mm,,7.24,7.24,LCSC 
 "U2,U3,U10",3,UCC27211DDAR,UCC27211DDAR,C141980,SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.3mm,,1.611,4.833,LCSC C141980,"120 V half-bridge driver, internal boot diode; 2nd source SLM27211CA-DG (C967931)"
 "U4,U13",2,LMR16006XDDCR,LMR16006XDDCR,C87080,SOT-23-6,,0.3556,0.711,LCSC C87080,"60 V, 0.6 A, 700 kHz buck"
 "U5,U14",2,AMS1117-5.0,AMS1117-5.0,C6187,SOT-223-3_TabPin2,,0.12,0.24,est,5 V for CAN transceiver VCC (up to 125 mA dominant); live once the LLC runs
-U7,1,INA181A1IDBVR,INA181A1IDBVR,C2058943,SOT-23-6,,0.2399,0.24,LCSC C2058943 @150,"Gain 20: IL_SNS = 1.65 V + 0.08 V/A * IL (+ in boost, - in buck). IN+/IN- Kelvin to RS1 pads"
-U8,1,INA181A2IDBVR,INA181A2IDBVR,C2058784,SOT-23-6,,0.2407,0.241,LCSC C2058784 @150,"Gain 50: 0.5 V/A, 5 A = 2.5 V"
+U7,1,INA181A1IDBVR,INA181A1IDBVR,C2058943,SOT-23-6,,0.2399,0.24,LCSC C2058943 @150,"Gain 20: IL_SNS = 1.50 V + 0.08 V/A * IL (+ in boost, - in buck), FS +/-18.75 A. IN+/IN- Kelvin to RS1 pads"
+U8,1,INA181A2IDBVR,INA181A2IDBVR,C2058784,SOT-23-6,,0.2407,0.241,LCSC C2058784 @150,"Gain 50: 0.5 V/A, 5 A = 2.5 V, FS 6.0 A"
 U9,1,CA-IS3062VW,CA-IS3062VW,C5338808,SOIC-16W_7.5x10.3mm_P1.27mm,,2.5056,2.506,LCSC C5338808,5 kVrms isolated CAN with integrated isolated DC-DC; VCCL=3.3 V logic
 U11,1,UCC27524DR,UCC27524DR,C465729,SOIC-8_3.9x4.9mm_P1.27mm,,0.2143,0.214,LCSC C465729,Dual 5 A low-side driver for the SRs; EN low = body-diode rectification
 U12,1,CA-IS3642LVW,CA-IS3642LVW,C7422564,SOIC-16W_7.5x10.3mm_P1.27mm,,2.5056,2.506,LCSC C7422564,"5 kVrms isolator, 2 fwd + 2 rev, 650 mW isolated 3.3 V (SEL=GNDB) for the MCU; L = outputs default low"
 "U15,U17,U18",3,LMV331IDBVR,LMV331IDBVR,,SOT-23-5,,0.08,0.24,"est, LCSC LMV331 SOT-23-5 class",Open-drain comparator; output high (released) = OVP
 U16,1,TL431AIDBZR,"TL431AIDBZR (TI pinout: 1 K, 2 REF, 3 A)",,SOT-23,,0.03,0.03,est,"2.495 V reference, A grade = 1 % (TL431BIDBZR = 0.5 % drop-in)"
+U19,1,REF3030AIDBZR,REF3030AIDBZR,C38423,SOT-23,,0.5,0.5,est,"ADC reference 3.000 V +/-0.2 %, 50 ppm/C (0-70 C); dropout 50 mV max, 25 mA out; VDDA min 3.13 V"
 Y1,1,16MHz 9pF,X322516MLB4SI,C13738,Crystal_SMD_3225-4Pin_3.2x2.5mm,,0.12,0.12,"est, 3225 crystal","16 MHz HSE, 9 pF load, ESR 50 Ohm; PLL /4 x85 /2 = 170 MHz"

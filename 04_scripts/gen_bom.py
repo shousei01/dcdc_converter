@@ -33,6 +33,7 @@ PRICE = {
     "M3": (0.0, "PCB hole, no part"),
     "LMV331IDBVR": (0.08, "est, LCSC LMV331 SOT-23-5 class"),
     "TL431AIDBZR": (0.03, "est"),
+    "REF3030AIDBZR": (0.50, "est"),
     "SS110": (0.03, "est"),
     "16MHz 9pF": (0.12, "est, 3225 crystal"),
 }

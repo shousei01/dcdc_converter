@@ -1,28 +1,40 @@
-Firmware workspace - STM32G474RBT6 (LQFP64), on the SECONDARY side            (hardware Rev D)
+Firmware workspace - STM32G474RBT6 (LQFP64), on the SECONDARY side            (hardware Rev D, 2026-10-18)
 Suggested: STM32CubeIDE project here (src\, inc\), notes in docs\.
 Full pin list with every alternate function: 01_hardware\docs\pin-map.xlsx
+Full design notes (full scales, error budget, calibration): 01_hardware\docs\DCDC_Design_Notes.pdf
 
 Clock: 16 MHz HSE crystal Y1 (PF0/PF1, 12 pF load caps) -> PLL (M=4, N=85, R=2) -> 170 MHz SYSCLK.
        FDCAN kernel clock from HSE or PLLQ.
-VREF+ = VDDA = 3.3 V (VREFBUF off, VREF+ used as input).
+Reference: VREF+ (pin 28) = 3.000 V from external REF3030 U19 (+/-0.2 %, 50 ppm/C max 0-70 C).
+       Leave VREFBUF disabled as after reset (VREFBUF_CSR: ENVR = 0, HIZ = 1) - enabling it fights U19.
+       All ADC, DAC3 and comparator values are referred to 3.0 V. VDDA (pin 29) = +3V3A only powers the analog.
 
 HRTIM
   Timer A  PA8 / PA9    CHA1/CHA2 (AF13) -> U2 -> Q1/Q2   4SBB input leg  (150 kHz)
   Timer E  PC8 / PC9    CHE1/CHE2 (AF3)  -> U3 -> Q3/Q4   4SBB output leg (150 kHz)
   Timer C  PB12 / PB13  CHC1/CHC2 (AF13) -> U12 isolator -> U10 -> Q5/Q6  LLC half-bridge (~205 kHz, 50 %)
   Timer D  PB14 / PB15  CHD1/CHD2 (AF13) -> U11 -> Q7/Q8   LLC synchronous rectifiers (lead ~30 ns)
-  FLT2     PA15 (AF13)  VIN_OVP, active HIGH  (Rev D: primary input OVP, trips at 50.2 V rising)
+  FLT2     PA15 (AF13)  VIN_OVP, active HIGH (primary input OVP, trips 50.26 V rising / clears 49.83 V)
   SR_EN    PC11 (GPIO, high = SR driver enabled)
 
-ADC / COMP
-  PA0  VBUS_SNS   ADC1_IN1   100k/5.1k  -> 68 V full scale
-  PB11 VOUT_SNS   ADC1_IN14  100k/5.1k (+ COMP6 fast OVP); add IOUT x 10 mOhm for true VOUT
-  PA1  IOUT_SNS   ADC1_IN2   0.5 V/A (INA181A2, 10 mOhm)
-  PB1  IL_SNS     ADC1_IN12  1.65 V + 0.08 V/A (INA181A1, 4 mOhm), COMP1 = +OCP (boost)
+ADC / COMP (12-bit, 3.0 V full scale, 0.73 mV/LSB)
+  PA0  VBUS_SNS   ADC1_IN1   100k/5.1k 0.1 %  -> 61.8 V full scale, 15.1 mV/LSB
+  PB11 VOUT_SNS   ADC1_IN14  100k/5.1k 0.1 %  -> 61.8 V (+ COMP6 fast OVP); add IOUT x 10 mOhm for true VOUT
+  PA1  IOUT_SNS   ADC1_IN2   0.5 V/A (INA181A2, 10 mOhm) -> 6.0 A full scale, 1.5 mA/LSB
+  PB1  IL_SNS     ADC1_IN12  1.50 V + 0.08 V/A (INA181A1, 4 mOhm, zero = VREF/2) -> +/-18.75 A, COMP1 = +OCP (boost)
   PB0  IL_SNS     COMP4      -OCP (buck), output inverted
-  PA6  NTC_SNS    ADC2_IN3   10k / NTC 10k B3950          (Rev D: moved from PA4)
-  Thresholds for COMP from DAC3; COMP outputs -> HRTIM fault inputs.
+  PA6  NTC_SNS    ADC2_IN3   10k pull-up from VREF+ / NTC 10k B3950 (ratiometric): 25 C = 1.50 V, 100 C = 0.195 V
+  Thresholds for COMP from DAC3 (0-3.0 V); COMP outputs -> HRTIM fault inputs.
+  Zero IL_SNS and IOUT_SNS at start-up with the power stage off and subtract.
   PA4  reserved for DAC1_OUT1 (10k pull-down R95 fitted - a valid DAC load)
+
+VIN monitor (isolated, monitoring only)
+  PA2  VIN_PWM    TIM15_CH1 (AF9), PWM-input mode; 10k pull-down R93. ~200 Hz (4.9 ms ramp).
+  Prescaler 16 -> ~51,700 counts per period. Output is HIGH while the primary ramp is below the VIN divider.
+  x   = (t_high - t_reset) / (period - t_reset),   t_reset ~20 us
+  VIN = 50.47 V * x - 0.20 V        (readable from ~9.7 V, primary aux start, up to the OVP trip)
+  Average 8-16 periods. Calibrate gain and offset at two points (e.g. 24 V and 48 V) and store in flash:
+  about +/-1.5 % untrimmed, about +/-0.5 % after calibration over temperature.
 
 Comms / IO
   PA11 / PA12  FDCAN1 RX / TX (AF9) -> CA-IS3062VW isolated CAN
@@ -31,19 +43,21 @@ Comms / IO
   PA5          Test_pin_DAC (DAC1_OUT2)   PB6 / PB7  Test_pin_GPIO1 / GPIO2
   PA13/PA14/PB3  SWDIO / SWCLK / SWO      PB8 = BOOT0 (10k to GND)
 
-Unused pins (Rev D): PC13, PC14, PC15, PA2, PA3, PA4, PA7, PA10, PB2, PB4, PB5, PB10, PC6, PC7, PC12, PD2
-  each has a 10k pull-down (R90-R105). Leave them in analog mode (reset state) or input.
+Unused pins (Rev D): PC13, PC14, PC15, PA3, PA4, PA7, PA10, PB2, PB4, PB5, PB10, PC6, PC7, PC12, PD2
+  each has a 10k pull-down (R90-R105 except R93, which serves PA2). Leave them in analog mode (reset state) or input.
   PB4 is NJTRST with an internal pull-up at reset; the 10k wins - harmless with SWD-only debug.
 
 Input OVP (Rev D)
-  LMV331 + TL431 on the primary side compare VIN/20.1 against 2.495 V; the open-drain output goes through
+  LMV331 + TL431 on the primary side compare the VIN divider against 2.495 V; the open-drain output goes through
   isolator channel U12 VI1 -> VO1 = VIN_OVP. Configure HRTIM FLT2 (PA15, AF13) active-high, no filter or a
   short digital filter, so all outputs are cut in hardware; also read it as a GPIO / EXTI15 for logging.
-  Hysteresis ~0.4 V. VIN_OVP stays high while the primary 5 V rail is up and VIN > ~49.8 V.
+  Trips 50.26 V rising, clears 49.83 V (about +/-1.3 %). VIN_OVP stays high while the primary 5 V rail is up
+  and VIN is above the clear level.
 
 Start-up sequence
-  1. MCU boots from the isolator's 3.3 V (as soon as VIN is present).
-  2. Check VIN_OVP is low; arm FLT2.
+  1. MCU boots from the isolator's 3.3 V (as soon as VIN is present). Keep VREFBUF off; ADC calibration
+     (ADC_CR.ADCAL) single-ended, then the IL / IOUT zero measurement.
+  2. Check VIN_OVP is low; arm FLT2. Start TIM15 PWM input for the VIN monitor.
   3. LLC soft-start: ~2.5 x fr, small duty -> fr, 50 % over ~10 ms; SRs off (body diodes).
   4. Wait for VBUS and the secondary 10 V / 5 V rails; enable SR_EN.
   5. Start the 4SBB (CV/CC); keep bootstrap refresh (static-on FET duty <= ~98 %).

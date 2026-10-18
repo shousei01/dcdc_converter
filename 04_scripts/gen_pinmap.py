@@ -25,16 +25,17 @@ for p in D.P:
 # ---- what the design uses on each pin: (function used, mode / AF, direction, notes)
 USE = {
     "+3V3": ("VDD supply", "Power", "Supply", "100 nF per VDD pin (C30-C34) + 4.7 uF bulk (C35)"),
-    "+3V3A": ("Analog supply / reference", "Power", "Supply", "VDDA and VREF+ from +3V3 via FB1; VREFBUF off, VREF+ used as input (1 uF + 100 nF)"),
+    "+3V3A": ("Analog supply", "Power", "Supply", "VDDA from +3V3 via FB1 (1 uF + 100 nF); also feeds the REF3030 ADC reference U19"),
+    "VREF_ADC": ("VREF+ (ADC/DAC/COMP reference input)", "Power", "Supply", "External REF3030 3.000 V +/-0.2 % (U19); VREFBUF must stay disabled (VREFBUF_CSR.HIZ=1, ENVR=0); 1 uF + 100 nF (C36/C37)"),
     "GND": ("Ground", "Power", "Supply", "Secondary GND plane (In1)"),
     "OSC_IN": ("RCC_OSC_IN (HSE)", "RCC HSE crystal", "In", "Y1 16 MHz 9 pF + 12 pF C0G load caps -> PLL 170 MHz"),
     "OSC_OUT": ("RCC_OSC_OUT (HSE)", "RCC HSE crystal", "Out", "Y1 16 MHz"),
     "NRST": ("NRST", "Reset", "In/Out", "100 nF to GND (C40); SWD reset on J6.6 / J7.10"),
     "BOOT0": ("BOOT0", "Boot pin", "In", "10k to GND (R20) -> boot from flash; nSWBOOT0 option bit may override"),
-    "VBUS_SNS": ("ADC1_IN1", "Analog", "In", "VBUS divider 100k/5.1k, 1 nF -> 68 V full scale"),
-    "IOUT_SNS": ("ADC1_IN2", "Analog", "In", "INA181A2 on 10 mOhm (RSH1): 0.5 V/A, 1k + 10 nF filter"),
-    "NTC_SNS": ("ADC2_IN3", "Analog", "In", "NTC 10k B3950 / 10k divider (Rev D: moved from PA4 to PA6)"),
-    "VOUT_SNS": ("ADC1_IN14 + COMP6_INP", "Analog", "In", "VOUT divider 100k/5.1k; COMP6 = fast hardware OVP (threshold from DAC3)"),
+    "VBUS_SNS": ("ADC1_IN1", "Analog", "In", "VBUS divider 100k/5.1k 0.1 %, 1 nF -> 61.8 V full scale (VREF+ 3.0 V)"),
+    "IOUT_SNS": ("ADC1_IN2", "Analog", "In", "INA181A2 on 10 mOhm (RSH1): 0.5 V/A, FS 6.0 A, 1k + 10 nF filter"),
+    "NTC_SNS": ("ADC2_IN3", "Analog", "In", "NTC 10k B3950 / 10k pull-up from VREF+ (ratiometric); Rev D: moved from PA4 to PA6"),
+    "VOUT_SNS": ("ADC1_IN14 + COMP6_INP", "Analog", "In", "VOUT divider 100k/5.1k 0.1 %, FS 61.8 V; COMP6 = fast hardware OVP (threshold from DAC3)"),
     "TP_DAC": ("DAC1_OUT2", "Analog", "Out", "Test_pin_DAC on PROG PADS J6.3 (debug waveform out)"),
     "LLC_A": ("HRTIM1_CHC1", "AF13", "Out", "LLC half-bridge high side via CA-IS3642 (U12) -> UCC27211 (U10)"),
     "LLC_B": ("HRTIM1_CHC2", "AF13", "Out", "LLC half-bridge low side via U12 -> U10"),
@@ -63,7 +64,7 @@ USE = {
 for i in range(6):
     USE[f"ADDR{i}"] = ("GPIO input", "Input, no pull (10k external pull-up)", "In", f"Address bit {i}: DIP SW1 / header J5 (ON or jumper = 0)")
 SPECIAL = {
-    "IL_SNS@24": ("COMP4_INP", "Analog", "In", "Inductor current (INA181A1 on 4 mOhm, 1.65 V + 0.08 V/A): buck-mode negative OCP, COMP4 output inverted -> HRTIM fault"),
+    "IL_SNS@24": ("COMP4_INP", "Analog", "In", "Inductor current (INA181A1 on 4 mOhm, 1.50 V + 0.08 V/A, +/-18.75 A): buck-mode negative OCP, COMP4 output inverted -> HRTIM fault"),
     "IL_SNS@25": ("ADC1_IN12 + COMP1_INP", "Analog", "In", "Inductor current sample for CC loop; COMP1 = positive OCP -> HRTIM fault (thresholds from DAC3)"),
 }
 
