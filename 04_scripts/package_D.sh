@@ -12,6 +12,7 @@ cp out/custom_fp.pretty/*.kicad_mod $OUT/$N/custom_fp.pretty/
 printf '(sym_lib_table\n  (lib (name "custom")(type "KiCad")(uri "${KIPRJMOD}/custom.kicad_sym")(options "")(descr "UCC27211, UCC27524, CA-IS3062VW, CA-IS3642LVW"))\n)\n' > $OUT/$N/sym-lib-table
 printf '(fp_lib_table\n  (lib (name "custom_fp")(type "KiCad")(uri "${KIPRJMOD}/custom_fp.pretty")(options "")(descr "PQ2620 transformer (Rev D pin pitch), programming pads"))\n)\n' > $OUT/$N/fp-lib-table
 cp $SRC $OUT/$N/$N.kicad_pcb
+cp out/DCDC_LLC_4SBB_G474.kicad_dru $OUT/$N/$N.kicad_dru
 cat > $OUT/$N/$N.kicad_pro <<EOF
 {
   "board": {"design_settings": {"defaults": {}, "rules": {"min_clearance": 0.2, "min_track_width": 0.2}}, "layer_presets": []},

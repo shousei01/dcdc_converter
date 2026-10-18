@@ -31,6 +31,8 @@ Rev D changes
   - Silkscreen: VIN+/-, VOUT+/-, CAN_H / CAN_L / CAN_GND, JP1 shunt boxes, J7 notch + pin 1, DIP A0-A5 / ON=1
   - Layout review (18 Oct): smaller switch-node pours, tighter gate loops, Kelvin taps, output pour,
     straightened routing, 5 mm ground stitching
-PCB status: 160 x 105 mm, 4 layers, 257 footprints, 0 DRC errors, 0 unconnected, 0 silkscreen warnings,
-primary-secondary copper gap 4.0 mm on every layer. The 199 "footprint differs from library" notices only appear
-because the KiCad libraries were not installed where DRC ran.
+  - JLCPCB compliance (4-layer, 2 oz outer): PTH pad-to-track >= 0.28 mm, inner hole-to-copper >= 0.3 mm,
+    silkscreen text >= 1.0 mm / 0.15 mm stroke; limits kept as custom DRC rules in kicad_project\*.kicad_dru
+PCB status: 160 x 105 mm, 4 layers, 257 footprints, 0 DRC errors / warnings with the JLC rules loaded,
+0 unconnected, primary-secondary copper gap 4.0 mm on every layer.
+Order: 4 layers, 1.6 mm, 2 oz outer copper, JLC04161H-7628 stack-up; upload fabrication\*_gerbers_JLCPCB.zip.

@@ -1,0 +1,41 @@
+(version 1)
+# JLCPCB 4-layer limits (jlcpcb.com/capabilities/pcb-capabilities, checked 2026-10-18), outer copper 2 oz.
+# Board-wide minimums are in Board Setup (track 0.15, clearance 0.2, via 0.5/0.3, hole-hole 0.25, edge 0.5).
+
+(rule "JLC: PTH pad to track/via >= 0.28 mm"
+	(constraint clearance (min 0.28mm))
+	(condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole' && (B.Type == 'Track' || B.Type == 'Via')"))
+
+(rule "JLC: PTH hole to inner-layer copper >= 0.3 mm"
+	(layer inner)
+	(constraint hole_clearance (min 0.3mm))
+	(condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole'"))
+
+(rule "JLC: via hole to inner-layer copper >= 0.2 mm"
+	(layer inner)
+	(constraint hole_clearance (min 0.2mm))
+	(condition "A.Type == 'Via'"))
+
+(rule "JLC: pad hole to pad hole >= 0.45 mm"
+	(constraint hole_to_hole (min 0.45mm))
+	(condition "A.Type == 'Pad' && B.Type == 'Pad'"))
+
+(rule "JLC: PTH annular ring (2 oz) >= 0.254 mm"
+	(constraint annular_width (min 0.254mm))
+	(condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole'"))
+
+(rule "JLC: via annular ring >= 0.05 mm (0.15 preferred)"
+	(constraint annular_width (min 0.05mm))
+	(condition "A.Type == 'Via'"))
+
+(rule "JLC: 2 oz outer trace width >= 0.15 mm"
+	(layer outer)
+	(constraint track_width (min 0.15mm)))
+
+(rule "JLC: silkscreen text stroke >= 0.15 mm"
+	(layer "?.Silkscreen")
+	(constraint text_thickness (min 0.15mm)))
+
+(rule "JLC: silkscreen text height >= 1.0 mm"
+	(layer "?.Silkscreen")
+	(constraint text_height (min 1.0mm)))
