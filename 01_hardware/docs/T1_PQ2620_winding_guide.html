@@ -146,6 +146,7 @@ code{background:color-mix(in srgb,var(--mute) 15%,transparent);padding:0 4px;bor
 <tr><td>7, 8</td><td><span class="pill s2">S2</span> finish</td><td>SR_D1 (Q7 drain)</td></tr>
 </table>
 <p>Positions 1-12 are this guide's numbering, seen from the <b>top</b> (component side), matching the T1 footprint: position 1 is next to the <b>silkscreen dot</b>, primary row ("PRI") left → right 1-6, secondary row ("SEC") left → right 7-12. In the KiCad footprint the pads are named by net group: 1-3 = pad "1", 4-6 = pad "2", 7-8 = pad "3", 9-10 = pad "4", 11-12 = pad "5". Mark pin 1 on the bobbin with a pen before you start; if your bobbin's moulded numbers differ, go by position, not by the moulded number.</p>
+<p><b>On the PCB</b> T1 is turned 90°: the primary row is the <b>left</b> column and pin 1 (square pad + dot) is its <b>bottom</b> end; the secondary row is the right column. The drawing above is the footprint itself (pins down, seen from the top); rotate it a quarter turn counter-clockwise to match the board.</p>
 <p>Use both pins of each pair (solder the wire to one, bridge to the other) — each secondary end carries up to 3.6 A rms.</p>
 </div>
 </div>
@@ -223,7 +224,7 @@ code{background:color-mix(in srgb,var(--mute) 15%,transparent);padding:0 4px;bor
 <div class="card"><table>
 <tr><th>Item</th><th>Suggestion</th></tr>
 <tr><td>Core</td><td>PQ26/20 pair, N97 / PC95 / 3C95 (ungapped + spacer, or one half gapped for AL ≈ 3150 nH)</td></tr>
-<tr><td>Bobbin</td><td>PQ2620 vertical 6 + 6 (your vendor drawing). PCB footprint updated: 25.4 mm row to row, Ø1.1 mm holes for the Ø0.70 mm pins, 27 × 29 mm outline</td></tr>
+<tr><td>Bobbin</td><td>PQ2620 vertical 6 + 6 (your vendor drawing). PCB footprint takes it and the PQ2625 6 + 6 (25.5 mm rows, Ø0.80 mm pins, 29.8 × 26.7 mm base, 25.3 mm high): Ø1.2 mm holes, same 3.8 / 7.5 mm pin pattern</td></tr>
 <tr><td>Primary</td><td>Copper foil 0.15 mm × 8 mm, ≈ 0.4 m (+ 25 µm polyimide film 9 mm wide), or litz 0.1 mm × 100, ≈ 0.4 m</td></tr>
 <tr><td>Secondary wire</td><td>TIW 0.65 mm conductor (OD ≈ 0.85 mm, Furukawa TEX-E or similar), ≈ 1.2 m per half, 2.5 m total; option B: TIW 0.55 mm</td></tr>
 <tr><td>Tape</td><td>Polyimide (Kapton) 10 mm wide, 25 µm spacer film for the gap</td></tr>
@@ -1290,50 +1291,50 @@ code{background:color-mix(in srgb,var(--mute) 15%,transparent);padding:0 4px;bor
  const el=document.getElementById('three'); if(!window.THREE){el.textContent='3D view needs an internet connection (three.js).';return;}
  const W=el.clientWidth,H=el.clientHeight;
  const r=new THREE.WebGLRenderer({antialias:true,alpha:true}); r.setSize(W,H); r.setPixelRatio(window.devicePixelRatio); el.appendChild(r.domElement);
- const sc=new THREE.Scene(), cam=new THREE.PerspectiveCamera(40,W/H,1,500); cam.position.set(30,24,34);
+ const sc=new THREE.Scene(), cam=new THREE.PerspectiveCamera(40,W/H,1,500); cam.position.set(40,38,50);
  const ctl=new THREE.OrbitControls(cam,r.domElement); ctl.target.set(0,6,0); ctl.update();
  sc.add(new THREE.AmbientLight(0xffffff,.55)); const dl=new THREE.DirectionalLight(0xffffff,.8); dl.position.set(30,60,40); sc.add(dl);
  const M=c=>new THREE.MeshStandardMaterial({color:c,roughness:.5,metalness:.1});
  // bobbin: tube + flanges ; axis = y ; pins hang below y=0. footprint x->x, footprint y->z
  const bob=new THREE.Group(); sc.add(bob);
- const tube=new THREE.Mesh(new THREE.CylinderGeometry(6.6,6.6,12,40,1,true),new THREE.MeshStandardMaterial({color:0x444a55,side:THREE.DoubleSide})); tube.position.y=7; bob.add(tube);
- for(const y of [1,13]){const f=new THREE.Mesh(new THREE.BoxGeometry(24,1,22),M(0x3a3f4a)); f.position.y=y; bob.add(f);}
+ const tube=new THREE.Mesh(new THREE.CylinderGeometry(7.05,7.05,10.5,40,1,true),new THREE.MeshStandardMaterial({color:0x444a55,side:THREE.DoubleSide})); tube.position.y=6; bob.add(tube);
+ {const f=new THREE.Mesh(new THREE.BoxGeometry(27,1,29),M(0x3a3f4a)); f.position.y=0.5; bob.add(f);} {const f=new THREE.Mesh(new THREE.CylinderGeometry(10.4,10.4,0.8,48),M(0x3a3f4a)); f.position.y=11.4; bob.add(f);}
  const xs=[-11.35,-7.55,-3.75,3.75,7.55,11.35];
  const pins={};
- xs.forEach((x,i)=>{[[-11.25,i+1],[11.25,i+7]].forEach(([z,n])=>{const p=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,5,10),M(n===1?0xff4d4d:0xd4d4d4)); p.position.set(x,-1.5,z); bob.add(p); pins[n]=new THREE.Vector3(x,1,z);
+ xs.forEach((x,i)=>{[[-12.7,i+1],[12.7,i+7]].forEach(([z,n])=>{const p=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,5,10),M(n===1?0xff4d4d:0xd4d4d4)); p.position.set(x,-1.5,z); bob.add(p); pins[n]=new THREE.Vector3(x,1,z);
    const post=new THREE.Mesh(new THREE.BoxGeometry(1.6,1.2,2.2),M(0x3a3f4a)); post.position.set(x,1,z+(z<0?1.4:-1.4)); bob.add(post);});});
  // labels
- function label(t,pos,col){const c=document.createElement('canvas');c.width=128;c.height=64;const g=c.getContext('2d');g.fillStyle=col||'#fff';g.font='bold 34px sans-serif';g.textAlign='center';g.fillText(t,64,44);
-  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false})); s.scale.set(4,2,1); s.position.copy(pos); sc.add(s);}
+ function label(t,pos,col){const c=document.createElement('canvas');c.width=320;c.height=64;const g=c.getContext('2d');g.fillStyle=col||'#fff';g.font='bold 34px sans-serif';g.textAlign='center';g.fillText(t,160,44);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false})); s.scale.set(10,2,1); s.position.copy(pos); sc.add(s);}
  for(let n=1;n<=12;n++){const p=pins[n].clone(); p.y=-5.5; p.z+= p.z<0?-1.5:1.5; label(String(n),p,n===1?'#ff6b6b':'#ddd');}
- label('PRIMARY',new THREE.Vector3(0,-2,-16),'#e8902f'); label('SECONDARY',new THREE.Vector3(0,-2,16.5),'#5fd39a');
+ label('PRIMARY',new THREE.Vector3(0,-2,-18),'#e8902f'); label('SECONDARY',new THREE.Vector3(0,-2,18.5),'#5fd39a');
  // helix (clockwise seen from +y): angle decreases with t
  function helix(r0,y0,y1,turns,col,a0,layers){const pts=[];const N=Math.round(turns*48);
   for(let i=0;i<=N;i++){const t=i/N;const L=layers?Math.floor(t*layers*0.9999):0;const tl=layers?(t*layers-L):t;const yy=layers?(L%2===0?y0+(y1-y0)*tl:y1-(y1-y0)*tl):y0+(y1-y0)*t;
-   const rr=r0+(L||0)*1.0;const a=a0-2*Math.PI*turns*t; pts.push(new THREE.Vector3(rr*Math.cos(a),yy,rr*Math.sin(a)));}
+   const rr=r0+(L||0)*0.9;const a=a0+2*Math.PI*turns*t; pts.push(new THREE.Vector3(rr*Math.cos(a),yy,rr*Math.sin(a)));}
   const c=new THREE.CatmullRomCurve3(pts); const m=new THREE.Mesh(new THREE.TubeGeometry(c,N*2,col.w,8,false),M(col.c)); sc.add(m); return pts;}
  function lead(a,b,c,w){const mid=a.clone().lerp(b,.5); mid.y=Math.max(a.y,b.y)+1.5; const cv=new THREE.QuadraticBezierCurve3(a,mid,b); sc.add(new THREE.Mesh(new THREE.TubeGeometry(cv,24,w,8,false),M(c)));}
  function dot(p){const d=new THREE.Mesh(new THREE.SphereGeometry(.9,16,12),new THREE.MeshBasicMaterial({color:0xffffff})); d.position.copy(p); sc.add(d);}
  // primary: 4 turns, starts at the pin-1 side (angle toward -z/-x)
- const aP=Math.atan2(-11.25,-7.55);
- const P=helix(7.6,2.3,11.7,4,{c:0xe8902f,w:.75},aP,0);
+ const aP=Math.atan2(-12.7,-9.5);
+ const P=helix(7.6,1.9,10.3,4,{c:0xe8902f,w:.75},aP,0);
  lead(pins[1],P[0],0xe8902f,.6); lead(P[P.length-1],pins[4],0xe8902f,.6); dot(P[0]);
  // secondaries bifilar, 2 layers x 4 turns, offset half pitch
- const aS=Math.atan2(11.25,9.4);
- const S1=helix(9.1,2.0,11.4,8,{c:0x3c7ff0,w:.42},aS,2);
- const S2=helix(9.1,2.6,12.0,8,{c:0x2fbf7c,w:.42},aS-0.18,2);
+ const aS=Math.atan2(12.7,9.5);
+ const S1=helix(8.6,1.6,10.2,8,{c:0x3c7ff0,w:.42},aS,2);
+ const S2=helix(8.6,2.2,10.8,8,{c:0x2fbf7c,w:.42},aS+0.18,2);
  lead(pins[11],S1[0],0x3c7ff0,.4); lead(S1[S1.length-1],pins[10],0x3c7ff0,.4); dot(S1[0]);
  lead(pins[9],S2[0],0x2fbf7c,.4); lead(S2[S2.length-1],pins[7],0x2fbf7c,.4); dot(S2[0]);
  // clockwise arrow on top
- const arc=new THREE.CatmullRomCurve3(Array.from({length:20},(_,i)=>{const a=-i*0.12;return new THREE.Vector3(13*Math.cos(a),15,13*Math.sin(a));}));
+ const arc=new THREE.CatmullRomCurve3(Array.from({length:20},(_,i)=>{const a=i*0.12;return new THREE.Vector3(13*Math.cos(a),15,13*Math.sin(a));}));
  sc.add(new THREE.Mesh(new THREE.TubeGeometry(arc,40,.25,6,false),new THREE.MeshBasicMaterial({color:0xffffff})));
  const tip=new THREE.Mesh(new THREE.ConeGeometry(.8,2,12),new THREE.MeshBasicMaterial({color:0xffffff})); const e=arc.getPoint(1),tg=arc.getTangent(1); tip.position.copy(e); tip.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),tg); sc.add(tip);
  label('CW from top',new THREE.Vector3(14,17,0),'#fff');
  // core (optional)
  const core=new THREE.Group(); const cm=new THREE.MeshStandardMaterial({color:0x777b84,transparent:true,opacity:.55});
- for(const y of [-0.5,14.5]){const b=new THREE.Mesh(new THREE.BoxGeometry(22,2,19),cm); b.position.y=y; core.add(b);}
- const cp=new THREE.Mesh(new THREE.CylinderGeometry(6,6,14,32),cm); cp.position.y=7; core.add(cp);
- for(const x of [-10,10]){const l=new THREE.Mesh(new THREE.BoxGeometry(2.4,14,15),cm); l.position.set(x,7,0); core.add(l);}
+ for(const y of [-0.6,12.6]){const b=new THREE.Mesh(new THREE.BoxGeometry(26.5,2,19),cm); b.position.y=y; core.add(b);}
+ const cp=new THREE.Mesh(new THREE.CylinderGeometry(6,6,12,32),cm); cp.position.y=6; core.add(cp);
+ for(const x of [-11.6,11.6]){const l=new THREE.Mesh(new THREE.BoxGeometry(3.2,12,15),cm); l.position.set(x,6,0); core.add(l);}
  core.visible=false; sc.add(core);
  document.getElementById('coreToggle').onchange=e=>core.visible=e.target.checked;
  (function loop(){requestAnimationFrame(loop); r.render(sc,cam);})();
