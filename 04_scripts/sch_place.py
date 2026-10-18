@@ -241,16 +241,16 @@ put("D7", 180.34, 223.52, 180)       # to hold cap
 put("C81", 190.5, 236.22)            # hold cap
 put("R107", 200.66, 236.22)          # hold discharge
 put("C83", 157.48, 241.3)            # U17 decoupling
-put("R109", 223.52, 218.44, 90)      # ramp series R
+put("R109", 223.52, 223.52, 90)      # ramp series R (to U18 IN-)
 put("U18", 246.38, 220.98)           # PWM comparator
-put("R110", 246.38, 205.74, 90)      # hysteresis
+put("R110", 246.38, 205.74, 90)      # hysteresis (to OVP_DIV)
 put("R108", 266.7, 208.28)           # pull-up -> U12 VI2
 put("C84", 254.0, 241.3)             # U18 decoupling
-NOWIRE |= {("R109", "1"), ("U18", "3"), ("U12", "4"), ("U17", "3")}   # RAMP_P / OVP_DIV / VINPWM_P / VREF_P by label
+NOWIRE |= {("R109", "1"), ("U18", "1"), ("R110", "2"), ("U12", "4"), ("U17", "3")}   # RAMP_P / OVP_DIV / OVP_DIV / VINPWM_P / VREF_P by label
 NOTES["pri_aux"].append((40.64, 256.54, "VIN MONITOR (primary side, monitoring only)\n"
                          "Ramp 0 -> 2.495 V in ~5 ms (Q9 ~24 uA into C82 47n C0G), reset ~20 us by U17/D7/C81/Q10\n"
-                         "U18: VINPWM_P high while RAMP > OVP_DIV  ->  U12 VI2 -> VO2 -> VIN_PWM -> PA2 (TIM15_CH1 PWM input)\n"
-                         "VIN = 50.36 V x (T_ramp - t_high) / T_ramp,  T_ramp = period - t_reset; calibrate once"))
+                         "U18: VINPWM_P high while RAMP < OVP_DIV (R110 hysteresis on the divider side)  ->  U12 VI2 -> VO2 -> VIN_PWM -> PA2 (TIM15_CH1 PWM input)\n"
+                         "VIN = 50.47 V x (t_high - t_reset) / (period - t_reset) - 0.20 V,  t_reset ~20 us; calibrate once"))
 for i, (r, net) in enumerate([("TP1", "VIN"), ("TP2", "GNDP"), ("TP3", "+10V_P"), ("TP4", "+5V_P")]):
     put(r, 284.48 + 12.7 * i, 152.4, 0 if net == "GNDP" else 180)
 

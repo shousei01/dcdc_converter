@@ -404,7 +404,7 @@ R("R80", "10k", "LLC_B", "GND", fp="R0402", block=B)
 # I (cont.) INPUT OVP: VIN > 50 V -> OVP_P high -> U12 ch1 -> VIN_OVP (PA15 / HRTIM1_FLT2)
 # --------------------------------------------------------------------------------------------
 B = "I_PRI"
-R("R81", "191k 0.1%", "VIN", "OVP_DIV", fp="R1206", block=B, note="OVP / VIN-monitor divider top: 2.495 V x (1+191k/10k) = 50.15 V trip; 0.1 % sets the VIN reading accuracy")
+R("R81", "191k 0.1%", "VIN", "OVP_DIV", fp="R1206", block=B, note="OVP / VIN-monitor divider top: OVP trips at 50.26 V rising, 49.83 V falling (R84, R110 included); 0.1 % sets the VIN reading accuracy")
 R("R82", "10k 0.1%", "OVP_DIV", "GNDP", fp="R0402", block=B)
 C("C79", "1n C0G", "OVP_DIV", "GNDP", fp="C0402", block=B, note="Noise filter, ~10 us")
 add("U15", "Comparator:LMV331", "LMV331IDBVR", "SOT23-5", {"1": "OVP_DIV", "2": "GNDP", "3": "VREF_P", "4": "OVP_P", "5": "+5V_P"}, B,
@@ -413,14 +413,15 @@ C("C80", "100n", "+5V_P", "GNDP", fp="C0402", block=B)
 R("R83", "10k", "+5V_P", "OVP_P", fp="R0402", block=B, note="Pull-up for open-drain output")
 R("R84", "2.2M", "OVP_P", "OVP_DIV", fp="R0402", block=B, note="Hysteresis ~0.4 V at VIN")
 add("U16", "Reference_Voltage:TL431DBZ", "TL431AIDBZR", "SOT23", {"1": "VREF_P", "2": "VREF_P", "3": "GNDP"}, B,
-    mpn="TL431AIDBZR (TI pinout: 1 K, 2 REF, 3 A)", note="2.495 V reference, 0.5 %")
+    mpn="TL431AIDBZR (TI pinout: 1 K, 2 REF, 3 A)", note="2.495 V reference, A grade = 1 % (TL431BIDBZR = 0.5 % drop-in)")
 R("R85", "1k", "+5V_P", "VREF_P", fp="R0402", block=B, note="TL431 bias 2.5 mA")
 
 # --------------------------------------------------------------------------------------------
 # I (cont.) VIN MONITOR: linear sawtooth 0 -> VREF_P (2.495 V), compared with OVP_DIV -> PWM -> U12 VI2 -> VO2 -> PA2
 #   ramp: PNP current source (~24 uA) into 47 nF C0G -> ~5 ms; U17 detects RAMP > VREF_P, D7/C81/R107 stretch the
-#   reset to ~20 us, Q10 empties C82. U18: output high while RAMP > OVP_DIV (R110 adds ~1 % fixed hysteresis).
-#   VIN = 2.495 V / 0.04954 x (T_ramp - t_high) / T_ramp, T_ramp = period - ~20 us. Monitoring only, ~200 Hz.
+#   reset to ~20 us, Q10 empties C82. U18: output high while RAMP < OVP_DIV; R110 hysteresis acts on the divider
+#   (low impedance), never on the ramp, so the ramp stays linear.
+#   VIN = 50.47 V x (t_high - t_reset) / (period - t_reset) - 0.20 V, t_reset ~20 us. Monitoring only, ~200 Hz.
 # --------------------------------------------------------------------------------------------
 R("R86", "56k 1%", "+5V_P", "PE_P", fp="R0402", block=B, note="Ramp current source emitter resistor (~24 uA)")
 R("R87", "10k 1%", "+5V_P", "PB_P", fp="R0402", block=B, note="PNP base bias 3.0 V")
@@ -432,16 +433,16 @@ add("U17", "Comparator:LMV331", "LMV331IDBVR", "SOT23-5", {"1": "RAMP_P", "2": "
     mpn="LMV331IDBVR", note="Ramp top detector: output released when RAMP > VREF_P")
 R("R106", "1k", "+5V_P", "RST_P", fp="R0402", block=B, note="Pull-up, charges the reset-hold cap fast")
 add("D7", "Device:D", "1N4148W", "SOD123", {"1": "GATE_P", "2": "RST_P"}, B, lcsc="C81598", mpn="1N4148W")
-C("C81", "1n", "GATE_P", "GNDP", fp="C0402", block=B, note="Reset hold ~20 us with R107")
-R("R107", "22k", "GATE_P", "GNDP", fp="R0402", block=B)
+C("C81", "220p C0G", "GATE_P", "GNDP", fp="C0402", block=B, note="Reset hold ~20 us with R107; small so the gate charges fully (0.2 us) before U17 lets go")
+R("R107", "100k", "GATE_P", "GNDP", fp="R0402", block=B)
 add("Q10", "Transistor_FET:2N7002", "2N7002", "SOT23", {"1": "GATE_P", "2": "GNDP", "3": "DIS_P"}, B,
     lcsc="C8545", mpn="2N7002", note="Ramp reset switch")
 R("R89", "22R", "DIS_P", "RAMP_P", fp="R0402", block=B, note="Limits discharge peak current")
 C("C83", "100n", "+5V_P", "GNDP", fp="C0402", block=B)
-R("R109", "10k", "RAMP_P", "RAMPS_P", fp="R0402", block=B, note="Series R for U18 hysteresis")
-add("U18", "Comparator:LMV331", "LMV331IDBVR", "SOT23-5", {"1": "RAMPS_P", "2": "GNDP", "3": "OVP_DIV", "4": "VINPWM_P", "5": "+5V_P"}, B,
-    mpn="LMV331IDBVR", note="PWM comparator: output high while RAMP > OVP_DIV")
-R("R110", "1M", "VINPWM_P", "RAMPS_P", fp="R0402", block=B, note="~1 % fixed hysteresis, stops chatter on the slow ramp")
+R("R109", "1k", "RAMP_P", "RAMPS_P", fp="R0402", block=B, note="Input protection series R; bias error < 0.25 mV")
+add("U18", "Comparator:LMV331", "LMV331IDBVR", "SOT23-5", {"1": "OVP_DIV", "2": "GNDP", "3": "RAMPS_P", "4": "VINPWM_P", "5": "+5V_P"}, B,
+    mpn="LMV331IDBVR", note="PWM comparator: output high while RAMP < OVP_DIV")
+R("R110", "4.7M", "VINPWM_P", "OVP_DIV", fp="R0402", block=B, note="~10 mV hysteresis on the divider side; does not load the ramp")
 R("R108", "10k", "+5V_P", "VINPWM_P", fp="R0402", block=B, note="Pull-up -> U12 VI2 (pin 4)")
 C("C84", "100n", "+5V_P", "GNDP", fp="C0402", block=B)
 

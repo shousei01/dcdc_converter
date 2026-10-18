@@ -1,5 +1,5 @@
-** Drc report for pcb4/final_d9.kicad_pcb **
-** Created on 2026-10-18 13:54:33 **
+** Drc report for pcb4/final_d10.kicad_pcb **
+** Created on 2026-10-18 14:19:41 **
 
 ** Found 199 DRC violations **
 [lib_footprint_issues]: The current configuration does not include the library 'Capacitor_SMD'.
