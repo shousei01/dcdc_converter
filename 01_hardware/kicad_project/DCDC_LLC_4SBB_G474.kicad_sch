@@ -255,7 +255,7 @@
       (reference "J1") (unit 1) (value "VIN 12-48V") (footprint "Connector_Phoenix_MSTB:PhoenixContact_MSTBA_2,5_2-G-5,08_1x02_P5.08mm_Horizontal")
     )
     (path "/cb771bb4-55cb-451b-8186-5d03464bd352/db4d7952-73e9-48e7-93c4-acf8301de55f"
-      (reference "F1") (unit 1) (value "7A") (footprint "Fuse:Fuse_2512_6332Metric")
+      (reference "F1") (unit 1) (value "7A 63V") (footprint "Fuse:Fuse_1206_3216Metric")
     )
     (path "/cb771bb4-55cb-451b-8186-5d03464bd352/83c5b57c-1583-422e-9f7d-93d124389d36"
       (reference "D1") (unit 1) (value "SMBJ51A") (footprint "Diode_SMD:D_SMB")
@@ -588,7 +588,7 @@
       (reference "D6") (unit 1) (value "SS110") (footprint "Diode_SMD:D_SMA")
     )
     (path "/9987ea22-c01c-4547-9dc0-67ac241efc33/ab08dabe-f355-4bc1-afae-1fcf5fabc4bd"
-      (reference "L3") (unit 1) (value "47u 1A") (footprint "Inductor_SMD:L_Bourns_SRP5030T")
+      (reference "L3") (unit 1) (value "47u 1A") (footprint "Inductor_SMD:L_Sunlord_SWPA5040S")
     )
     (path "/9987ea22-c01c-4547-9dc0-67ac241efc33/edf72694-a1a2-42d0-9fa7-becf229e5e79"
       (reference "R77") (unit 1) (value "120k 1%") (footprint "Resistor_SMD:R_0402_1005Metric")
@@ -1158,7 +1158,7 @@
       (reference "D2") (unit 1) (value "SS110") (footprint "Diode_SMD:D_SMA")
     )
     (path "/8aacc7fe-2f73-4742-8d0a-5bd866543ee1/bf1413a3-6b85-4275-81e3-6eb971a2bc9d"
-      (reference "L2") (unit 1) (value "47u 1A") (footprint "Inductor_SMD:L_Bourns_SRP5030T")
+      (reference "L2") (unit 1) (value "47u 1A") (footprint "Inductor_SMD:L_Sunlord_SWPA5040S")
     )
     (path "/8aacc7fe-2f73-4742-8d0a-5bd866543ee1/a173a465-35c3-4606-8db8-915193bd23cc"
       (reference "R18") (unit 1) (value "120k 1%") (footprint "Resistor_SMD:R_0402_1005Metric")

@@ -1,0 +1,12 @@
+L3 primary aux: VIN 12.0 V  load   147 mA  ripple   51 mA pp  peak  172 mA (Isat 1.1 A, margin  6.4x)  DCR loss  7.6 mW
+L3 primary aux: VIN 24.0 V  load   147 mA  ripple  177 mA pp  peak  235 mA (Isat 1.1 A, margin  4.7x)  DCR loss  7.6 mW
+L3 primary aux: VIN 48.0 V  load   147 mA  ripple  241 mA pp  peak  267 mA (Isat 1.1 A, margin  4.1x)  DCR loss  7.6 mW
+L3 primary aux: VIN 50.3 V  load   147 mA  ripple  244 mA pp  peak  268 mA (Isat 1.1 A, margin  4.1x)  DCR loss  7.6 mW
+L2 secondary aux: VIN 12.0 V  load   127 mA  ripple   51 mA pp  peak  153 mA (Isat 1.1 A, margin  7.2x)  DCR loss  5.7 mW
+L2 secondary aux: VIN 24.0 V  load   127 mA  ripple  177 mA pp  peak  216 mA (Isat 1.1 A, margin  5.1x)  DCR loss  5.7 mW
+L2 secondary aux: VIN 48.0 V  load   127 mA  ripple  241 mA pp  peak  248 mA (Isat 1.1 A, margin  4.4x)  DCR loss  5.7 mW
+L2 secondary aux: VIN 50.3 V  load   127 mA  ripple  244 mA pp  peak  249 mA (Isat 1.1 A, margin  4.4x)  DCR loss  5.7 mW
+F1: VIN 12.0 V  input 4.79 A =  68 % of 7 A (limit 5.25 A at 25 C) OK
+F1: VIN 24.0 V  input 2.28 A =  33 % of 7 A (limit 5.25 A at 25 C) OK
+F1: VIN 48.0 V  input 1.13 A =  16 % of 7 A (limit 5.25 A at 25 C) OK
+F1 voltage rating 63 V > OVP trip 50.26 V; surges above 63 V are clamped by D1 SMBJ51A (82 V at 7.3 A)

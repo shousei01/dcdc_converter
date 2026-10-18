@@ -18,6 +18,7 @@ FP = {
     "CP10x10": "Capacitor_SMD:CP_Elec_10x10.5",
     "L1770": "Inductor_SMD:L_Bourns_SRP1770TA_16.9x16.9mm",
     "L5030": "Inductor_SMD:L_Bourns_SRP5030T",
+    "L5040": "Inductor_SMD:L_Sunlord_SWPA5040S",
     "DFN5x6": "Package_TO_SOT_SMD:TDSON-8-1",
     "SOIC8": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
     "TX_PQ2620": "custom_fp:TX_PQ2620_12P",
@@ -35,6 +36,7 @@ FP = {
     "LED0603": "LED_SMD:LED_0603_1608Metric",
     "XTAL3225": "Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm",
     "FUSE2512": "Fuse:Fuse_2512_6332Metric",
+    "FUSE1206": "Fuse:Fuse_1206_3216Metric",
     "TB2_508": "Connector_Phoenix_MSTB:PhoenixContact_MSTBA_2,5_2-G-5,08_1x02_P5.08mm_Horizontal",
     "TP8": "custom_fp:TestPads_1x08_P2.54mm_D2.0mm",
     "SWD10": "Connector_PinHeader_1.27mm:PinHeader_2x05_P1.27mm_Vertical_SMD",
@@ -155,7 +157,8 @@ R("R17", "68k", "EN_AUX", "GND", fp="R0402", block=B)
 C("C23", "100n 25V", "CB_AUX", "SW_AUX", fp="C0402", block=B, note="LMR16006 boot cap")
 add("D2", "Device:D_Schottky", "SS110", "SMA", {"1": "SW_AUX", "2": "GND"}, B, lcsc="C224219", mpn="SS110",
     note="100 V 1 A Schottky catch diode")
-add("L2", "Device:L", "47u 1A", "L5030", {"1": "SW_AUX", "2": "+10V"}, B, note="47 uH, Isat >= 1 A, 5x5 mm shielded")
+add("L2", "Device:L", "47u 1A", "L5040", {"1": "SW_AUX", "2": "+10V"}, B, lcsc="C86617", mpn="SWPA5040S470MT",
+    note="47 uH, Isat >= 1 A, 5040 shielded (2nd source SRN5040-470M, NRS5040T470MMGK, NRSC5040-470M)")
 R("R18", "120k 1%", "+10V", "FB_AUX", fp="R0402", block=B, note="Vout = 0.765*(1+120k/10k) = 9.95 V")
 R("R19", "10k 1%", "FB_AUX", "GND", fp="R0402", block=B)
 C("C24", "10u 25V X5R", "+10V", "GND", fp="C0805", block=B)
@@ -314,7 +317,8 @@ R("R45", "1k", "LED_FLT_K", "LED_FLT", fp="R0402", block=B)
 B = "H_LLC"
 add("J1", "Connector_Generic:Conn_01x02", "VIN 12-48V", "TB2_508", {"1": "VIN_RAW", "2": "GNDP"}, B,
     mpn="KF2EDGR-5.08-2P", note="Input: 5.08 mm pluggable male header (mates KF2EDGK plug), 12 A. PRIMARY side")
-add("F1", "Device:Fuse", "7A", "FUSE2512", {"1": "VIN_RAW", "2": "VIN"}, B, note="Fast-acting 7 A chip fuse, >=63 V rating, 2512")
+add("F1", "Device:Fuse", "7A 63V", "FUSE1206", {"1": "VIN_RAW", "2": "VIN"}, B, lcsc="C206980", mpn="0458007.DR",
+    note="Fast-acting 7 A 63 V 1206 chip fuse (Littelfuse 0458007.DR; 2nd source Schurter 3413.0326.11)")
 add("D1", "Device:D_Zener", "SMBJ51A", "SMB", {"1": "VIN", "2": "GNDP"}, B, mpn="SMBJ51A",
     note="Unidirectional TVS, 51 V standoff, 82 V clamp; with F1 also clears reverse polarity")
 CP("C60", "47u 63V", "VIN", "GNDP", block=B, note="Primary bulk, low-ESR")
@@ -382,7 +386,7 @@ R("R75", "470k", "VIN", "EN_P", fp="R0603", block=B, note="Primary UVLO ~9.7 V")
 R("R76", "68k", "EN_P", "GNDP", fp="R0402", block=B)
 C("C71", "100n 25V", "CB_P", "SW_P", fp="C0402", block=B)
 add("D6", "Device:D_Schottky", "SS110", "SMA", {"1": "SW_P", "2": "GNDP"}, B, lcsc="C224219", mpn="SS110", note="100 V 1 A Schottky catch diode")
-add("L3", "Device:L", "47u 1A", "L5030", {"1": "SW_P", "2": "+10V_P"}, B)
+add("L3", "Device:L", "47u 1A", "L5040", {"1": "SW_P", "2": "+10V_P"}, B, lcsc="C86617", mpn="SWPA5040S470MT")
 R("R77", "120k 1%", "+10V_P", "FB_P", fp="R0402", block=B)
 R("R78", "10k 1%", "FB_P", "GNDP", fp="R0402", block=B)
 C("C72", "10u 25V X5R", "+10V_P", "GNDP", fp="C0805", block=B)
@@ -491,6 +495,66 @@ BLOCK_TITLES = {
     "F_CAN": "F  Isolated CAN - CA-IS3062VW (5 kVrms, integrated isolated supply)",
     "G_IO": "G  Address (6-bit DIP + header), programming pads + ARM 10-pin SWD, status LEDs",
 }
+
+# LCSC numbers checked in the JLCPCB parts library on 2026-10-18 (package, rating, stock) for the 5-board
+# assembly order. Applied to every part so the BOMs, schematic and PCB fields agree.
+JLC_LCSC = {
+    **dict.fromkeys(['FB1'], 'C1002'),
+    **dict.fromkeys(['C45'], 'C106259'),
+    **dict.fromkeys(['C81'], 'C107001'),
+    **dict.fromkeys(['C41', 'C42', 'C79'], 'C113780'),
+    **dict.fromkeys(['R84'], 'C11490'),
+    **dict.fromkeys(['R106', 'R109', 'R28', 'R38', 'R39', 'R40', 'R41', 'R42', 'R43', 'R44', 'R45', 'R85'], 'C11702'),
+    **dict.fromkeys(['R21', 'R23'], 'C122538'),
+    **dict.fromkeys(['D4'], 'C12624'),
+    **dict.fromkeys(['D3'], 'C14486'),
+    **dict.fromkeys(['C15', 'C18', 'C67'], 'C14663'),
+    **dict.fromkeys(['C29', 'C30', 'C31', 'C32', 'C33', 'C34', 'C37', 'C40', 'C43', 'C44', 'C46', 'C48', 'C50', 'C53', 'C54', 'C75', 'C77', 'C80', 'C83', 'C84'], 'C1525'),
+    **dict.fromkeys(['C10', 'C2', 'C21', 'C3', 'C4', 'C5', 'C61', 'C62', 'C63', 'C7', 'C70', 'C8', 'C9'], 'C153036'),
+    **dict.fromkeys(['C38', 'C39'], 'C1547'),
+    **dict.fromkeys(['C16', 'C19', 'C68', 'C69'], 'C15849'),
+    **dict.fromkeys(['C24', 'C25', 'C26', 'C49', 'C52', 'C72', 'C74'], 'C15850'),
+    **dict.fromkeys(['R25', 'R26'], 'C186137'),
+    **dict.fromkeys(['R22', 'R24'], 'C186154'),
+    **dict.fromkeys(['R82'], 'C190095'),
+    **dict.fromkeys(['C35'], 'C19666'),
+    **dict.fromkeys(['D1'], 'C20883337'),
+    **dict.fromkeys(['C47'], 'C22400107'),
+    **dict.fromkeys(['R110'], 'C227116'),
+    **dict.fromkeys(['D5'], 'C2286'),
+    **dict.fromkeys(['R62', 'R63'], 'C22939'),
+    **dict.fromkeys(['R10', 'R11', 'R4', 'R5', 'R68', 'R69'], 'C23164'),
+    **dict.fromkeys(['R16', 'R75'], 'C23178'),
+    **dict.fromkeys(['U16'], 'C23892'),
+    **dict.fromkeys(['C1', 'C11', 'C60'], 'C249664'),
+    **dict.fromkeys(['R27'], 'C25076'),
+    **dict.fromkeys(['R89'], 'C25092'),
+    **dict.fromkeys(['R107'], 'C25741'),
+    **dict.fromkeys(['R100', 'R101', 'R102', 'R103', 'R104', 'R105', 'R108', 'R12', 'R13', 'R14', 'R15', 'R19', 'R20', 'R29', 'R32', 'R33', 'R34', 'R35', 'R36', 'R37', 'R6', 'R64', 'R65', 'R66', 'R67', 'R7', 'R70', 'R71', 'R72', 'R73', 'R74', 'R78', 'R79', 'R8', 'R80', 'R83', 'R87', 'R9', 'R90', 'R91', 'R92', 'R93', 'R94', 'R95', 'R96', 'R97', 'R98', 'R99'], 'C25744'),
+    **dict.fromkeys(['R18', 'R77'], 'C25750'),
+    **dict.fromkeys(['R88'], 'C25756'),
+    **dict.fromkeys(['R86'], 'C25796'),
+    **dict.fromkeys(['TH1'], 'C2892547'),
+    **dict.fromkeys(['R1'], 'C2907507'),
+    **dict.fromkeys(['R30', 'R31'], 'C2933247'),
+    **dict.fromkeys(['CR1', 'CR2', 'CR3', 'CR4', 'CR5', 'CR6'], 'C2940749'),
+    **dict.fromkeys(['C17', 'C20', 'C23', 'C71'], 'C307331'),
+    **dict.fromkeys(['U15', 'U17', 'U18'], 'C34731'),
+    **dict.fromkeys(['R17', 'R76'], 'C36871'),
+    **dict.fromkeys(['C27', 'C73'], 'C45783'),
+    **dict.fromkeys(['RSH1'], 'C500718'),
+    **dict.fromkeys(['RS1'], 'C500738'),
+    **dict.fromkeys(['C28', 'C36', 'C51', 'C76', 'C85'], 'C52923'),
+    **dict.fromkeys(['C82'], 'C53134'),
+    **dict.fromkeys(['Q9'], 'C53444'),
+    **dict.fromkeys(['C55'], 'C53987'),
+    **dict.fromkeys(['R81'], 'C870479'),
+    **dict.fromkeys(['C12', 'C22', 'C6'], 'C88219'),
+    **dict.fromkeys(['C78'], 'C96123'),
+}
+for _p in P:
+    if _p.ref in JLC_LCSC:
+        _p.lcsc = JLC_LCSC[_p.ref]
 
 if __name__ == "__main__":
     refs = [p.ref for p in P]

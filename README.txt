@@ -8,10 +8,12 @@ DCDC converter - LLC (isolated) + 4-switch buck-boost, STM32G474RBT6          Re
   docs\            DCDC_Design_Notes.docx / .pdf (design notes: sizing, full scales, firmware notes, review),
                    schematic PDF, PCB layer PDF, DRC report, pin-map.xlsx (every MCU pin + all AFs + what we use),
                    T1_PQ2620_winding_guide.html (hand-winding guide, 2D/3D, dots), layout_review_layers.png
-  fabrication\     JLCPCB Gerber/drill zip, CPL (pick & place), JLCPCB BOM
+  fabrication\     JLCPCB Gerber/drill zip, CPL (pick & place), JLCPCB BOM;
+                   DCDC_JLC_BOM.csv / DCDC_JLC_CPL.csv = assembly upload files (LCSC numbers checked
+                   18 Oct; U1, T1, connectors, headers and SW1 are hand-soldered and left out)
   bom\             grouped BOM with prices / sources
 02_firmware        firmware workspace + README (pin map, clocks, ADC full scales, VIN monitor, OVP, start-up)
-03_calculations    loss / LLC sizing scripts (unchanged in Rev D)
+03_calculations    loss / LLC sizing scripts; aux_fuse_check.py checks L2/L3 and F1 (Rev D order prep)
 04_scripts         generator, routing and clean-up scripts that build this release
 
 Rev D changes
@@ -29,6 +31,10 @@ Rev D changes
     7.5 mm between pins 3 and 4, 25.4 mm row-to-row, 1.2 mm holes
   - JP1 is a 2x2 header that switches both legs of the CAN split termination
   - Silkscreen: VIN+/-, VOUT+/-, CAN_H / CAN_L / CAN_GND, JP1 shunt boxes, J7 notch + pin 1, DIP A0-A5 / ON=1
+  - F1 now a 1206 7 A 63 V chip fuse (Littelfuse 0458007.DR; 2nd source Schurter 3413.0326.11);
+    L2 / L3 now 5040 shielded 47 uH (Sunlord SWPA5040S470MT; 2nd source Bourns SRN5040-470M,
+    Taiyo Yuden NRS5040T470MMGK). EN_AUX re-routed, VIN track centred between the L3 pads.
+    Every part carries a JLCPCB-checked LCSC number (design.py JLC_LCSC) in the BOMs, schematic and PCB
   - Layout review (18 Oct): smaller switch-node pours, tighter gate loops, Kelvin taps, output pour,
     straightened routing, 5 mm ground stitching
   - JLCPCB compliance (4-layer, 2 oz outer): PTH pad-to-track >= 0.28 mm, inner hole-to-copper >= 0.3 mm,

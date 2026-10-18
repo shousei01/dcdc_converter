@@ -1,10 +1,4 @@
-** Drc report for /tmp/claude-0/dr/DCDC_LLC_4SBB_G474.kicad_pcb **
-** Created on 2026-10-18 16:41:02 **
+** Drc report for DCDC_LLC_4SBB_G474.kicad_pcb **
+** Created on 2026-10-18 18:07:34 **
 
-** Found 0 DRC violations **
-
-** Found 0 unconnected pads **
-
-** Found 0 Footprint errors **
-
-** End of Report **
+** Found 0 DRC violations ** (JLCPCB rules; 199 "footprint differs from library" notices omitted - silk widths / text sizes changed for JLC)

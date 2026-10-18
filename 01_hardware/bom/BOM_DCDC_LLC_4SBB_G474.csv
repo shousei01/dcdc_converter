@@ -1,38 +1,38 @@
 Designator,Qty,Value,MPN,LCSC,Footprint,DNP,Unit_USD,Ext_USD,Price_source,Note
-"C1,C11,C60",3,47u 63V,,,CP_Elec_10x10.5,,0.1,0.3,est,"Isolated bus bulk (LLC output / 4SBB input), low-ESR"
-"C2,C3,C4,C5,C7,C8,C9,C10,C21,C61,C62,C63,C70",13,2.2u 100V X7R,,,C_1210_3225Metric,,0.3626,4.714,"LCSC C55151 (Samsung, out of stock; cheaper 1210 100V X7R ~0.10 exist)","Bus hot-loop MLCC, place at Q1 drain / RS; also LLC output caps"
-"C6,C12",2,100n 100V X7R,,,C_0603_1608Metric,,0.03,0.06,est,
+"C1,C11,C60",3,47u 63V,,C249664,CP_Elec_10x10.5,,0.1,0.3,est,"Isolated bus bulk (LLC output / 4SBB input), low-ESR"
+"C2,C3,C4,C5,C7,C8,C9,C10,C21,C61,C62,C63,C70",13,2.2u 100V X7R,,C153036,C_1210_3225Metric,,0.3626,4.714,LCSC C153036 FS32X225K101EGG (C55151 Samsung out of stock),"Bus hot-loop MLCC, place at Q1 drain / RS; also LLC output caps"
+"C6,C12",2,100n 100V X7R,,C88219,C_0603_1608Metric,,0.03,0.06,est,
 "C13,C14",2,1n 100V DNP,,,C_0603_1608Metric,DNP,0.03,0,est,
-"C15,C18,C67",3,100n 25V X7R,,,C_0603_1608Metric,,0.003,0.009,est,Bootstrap cap
-"C16,C19,C68,C69",4,1u 25V X7R,,,C_0603_1608Metric,,0.03,0.12,est,Driver VDD decoupling at pin 1-7
-"C17,C20,C23,C71",4,100n 25V,,,C_0402_1005Metric,,0.003,0.012,est,
-C22,1,100n 100V,,,C_0603_1608Metric,,0.03,0.03,est,
-"C24,C25,C26,C72",4,10u 25V X5R,,,C_0805_2012Metric,,0.03,0.12,est,
-"C27,C73",2,22u 10V X5R,,,C_0805_2012Metric,,0.003,0.006,est,
-"C28,C36,C51,C76,C85",5,1u 10V,,,C_0402_1005Metric,,0.003,0.015,est,
-"C29,C30,C31,C32,C33,C34,C37,C40,C43,C44,C46,C48,C50,C53,C54,C75,C77,C80,C83,C84",20,100n,,,C_0402_1005Metric,,0.003,0.06,est,
-C35,1,4.7u 10V,,,C_0603_1608Metric,,0.003,0.003,est,
-"C38,C39",2,12p C0G,,,C_0402_1005Metric,,0.003,0.006,est,
-"C41,C42,C79",3,1n C0G,,,C_0402_1005Metric,,0.003,0.009,est,
-C45,1,470p C0G,,,C_0402_1005Metric,,0.003,0.003,est,Keep RC fast (~47 ns) for comparator OCP
-C47,1,10n C0G,,,C_0402_1005Metric,,0.003,0.003,est,
-"C49,C52,C74",3,10u 10V,,,C_0805_2012Metric,,0.003,0.009,est,
-C55,1,4.7n,,,C_0603_1608Metric,,0.003,0.003,est,
+"C15,C18,C67",3,100n 25V X7R,,C14663,C_0603_1608Metric,,0.003,0.009,est,Bootstrap cap
+"C16,C19,C68,C69",4,1u 25V X7R,,C15849,C_0603_1608Metric,,0.03,0.12,est,Driver VDD decoupling at pin 1-7
+"C17,C20,C23,C71",4,100n 25V,,C307331,C_0402_1005Metric,,0.003,0.012,est,
+C22,1,100n 100V,,C88219,C_0603_1608Metric,,0.03,0.03,est,
+"C24,C25,C26,C72",4,10u 25V X5R,,C15850,C_0805_2012Metric,,0.03,0.12,est,
+"C27,C73",2,22u 10V X5R,,C45783,C_0805_2012Metric,,0.003,0.006,est,
+"C28,C36,C51,C76,C85",5,1u 10V,,C52923,C_0402_1005Metric,,0.003,0.015,est,
+"C29,C30,C31,C32,C33,C34,C37,C40,C43,C44,C46,C48,C50,C53,C54,C75,C77,C80,C83,C84",20,100n,,C1525,C_0402_1005Metric,,0.003,0.06,est,
+C35,1,4.7u 10V,,C19666,C_0603_1608Metric,,0.003,0.003,est,
+"C38,C39",2,12p C0G,,C1547,C_0402_1005Metric,,0.003,0.006,est,
+"C41,C42,C79",3,1n C0G,,C113780,C_0402_1005Metric,,0.003,0.009,est,
+C45,1,470p C0G,,C106259,C_0402_1005Metric,,0.003,0.003,est,Keep RC fast (~47 ns) for comparator OCP
+C47,1,10n C0G,,C22400107,C_0402_1005Metric,,0.003,0.003,est,
+"C49,C52,C74",3,10u 10V,,C15850,C_0805_2012Metric,,0.003,0.009,est,
+C55,1,4.7n,,C53987,C_0603_1608Metric,,0.003,0.003,est,
 C56,1,2.2n 2kV DNP,,,C_Disc_D8.0mm_W5.0mm_P7.50mm,DNP,0.003,0,est,Optional Y-cap for EMI
 "C64,C65",2,1n 200V DNP,,,C_0805_2012Metric,DNP,0.003,0,est,
 C66,1,1n Y1 DNP,,,C_Disc_D8.0mm_W5.0mm_P7.50mm,DNP,0.15,0,est,Optional pri-sec Y-cap for EMI: must be Y1/Y2 safety-rated if fitted; else leave empty
-C78,1,47u 6.3V,,,C_1206_3216Metric,,0.05,0.05,est,VISO bulk (datasheet recommends 47 uF)
-C81,1,220p C0G,,,C_0402_1005Metric,,0.003,0.003,est,Reset hold ~20 us with R107; small so the gate charges fully (0.2 us) before U17 lets go
-C82,1,47n C0G 50V,,,C_0805_2012Metric,,0.003,0.003,est,Ramp capacitor - must be C0G (X7R bends the ramp)
-"CR1,CR2,CR3,CR4,CR5,CR6",6,100n 100V C0G,,,C_1206_3216Metric,,0.08,0.48,"est, 1206 C0G","Split resonant cap, upper half (3 x 100 nF)"
-D1,1,SMBJ51A,SMBJ51A,,D_SMB,,0.05,0.05,est,"Unidirectional TVS, 51 V standoff, 82 V clamp; with F1 also clears reverse polarity"
+C78,1,47u 6.3V,,C96123,C_1206_3216Metric,,0.05,0.05,est,VISO bulk (datasheet recommends 47 uF)
+C81,1,220p C0G,,C107001,C_0402_1005Metric,,0.003,0.003,est,Reset hold ~20 us with R107; small so the gate charges fully (0.2 us) before U17 lets go
+C82,1,47n C0G 50V,,C53134,C_0805_2012Metric,,0.003,0.003,est,Ramp capacitor - must be C0G (X7R bends the ramp)
+"CR1,CR2,CR3,CR4,CR5,CR6",6,100n 100V C0G,,C2940749,C_1206_3216Metric,,0.08,0.48,"est, 1206 C0G","Split resonant cap, upper half (3 x 100 nF)"
+D1,1,SMBJ51A,SMBJ51A,C20883337,D_SMB,,0.05,0.05,est,"Unidirectional TVS, 51 V standoff, 82 V clamp; with F1 also clears reverse polarity"
 "D2,D6",2,SS110,SS110,C224219,D_SMA,,0.03,0.06,est,100 V 1 A Schottky catch diode
-D3,1,NUP2105L,NUP2105LT1G,,SOT-23,,0.06,0.06,est,24 V CAN bus ESD/TVS
-D4,1,GREEN RUN,,,LED_0603_1608Metric,,0.01,0.01,est,
-D5,1,RED FAULT,,,LED_0603_1608Metric,,0.01,0.01,est,
+D3,1,NUP2105L,NUP2105LT1G,C14486,SOT-23,,0.06,0.06,est,24 V CAN bus ESD/TVS
+D4,1,GREEN RUN,,C12624,LED_0603_1608Metric,,0.01,0.01,est,
+D5,1,RED FAULT,,C2286,LED_0603_1608Metric,,0.01,0.01,est,
 D7,1,1N4148W,1N4148W,C81598,D_SOD-123,,0.0,0.0,?,
-F1,1,7A,,,Fuse_2512_6332Metric,,0.2,0.2,est,"Fast-acting 7 A chip fuse, >=63 V rating, 2512"
-FB1,1,600R@100MHz,,,L_0603_1608Metric,,0.01,0.01,est,VDDA filter
+F1,1,7A 63V,0458007.DR,C206980,Fuse_1206_3216Metric,,0.45,0.45,LCSC C206980 0458007.DR,Fast-acting 7 A 63 V 1206 chip fuse (Littelfuse 0458007.DR; 2nd source Schurter 3413.0326.11)
+FB1,1,600R@100MHz,,C1002,L_0603_1608Metric,,0.01,0.01,est,VDDA filter
 J1,1,VIN 12-48V,KF2EDGR-5.08-2P,,"PhoenixContact_MSTBA_2,5_2-G-5,08_1x02_P5.08mm_Horizontal",,0.25,0.25,est,"Input: 5.08 mm pluggable male header (mates KF2EDGK plug), 12 A. PRIMARY side"
 J2,1,VOUT 1.5-48V,KF2EDGR-5.08-2P,,"PhoenixContact_MSTBA_2,5_2-G-5,08_1x02_P5.08mm_Horizontal",,0.25,0.25,est,"Output: 5.08 mm pluggable male header, 12 A"
 J3,1,CAN A,2.54 mm 1x3 male pin header,,PinHeader_1x03_P2.54mm_Vertical,,0.04,0.04,est,CAN in
@@ -41,41 +41,41 @@ J5,1,ADDR HDR,,,PinHeader_1x06_P2.54mm_Vertical,,0.05,0.05,est,Shorting a pin to
 J7,1,ARM SWD 10,FTSH-105-01-L-DV-K or equiv.,,PinHeader_2x05_P1.27mm_Vertical_SMD,,0.4,0.4,"est, 2x5 1.27 mm SMD header","ARM Cortex Debug 10-pin, 1.27 mm (1 VTref, 2 SWDIO, 4 SWCLK, 6 SWO, 10 nRESET, 7 key)"
 JP1,1,TERM,,,PinHeader_2x02_P2.54mm_Vertical,,0.02,0.02,est,"2x2 header: fit 2 shunts (1-2 CANH, 3-4 CANL) on end-of-bus node; open = termination fully disconnected from both lines"
 L1,1,22u 23A sat,PSPMAA1770-220M-CGP,C49308184,L_Bourns_SRP1770TA_16.9x16.9mm,,1.0,1.0,"LCSC C49308184 $1.06@30, $0.91@300","22 uH, Isat 23 A, Irms 12 A, DCR 25 mOhm; alt Bourns SRP1770TA-220M (same footprint)"
-"L2,L3",2,47u 1A,,,L_Bourns_SRP5030T,,0.1,0.2,est,"47 uH, Isat >= 1 A, 5x5 mm shielded"
+"L2,L3",2,47u 1A,SWPA5040S470MT,C86617,L_Sunlord_SWPA5040S,,0.12,0.24,LCSC C86617 SWPA5040S470MT,"47 uH, Isat >= 1 A, 5040 shielded (2nd source SRN5040-470M, NRS5040T470MMGK, NRSC5040-470M)"
 "Q1,Q4",2,NCEP0140AG,NCEP0140AG,C503009,TDSON-8-1,,0.4,0.8,"LCSC C503009: $0.62@1, $0.286@1k -> ~0.40@100","Input leg high side: hard-switched in buck -> low Qgd part (100 V, 18 mOhm, 26 nC)"
 "Q2,Q3,Q5,Q6",4,NCEP0160AG,NCEP0160AG,C503012,TDSON-8-1,,0.7357,2.943,LCSC C503012,"Input leg low side: sync rectifier in buck at up to 5 A -> low Rds part (100 V, 8.5 mOhm)"
 "Q7,Q8",2,BSC160N15NS5,BSC160N15NS5,C459172,TDSON-8-1,,0.7523,1.505,LCSC C459172,"SR, 150 V (sees 2 x Vbus = 95 V at 48 V in), 16 mOhm, 19 nC"
-Q9,1,MMBT3906,MMBT3906,C2940,SOT-23,,0.0,0.0,?,Ramp current source
+Q9,1,MMBT3906,MMBT3906,C53444,SOT-23,,0.0,0.0,?,Ramp current source
 Q10,1,2N7002,2N7002,C8545,SOT-23,,0.0,0.0,?,Ramp reset switch
-R1,1,47k,,,R_1206_3216Metric,,0.003,0.003,est,Output pre-load / bleeder (49 mW at 48 V)
+R1,1,47k,,C2907507,R_1206_3216Metric,,0.003,0.003,est,Output pre-load / bleeder (49 mW at 48 V)
 "R2,R3",2,2R2 DNP,,,R_1206_3216Metric,DNP,0.003,0,est,
-"R4,R5,R10,R11,R68,R69",6,4R7,,,R_0603_1608Metric,,0.003,0.018,est,High-side gate resistor
-"R6,R7,R8,R9,R12,R13,R14,R15,R20,R32,R33,R34,R35,R36,R37,R64,R65,R66,R67,R70,R71,R72,R73,R74,R79,R80,R83,R90,R91,R92,R93,R94,R95,R96,R97,R98,R99,R100,R101,R102,R103,R104,R105,R108",44,10k,,,R_0402_1005Metric,,0.003,0.132,est,Gate-source pull-down
-"R16,R75",2,470k,,,R_0603_1608Metric,,0.003,0.006,est,EN divider: start ~9.7 V on the isolated bus
-"R17,R76",2,68k,,,R_0402_1005Metric,,0.003,0.006,est,
-"R18,R77",2,120k 1%,,,R_0402_1005Metric,,0.003,0.006,est,Vout = 0.765*(1+120k/10k) = 9.95 V
-"R19,R29,R78,R87",4,10k 1%,,,R_0402_1005Metric,,0.003,0.012,est,
-"R21,R23",2,100k 0.1%,,,R_0603_1608Metric,,0.02,0.04,est,Isolated bus ~= VIN (DCX ratio 1); FS 61.8 V at 3.0 V VREF+
-"R22,R24",2,5.1k 0.1%,,,R_0402_1005Metric,,0.02,0.04,est,
-"R25,R26",2,1k 0.1%,,,R_0402_1005Metric,,0.02,0.04,est,"IL zero = VREF+/2, ratiometric"
-R27,1,100R,,,R_0402_1005Metric,,0.003,0.003,est,
-"R28,R38,R39,R40,R41,R42,R43,R44,R45,R85,R106,R109",12,1k,,,R_0402_1005Metric,,0.003,0.036,est,
-"R30,R31",2,60.4R,,,R_0603_1608Metric,,0.003,0.006,est,"Split termination, enabled by JP1 (both jumpers)"
+"R4,R5,R10,R11,R68,R69",6,4R7,,C23164,R_0603_1608Metric,,0.003,0.018,est,High-side gate resistor
+"R6,R7,R8,R9,R12,R13,R14,R15,R20,R32,R33,R34,R35,R36,R37,R64,R65,R66,R67,R70,R71,R72,R73,R74,R79,R80,R83,R90,R91,R92,R93,R94,R95,R96,R97,R98,R99,R100,R101,R102,R103,R104,R105,R108",44,10k,,C25744,R_0402_1005Metric,,0.003,0.132,est,Gate-source pull-down
+"R16,R75",2,470k,,C23178,R_0603_1608Metric,,0.003,0.006,est,EN divider: start ~9.7 V on the isolated bus
+"R17,R76",2,68k,,C36871,R_0402_1005Metric,,0.003,0.006,est,
+"R18,R77",2,120k 1%,,C25750,R_0402_1005Metric,,0.003,0.006,est,Vout = 0.765*(1+120k/10k) = 9.95 V
+"R19,R29,R78,R87",4,10k 1%,,C25744,R_0402_1005Metric,,0.003,0.012,est,
+"R21,R23",2,100k 0.1%,,C122538,R_0603_1608Metric,,0.02,0.04,est,Isolated bus ~= VIN (DCX ratio 1); FS 61.8 V at 3.0 V VREF+
+"R22,R24",2,5.1k 0.1%,,C186154,R_0402_1005Metric,,0.02,0.04,est,
+"R25,R26",2,1k 0.1%,,C186137,R_0402_1005Metric,,0.02,0.04,est,"IL zero = VREF+/2, ratiometric"
+R27,1,100R,,C25076,R_0402_1005Metric,,0.003,0.003,est,
+"R28,R38,R39,R40,R41,R42,R43,R44,R45,R85,R106,R109",12,1k,,C11702,R_0402_1005Metric,,0.003,0.036,est,
+"R30,R31",2,60.4R,,C2933247,R_0603_1608Metric,,0.003,0.006,est,"Split termination, enabled by JP1 (both jumpers)"
 "R60,R61",2,4R7 DNP,,,R_1206_3216Metric,DNP,0.003,0,est,"SR snubber, fit only if ringing measured"
-"R62,R63",2,2R2,,,R_0603_1608Metric,,0.003,0.006,est,
-R81,1,191k 0.1%,,,R_1206_3216Metric,,0.02,0.02,est,"OVP / VIN-monitor divider top: OVP trips at 50.26 V rising, 49.83 V falling (R84, R110 included); 0.1 % sets the VIN reading accuracy"
-R82,1,10k 0.1%,,,R_0402_1005Metric,,0.02,0.02,est,
-R84,1,2.2M,,,R_0402_1005Metric,,0.003,0.003,est,Hysteresis ~0.4 V at VIN
-R86,1,56k 1%,,,R_0402_1005Metric,,0.003,0.003,est,Ramp current source emitter resistor (~24 uA)
-R88,1,15k 1%,,,R_0402_1005Metric,,0.003,0.003,est,
-R89,1,22R,,,R_0402_1005Metric,,0.003,0.003,est,Limits discharge peak current
-R107,1,100k,,,R_0402_1005Metric,,0.003,0.003,est,
-R110,1,4.7M,,,R_0402_1005Metric,,0.003,0.003,est,~10 mV hysteresis on the divider side; does not load the ramp
-RS1,1,4m 1% 2W,,,R_2512_6332Metric,,0.08,0.08,est,Bridge-return current sense (both low-side FET sources). Kelvin traces to U7. Low-ESL 2512 wide-terminal preferred
-RSH1,1,10m 1% 1W,,,R_2512_6332Metric,,0.05,0.05,est,"Output current shunt (CC loop), Kelvin to U8"
+"R62,R63",2,2R2,,C22939,R_0603_1608Metric,,0.003,0.006,est,
+R81,1,191k 0.1%,,C870479,R_1206_3216Metric,,0.02,0.02,est,"OVP / VIN-monitor divider top: OVP trips at 50.26 V rising, 49.83 V falling (R84, R110 included); 0.1 % sets the VIN reading accuracy"
+R82,1,10k 0.1%,,C190095,R_0402_1005Metric,,0.02,0.02,est,
+R84,1,2.2M,,C11490,R_0402_1005Metric,,0.003,0.003,est,Hysteresis ~0.4 V at VIN
+R86,1,56k 1%,,C25796,R_0402_1005Metric,,0.003,0.003,est,Ramp current source emitter resistor (~24 uA)
+R88,1,15k 1%,,C25756,R_0402_1005Metric,,0.003,0.003,est,
+R89,1,22R,,C25092,R_0402_1005Metric,,0.003,0.003,est,Limits discharge peak current
+R107,1,100k,,C25741,R_0402_1005Metric,,0.003,0.003,est,
+R110,1,4.7M,,C227116,R_0402_1005Metric,,0.003,0.003,est,~10 mV hysteresis on the divider side; does not load the ramp
+RS1,1,4m 1% 2W,,C500738,R_2512_6332Metric,,0.08,0.08,est,Bridge-return current sense (both low-side FET sources). Kelvin traces to U7. Low-ESL 2512 wide-terminal preferred
+RSH1,1,10m 1% 1W,,C500718,R_2512_6332Metric,,0.05,0.05,est,"Output current shunt (CC loop), Kelvin to U8"
 SW1,1,DIP-6,,,SW_DIP_SPSTx06_Slide_6.7x16.8mm_W8.61mm_P2.54mm_LowProfile,,0.25,0.25,est,ON = 0. Address = ~ADDR[5:0]
 T1,1,PQ2620 4:8+8,,,TX_PQ2620_12P,,2.5,2.5,"est, custom wound PQ2620 + bobbin, 1k qty","CUSTOM: PQ2620 N97/PC95, Np=4 (litz), Ns=8+8 centre-tap (TIW), Lm=50uH +/-10% (gapped), Llk=1.0uH +/-20% (is Lr), fr~205 kHz, 3 kVrms basic pri-sec, 10.1 A rms pri / 3.6 A rms per sec half"
-TH1,1,10k B3950,,,R_0603_1608Metric,,0.02,0.02,est,Place at hottest FET
+TH1,1,10k B3950,,C2892547,R_0603_1608Metric,,0.02,0.02,est,Place at hottest FET
 U1,1,STM32G474RBT6,STM32G474RBT6,C529413,LQFP-64_10x10mm_P0.5mm,,7.24,7.24,LCSC C529413 (out of stock; RET6 C521608 $10.24),Pin-compatible STM32G474RET6 (C521608) if RB is out of stock
 "U2,U3,U10",3,UCC27211DDAR,UCC27211DDAR,C141980,SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.3mm,,1.611,4.833,LCSC C141980,"120 V half-bridge driver, internal boot diode; 2nd source SLM27211CA-DG (C967931)"
 "U4,U13",2,LMR16006XDDCR,LMR16006XDDCR,C87080,SOT-23-6,,0.3556,0.711,LCSC C87080,"60 V, 0.6 A, 700 kHz buck"
@@ -85,7 +85,7 @@ U8,1,INA181A2IDBVR,INA181A2IDBVR,C2058784,SOT-23-6,,0.2407,0.241,LCSC C2058784 @
 U9,1,CA-IS3062VW,CA-IS3062VW,C5338808,SOIC-16W_7.5x10.3mm_P1.27mm,,2.5056,2.506,LCSC C5338808,5 kVrms isolated CAN with integrated isolated DC-DC; VCCL=3.3 V logic
 U11,1,UCC27524DR,UCC27524DR,C465729,SOIC-8_3.9x4.9mm_P1.27mm,,0.2143,0.214,LCSC C465729,Dual 5 A low-side driver for the SRs; EN low = body-diode rectification
 U12,1,CA-IS3642LVW,CA-IS3642LVW,C7422564,SOIC-16W_7.5x10.3mm_P1.27mm,,2.5056,2.506,LCSC C7422564,"5 kVrms isolator, 2 fwd + 2 rev, 650 mW isolated 3.3 V (SEL=GNDB) for the MCU; L = outputs default low"
-"U15,U17,U18",3,LMV331IDBVR,LMV331IDBVR,,SOT-23-5,,0.08,0.24,"est, LCSC LMV331 SOT-23-5 class",Open-drain comparator; output high (released) = OVP
-U16,1,TL431AIDBZR,"TL431AIDBZR (TI pinout: 1 K, 2 REF, 3 A)",,SOT-23,,0.03,0.03,est,"2.495 V reference, A grade = 1 % (TL431BIDBZR = 0.5 % drop-in)"
+"U15,U17,U18",3,LMV331IDBVR,LMV331IDBVR,C34731,SOT-23-5,,0.08,0.24,"est, LCSC LMV331 SOT-23-5 class",Open-drain comparator; output high (released) = OVP
+U16,1,TL431AIDBZR,"TL431AIDBZR (TI pinout: 1 K, 2 REF, 3 A)",C23892,SOT-23,,0.03,0.03,est,"2.495 V reference, A grade = 1 % (TL431BIDBZR = 0.5 % drop-in)"
 U19,1,REF3030AIDBZR,REF3030AIDBZR,C38423,SOT-23,,0.5,0.5,est,"ADC reference 3.000 V +/-0.2 %, 50 ppm/C (0-70 C); dropout 50 mV max, 25 mA out; VDDA min 3.13 V"
 Y1,1,16MHz 9pF,X322516MLB4SI,C13738,Crystal_SMD_3225-4Pin_3.2x2.5mm,,0.12,0.12,"est, 3225 crystal","16 MHz HSE, 9 pF load, ESR 50 Ohm; PLL /4 x85 /2 = 170 MHz"
