@@ -32,7 +32,7 @@ KF2EDGR-5.08-2P,J2,"PhoenixContact_MSTBA_2,5_2-G-5,08_1x02_P5.08mm_Horizontal",
 2.54 mm 1x3 male pin header,J4,PinHeader_1x03_P2.54mm_Vertical,
 ADDR HDR,J5,PinHeader_1x06_P2.54mm_Vertical,
 FTSH-105-01-L-DV-K or equiv.,J7,PinHeader_2x05_P1.27mm_Vertical_SMD,
-TERM,JP1,PinHeader_1x02_P2.54mm_Vertical,
+TERM,JP1,PinHeader_2x02_P2.54mm_Vertical,
 PSPMAA1770-220M-CGP,L1,L_Bourns_SRP1770TA_16.9x16.9mm,C49308184
 47u 1A,"L2,L3",L_Bourns_SRP5030T,
 NCEP0140AG,"Q1,Q4",TDSON-8-1,C503009

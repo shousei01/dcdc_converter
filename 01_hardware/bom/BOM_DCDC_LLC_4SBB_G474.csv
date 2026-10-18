@@ -36,7 +36,7 @@ J3,1,CAN A,2.54 mm 1x3 male pin header,,PinHeader_1x03_P2.54mm_Vertical,,0.04,0.
 J4,1,CAN B,2.54 mm 1x3 male pin header,,PinHeader_1x03_P2.54mm_Vertical,,0.04,0.04,est,CAN out (daisy-chain)
 J5,1,ADDR HDR,,,PinHeader_1x06_P2.54mm_Vertical,,0.05,0.05,est,Shorting a pin to GND (via harness) sets bit = 0; parallel with SW1
 J7,1,ARM SWD 10,FTSH-105-01-L-DV-K or equiv.,,PinHeader_2x05_P1.27mm_Vertical_SMD,,0.4,0.4,"est, 2x5 1.27 mm SMD header","ARM Cortex Debug 10-pin, 1.27 mm (1 VTref, 2 SWDIO, 4 SWCLK, 6 SWO, 10 nRESET, 7 key)"
-JP1,1,TERM,,,PinHeader_1x02_P2.54mm_Vertical,,0.02,0.02,est,Fit jumper on end-of-bus node
+JP1,1,TERM,,,PinHeader_2x02_P2.54mm_Vertical,,0.02,0.02,est,"2x2 header: fit 2 shunts (1-2 CANH, 3-4 CANL) on end-of-bus node; open = termination fully disconnected from both lines"
 L1,1,22u 23A sat,PSPMAA1770-220M-CGP,C49308184,L_Bourns_SRP1770TA_16.9x16.9mm,,1.0,1.0,"LCSC C49308184 $1.06@30, $0.91@300","22 uH, Isat 23 A, Irms 12 A, DCR 25 mOhm; alt Bourns SRP1770TA-220M (same footprint)"
 "L2,L3",2,47u 1A,,,L_Bourns_SRP5030T,,0.1,0.2,est,"47 uH, Isat >= 1 A, 5x5 mm shielded"
 "Q1,Q4",2,NCEP0140AG,NCEP0140AG,C503009,TDSON-8-1,,0.4,0.8,"LCSC C503009: $0.62@1, $0.286@1k -> ~0.40@100","Input leg high side: hard-switched in buck -> low Qgd part (100 V, 18 mOhm, 26 nC)"
@@ -55,7 +55,7 @@ R1,1,47k,,,R_1206_3216Metric,,0.003,0.003,est,Output pre-load / bleeder (49 mW a
 "R25,R26",2,1k 0.1%,,,R_0402_1005Metric,,0.02,0.04,est,
 R27,1,100R,,,R_0402_1005Metric,,0.003,0.003,est,
 "R28,R38,R39,R40,R41,R42,R43,R44,R45,R85",10,1k,,,R_0402_1005Metric,,0.003,0.03,est,
-"R30,R31",2,60.4R,,,R_0603_1608Metric,,0.003,0.006,est,"Split termination, enabled by JP1"
+"R30,R31",2,60.4R,,,R_0603_1608Metric,,0.003,0.006,est,"Split termination, enabled by JP1 (both jumpers)"
 "R60,R61",2,4R7 DNP,,,R_1206_3216Metric,DNP,0.003,0,est,"SR snubber, fit only if ringing measured"
 "R62,R63",2,2R2,,,R_0603_1608Metric,,0.003,0.006,est,
 R81,1,191k 1%,,,R_1206_3216Metric,,0.003,0.003,est,OVP divider top: 2.495 V x (1+191k/10k) = 50.15 V trip
