@@ -96,7 +96,7 @@ Ref,Val,Package,PosX,PosY,Rot,Side
 "J4","CAN","PinHeader_1x03_P2.54mm_Vertical",156.000000,-86.000000,0.000000,top
 "J5","ADDR","PinHeader_1x06_P2.54mm_Vertical",80.000000,-101.000000,90.000000,top
 "J7","SWD","PinHeader_2x05_P1.27mm_Vertical_SMD",126.000000,-98.000000,0.000000,top
-"JP1","TERM","PinHeader_2x02_P2.54mm_Vertical",146.880000,-89.570000,0.000000,top
+"JP1","TERM","PinHeader_2x02_P2.54mm_Vertical",146.880000,-94.650000,0.000000,top
 "L1","22u","L_Bourns_SRP1770TA_16.9x16.9mm",122.000000,-19.000000,0.000000,top
 "L2","47u","L_Bourns_SRP5030T",88.000000,-58.000000,0.000000,top
 "L3","47u","L_Bourns_SRP5030T",30.000000,-68.000000,0.000000,top
