@@ -44,17 +44,29 @@ code{background:color-mix(in srgb,var(--mute) 15%,transparent);padding:0 4px;bor
 <div class="card"><table>
 <tr><th>Item</th><th>Value</th><th>Notes</th></tr>
 <tr><td class="k">Core</td><td>PQ2620 pair, TDK N97 / PC95 or equivalent</td><td>Ae ≈ 119 mm², Bpk 63 mT at 48 V in — far from saturation</td></tr>
-<tr><td class="k">Bobbin</td><td>PQ2620 vertical, 12 pins (6 + 6)</td><td>Primary row and secondary row on <b>opposite</b> sides (isolation)</td></tr>
-<tr><td class="k"><span class="pill p">P</span> Primary</td><td><b>4 turns</b>, litz 0.1 mm × 200 strands (≈ 1.57 mm², Ø ≈ 2 mm)</td><td>10.1 A rms worst case (12 V in, full power). One layer. Start pins 1-2-3, finish 4-5-6</td></tr>
-<tr><td class="k"><span class="pill s1">S1</span> Secondary half A</td><td><b>8 turns</b>, TIW (triple-insulated) Ø 0.65 mm conductor</td><td>Start = pins 11-12 (SR_D2, dot), finish = centre tap pins 9-10</td></tr>
+<tr><td class="k">Bobbin</td><td>PQ2620 vertical 6 + 6 (vendor drawing): pins Ø0.70 mm, 3.8 mm pitch, 7.5 mm between pin 3 and 4, <b>25.4 mm row to row</b>, base 27 × 29 mm, height 20.8 mm</td><td>Winding width 9.5 mm between flanges, tube Ø14.1 mm, flange Ø20.8 mm → <b>≈ 3.3 mm radial build</b> available. Primary row and secondary row on opposite sides (isolation)</td></tr>
+<tr><td class="k"><span class="pill p">P</span> Primary</td><td><b>4 turns</b>, copper foil 0.15 mm × 8 mm (1.2 mm²), 25 µm polyimide between turns. Wire fallback: litz 0.1 mm × 100 (Ø ≈ 1.5 mm)</td><td>10.1 A rms worst case (12 V in, full power). One foil stack ≈ 0.7 mm thick. Start pins 1-2-3, finish 4-5-6. Litz Ø2 mm (0.1 × 200) does <b>not</b> fit together with the secondary – see §1b</td></tr>
+<tr><td class="k"><span class="pill s1">S1</span> Secondary half A</td><td><b>8 turns</b>, TIW (triple-insulated) 0.65 mm conductor (OD ≈ 0.85 mm)</td><td>Start = pins 11-12 (SR_D2, dot), finish = centre tap pins 9-10</td></tr>
 <tr><td class="k"><span class="pill s2">S2</span> Secondary half B</td><td><b>8 turns</b>, same TIW</td><td>Start = centre tap pins 9-10 (dot), finish = pins 7-8 (SR_D1)</td></tr>
-<tr><td class="k">Winding method</td><td>S1 and S2 wound <b>bifilar</b> (two wires in hand), 2 layers × 4 turns</td><td>Bifilar keeps both halves identical → equal SR currents</td></tr>
+<tr><td class="k">Winding method</td><td>S1 and S2 wound <b>bifilar</b> (two wires in hand), 2 layers × 4 turns (8 wires per layer = 6.8 mm of the 9.5 mm width)</td><td>Bifilar keeps both halves identical → equal SR currents</td></tr>
 <tr><td class="k">Direction</td><td>All windings the <b>same direction</b> (clockwise seen from the top of the bobbin)</td><td>Dots = start of each winding</td></tr>
 <tr><td class="k">Lm (primary, secondaries open)</td><td><b>50 µH ± 10 %</b> @ 100 kHz, 1 V</td><td>AL ≈ 3.1 µH/T² → small centre gap, ≈ 0.05 mm total (see §6)</td></tr>
 <tr><td class="k">Llk (primary, both secondaries shorted)</td><td><b>1.0 µH</b>, 0.7-1.4 µH usable</td><td>With Cr = 600 nF: fr = 1/(2π√(Llk·Cr)) → 245-170 kHz. Firmware runs at the measured fr</td></tr>
 <tr><td class="k">Ratio check</td><td>V(S1+S2) / V(P) = <b>4.0</b>, each half <b>2.0</b></td><td>VBUS ≈ VIN (half-bridge puts VIN/2 on the primary)</td></tr>
 <tr><td class="k">Hipot</td><td>3 kVrms 60 s, primary pins ↔ secondary pins</td><td>TIW carries the insulation; tape between layers is mechanical</td></tr>
 </table></div>
+
+<h2>1b. Does it fit? (vendor bobbin, radial build ≤ 3.3 mm)</h2>
+<div class="card"><table>
+<tr><th>Layer (inside → out)</th><th>Option A – foil primary (recommended)</th><th>Option B – all wire</th><th>Litz 0.1 × 200 (first guess)</th></tr>
+<tr><td>Primary 4 T</td><td>foil 0.15 × 8 mm + film: 0.70 mm</td><td>litz 0.1 × 100, Ø 1.5: 1.50 mm</td><td>litz Ø 2.0: 2.00 mm</td></tr>
+<tr><td>Tape P → S</td><td>0.05 mm</td><td>0.05 mm</td><td>0.05 mm</td></tr>
+<tr><td>Secondary 2 layers bifilar</td><td>TIW 0.65 (OD 0.85): 1.70 mm</td><td>TIW 0.55 (OD 0.75): 1.50 mm</td><td>TIW 0.65: 1.70 mm</td></tr>
+<tr><td>Tape between / outer</td><td>0.05 + 0.10 mm</td><td>0.05 + 0.10 mm</td><td>0.05 + 0.10 mm</td></tr>
+<tr><td class="k">Total vs 3.3 mm</td><td class="k">2.6 mm – fits</td><td class="k">3.2 mm – just fits, wind tight</td><td class="k" style="color:var(--warn)">3.9 mm – does not fit</td></tr>
+<tr><td>Current density @ 12 V in, full load</td><td>P 8.4 A/mm², S 10.7 A/mm²</td><td>P 12.9 A/mm², S 15 A/mm² (OK for bench tests at ≥ 24 V in)</td><td>–</td></tr>
+</table>
+<p class="mute">Winding width 9.5 mm: 4 foil turns are a stack (8 mm wide foil leaves 0.75 mm creepage each side); 4 litz turns Ø 1.5 = 6 mm; 8 TIW per layer × 0.85 = 6.8 mm. Leakage changes with the build: measure Llk and set fr in firmware from the measured value (§7). An extra tape layer between P and S raises Llk if it comes out low.</p></div>
 
 <h2>2. Electrical diagram with dots and pin numbers</h2>
 <div class="card">
@@ -101,7 +113,7 @@ code{background:color-mix(in srgb,var(--mute) 15%,transparent);padding:0 4px;bor
  <circle cx="210" cy="190" r="87" fill="none" stroke="var(--s2)" stroke-width="5" opacity=".8"/>
  <path d="M300,190 A90 90 0 0 1 210,280" fill="none" stroke="var(--ink)" stroke-width="2" marker-end="url(#ar2)"/>
  <defs><marker id="ar2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="var(--ink)"/></marker></defs>
- <text x="255" y="300" font-size="12">clockwise</text>
+ <text x="300" y="262" font-size="12">clockwise</text>
  <!-- pins: footprint x -11.35,-7.55,-3.75,3.75,7.55,11.35 -> scale 13px/mm around 210 -->
  <g font-size="12" text-anchor="middle">
   <!-- primary row (top) -->
@@ -164,7 +176,7 @@ code{background:color-mix(in srgb,var(--mute) 15%,transparent);padding:0 4px;bor
  </g>
  <!-- labels -->
  <g font-size="13">
-  <line x1="452" y1="200" x2="560" y2="262" stroke="var(--mute)"/><text x="565" y="266">Layer 1: P, 4 T litz (inner)</text>
+  <line x1="452" y1="200" x2="560" y2="262" stroke="var(--mute)"/><text x="565" y="266">Layer 1: P, 4 T foil or litz (inner)</text>
   <line x1="467" y1="70" x2="560" y2="20" stroke="var(--mute)"/><text x="565" y="22">1 layer polyimide tape</text>
   <line x1="489" y1="110" x2="560" y2="96" stroke="var(--mute)"/><text x="565" y="100">Layers 2-3: S1+S2 bifilar, 4 + 4 T</text>
   <line x1="510" y1="160" x2="560" y2="170" stroke="var(--mute)"/><text x="565" y="174">2 layers outer tape</text>
@@ -184,7 +196,7 @@ code{background:color-mix(in srgb,var(--mute) 15%,transparent);padding:0 4px;bor
 <h2>6. Winding procedure</h2>
 <div class="card"><ol>
 <li><b>Prepare.</b> Mark pin 1 on the bobbin. Decide the winding direction: hold the bobbin with the pins pointing <b>down</b> and look from the top — every winding goes <b>clockwise</b>.</li>
-<li><b>Primary (4 T).</b> Strip and tin the litz, solder the start to <b>pin 1</b> (bridge 1-2-3 afterwards). Wind <b>4 turns</b> clockwise in one even layer. Count out loud — count each time the wire passes the pin-1 side. Bring the finish down to <b>pin 4</b> (bridge 4-5-6).</li>
+<li><b>Primary (4 T).</b> <i>Foil:</i> cut 0.15 × 8 mm copper foil, solder a short tinned wire tab (or a strip of litz) across the start end and take it to <b>pin 1</b> (bridge 1-2-3). Lay a 25 µm polyimide strip on the foil so turns are insulated from each other, wind <b>4 turns</b> clockwise, centred in the 9.5 mm width, then a finish tab to <b>pin 4</b> (bridge 4-5-6). Round off the foil corners so they cannot cut the tape. <i>Litz (option B):</i> start on pin 1, 4 turns clockwise in one layer, finish to pin 4. Count each time the conductor passes the pin-1 side.</li>
 <li><b>Tape.</b> One layer of polyimide (Kapton) tape over the primary.</li>
 <li><b>Secondary (bifilar 8 T).</b> Take two TIW wires together, mark one <span class="pill s1">S1</span> (e.g. a red sleeve) and the other <span class="pill s2">S2</span>. Solder the start of S1 to <b>pin 11</b> (bridge 12) and the start of S2 to <b>pin 9</b> (bridge 10). Wind both together <b>clockwise</b>, 4 turns per layer, 2 layers = <b>8 turns</b>. Tape between the two layers.</li>
 <li><b>Finish the secondary.</b> S1 finish → <b>pin 10</b> (centre tap, joins S2's start). S2 finish → <b>pin 7</b> (bridge 8). The pins on the centre tap now carry S1-finish + S2-start: that is the series-aiding joint.</li>
@@ -211,12 +223,12 @@ code{background:color-mix(in srgb,var(--mute) 15%,transparent);padding:0 4px;bor
 <div class="card"><table>
 <tr><th>Item</th><th>Suggestion</th></tr>
 <tr><td>Core</td><td>PQ26/20 pair, N97 / PC95 / 3C95 (ungapped + spacer, or one half gapped for AL ≈ 3150 nH)</td></tr>
-<tr><td>Bobbin</td><td>PQ26/20 vertical 12-pin (6 + 6); confirm pin pitch 3.8 mm / 7.5 mm gap and measure the row-to-row distance — tell me the value and I'll update the footprint (currently 22.5 mm)</td></tr>
-<tr><td>Primary wire</td><td>Litz 0.1 mm × 200 (Ø ≈ 2 mm); fallback: 4 × 0.6 mm enamelled wire in parallel, or 0.1 mm × 8 mm copper foil</td></tr>
-<tr><td>Secondary wire</td><td>TIW, 0.65 mm conductor (Furukawa TEX-E or similar), ≈ 2.5 m total</td></tr>
+<tr><td>Bobbin</td><td>PQ2620 vertical 6 + 6 (your vendor drawing). PCB footprint updated: 25.4 mm row to row, Ø1.1 mm holes for the Ø0.70 mm pins, 27 × 29 mm outline</td></tr>
+<tr><td>Primary</td><td>Copper foil 0.15 mm × 8 mm, ≈ 0.4 m (+ 25 µm polyimide film 9 mm wide), or litz 0.1 mm × 100, ≈ 0.4 m</td></tr>
+<tr><td>Secondary wire</td><td>TIW 0.65 mm conductor (OD ≈ 0.85 mm, Furukawa TEX-E or similar), ≈ 1.2 m per half, 2.5 m total; option B: TIW 0.55 mm</td></tr>
 <tr><td>Tape</td><td>Polyimide (Kapton) 10 mm wide, 25 µm spacer film for the gap</td></tr>
 </table>
-<p class="mute">Winding width of a PQ26/20 bobbin is ≈ 9-10 mm: 4 × litz (Ø ≈ 2 mm) and 4 bifilar TIW turns (Ø ≈ 0.9 mm) per layer both fit. Check your bobbin and spread turns evenly across the width.</p>
+<p class="mute">Bobbin from the vendor drawing: winding width 9.5 mm, radial space ≈ 3.3 mm (tube Ø14.1 to flange Ø20.8). See §1b for the build-up check. Height with core and clip ≈ 21-22 mm above the board.</p>
 </div>
 </main>
 
