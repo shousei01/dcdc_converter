@@ -47,7 +47,8 @@ if errs: sys.exit(1)
 
 # ---- isolation check: only T1, U12 (isolator) and the DNP Y-cap may join primary and secondary nets
 PRI = {"OVP_DIV", "OVP_P", "VREF_P", "VIN_RAW", "VIN", "GNDP", "HB_SW", "CR_MID", "G5", "G6", "HBP", "HOP", "LOP", "LLC_HI_P", "LLC_LO_P",
-       "+10V_P", "+5V_P", "CB_P", "FB_P", "EN_P", "SW_P"}
+       "+10V_P", "+5V_P", "CB_P", "FB_P", "EN_P", "SW_P",
+       "PE_P", "PB_P", "RAMP_P", "RAMPS_P", "RST_P", "GATE_P", "DIS_P", "VINPWM_P"}
 BRIDGES = {"T1", "U12", "C66"}
 iso_err = 0
 for p in D.P:

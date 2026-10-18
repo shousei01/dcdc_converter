@@ -227,6 +227,30 @@ NOTES["pri_aux"] = [(124.46, 152.4, "INPUT OVP (primary side)\n"
                                      "Hysteresis ~0.4 V (R84 2.2M)\n"
                                      "OVP_P high = over-voltage -> U12 VI1 -> VO1\n"
                                      "-> VIN_OVP -> PA15 (HRTIM1_FLT2 / EXTI15)")]
+# --- VIN monitor PWM (pri_aux sheet, bottom) ---
+put("R87", 76.2, 208.28)             # base bias top
+put("R88", 76.2, 228.6)              # base bias bottom
+put("R86", 96.52, 203.2)             # emitter resistor
+put("Q9", 93.98, 220.98, 0)          # PNP current source
+put("C82", 111.76, 236.22)           # ramp cap (C0G)
+put("R89", 124.46, 228.6)            # discharge series R
+put("Q10", 129.54, 243.84)           # reset NMOS
+put("U17", 152.4, 220.98)            # top detector
+put("R106", 170.18, 208.28)          # pull-up
+put("D7", 180.34, 223.52, 180)       # to hold cap
+put("C81", 190.5, 236.22)            # hold cap
+put("R107", 200.66, 236.22)          # hold discharge
+put("C83", 157.48, 241.3)            # U17 decoupling
+put("R109", 223.52, 218.44, 90)      # ramp series R
+put("U18", 246.38, 220.98)           # PWM comparator
+put("R110", 246.38, 205.74, 90)      # hysteresis
+put("R108", 266.7, 208.28)           # pull-up -> U12 VI2
+put("C84", 254.0, 241.3)             # U18 decoupling
+NOWIRE |= {("R109", "1"), ("U18", "3"), ("U12", "4"), ("U17", "3")}   # RAMP_P / OVP_DIV / VINPWM_P / VREF_P by label
+NOTES["pri_aux"].append((40.64, 256.54, "VIN MONITOR (primary side, monitoring only)\n"
+                         "Ramp 0 -> 2.495 V in ~5 ms (Q9 ~24 uA into C82 47n C0G), reset ~20 us by U17/D7/C81/Q10\n"
+                         "U18: VINPWM_P high while RAMP > OVP_DIV  ->  U12 VI2 -> VO2 -> VIN_PWM -> PA2 (TIM15_CH1 PWM input)\n"
+                         "VIN = 50.36 V x (T_ramp - t_high) / T_ramp,  T_ramp = period - t_reset; calibrate once"))
 for i, (r, net) in enumerate([("TP1", "VIN"), ("TP2", "GNDP"), ("TP3", "+10V_P"), ("TP4", "+5V_P")]):
     put(r, 284.48 + 12.7 * i, 152.4, 0 if net == "GNDP" else 180)
 
@@ -255,7 +279,7 @@ def _pulldowns():
     pins = {sp.number: sp for sp in G0.all_pins(sym)}
     ux, uy = PLACE["U1"][0], PLACE["U1"][1]
     for p in D.P:
-        if not (p.block == "D_MCU" and p.pins.get("1", "").startswith("SP_")):
+        if not (p.block == "D_MCU" and (p.pins.get("1", "").startswith("SP_") or p.pins.get("1", "") == "VIN_PWM")):
             continue
         num = next(k for k, v in u1.pins.items() if v == p.pins["1"])
         sp = pins[num]
@@ -271,5 +295,6 @@ def _pulldowns():
 
 
 _pulldowns()
-NOTES["mcu"] = [(129.54, 203.2, "Unused GPIOs (PC13-15, PA2-4, PA7, PA10, PB2, PB4, PB5, PB10, PC6, PC7, PC12, PD2):\n"
-                                 "10k pull-down to GND each (R90-R105). PA4 is kept free for DAC1_OUT1 (Test_pin_DAC).")]
+NOTES["mcu"] = [(129.54, 203.2, "Unused GPIOs (PC13-15, PA3-4, PA7, PA10, PB2, PB4, PB5, PB10, PC6, PC7, PC12, PD2):\n"
+                                 "10k pull-down to GND each (R90-R105). PA4 is kept free for DAC1_OUT1 (Test_pin_DAC).\n"
+                                 "PA2 = VIN_PWM (TIM15_CH1 PWM input, VIN monitor from the primary); R93 is its pull-down.")]

@@ -25,6 +25,7 @@ FP = {
     "SOIC16W": "Package_SO:SOIC-16W_7.5x10.3mm_P1.27mm",
     "SOT23-6": "Package_TO_SOT_SMD:SOT-23-6",
     "SOT23": "Package_TO_SOT_SMD:SOT-23",
+    "SOD123": "Diode_SMD:D_SOD-123",
     "SOT23-5": "Package_TO_SOT_SMD:SOT-23-5",
     "SOT223": "Package_TO_SOT_SMD:SOT-223-3_TabPin2",
     "LQFP64": "Package_QFP:LQFP-64_10x10mm_P0.5mm",
@@ -386,8 +387,8 @@ add("U14", "Regulator_Linear:AMS1117-5.0", "AMS1117-5.0", "SOT223", {"1": "GNDP"
     lcsc="C6187", mpn="AMS1117-5.0", note="5 V for the isolator (about 0.6 W in)")
 C("C73", "22u 10V X5R", "+5V_P", "GNDP", fp="C0805", block=B)
 add("U12", "custom:CA-IS3642LVW", "CA-IS3642LVW", "SOIC16W",
-    {"1": "+5V_P", "2": "GNDP", "3": "OVP_P", "4": "GNDP", "5": "LLC_HI_P", "6": "LLC_LO_P", "7": "+5V_P", "8": "GNDP",
-     "9": "GND", "10": "GND", "11": "LLC_B", "12": "LLC_A", "13": "NC", "14": "VIN_OVP", "15": "GND", "16": "+3V3"}, B,
+    {"1": "+5V_P", "2": "GNDP", "3": "OVP_P", "4": "VINPWM_P", "5": "LLC_HI_P", "6": "LLC_LO_P", "7": "+5V_P", "8": "GNDP",
+     "9": "GND", "10": "GND", "11": "LLC_B", "12": "LLC_A", "13": "VIN_PWM", "14": "VIN_OVP", "15": "GND", "16": "+3V3"}, B,
     lcsc="C7422564", mpn="CA-IS3642LVW",
     note="5 kVrms isolator, 2 fwd + 2 rev, 650 mW isolated 3.3 V (SEL=GNDB) for the MCU; L = outputs default low")
 C("C74", "10u 10V", "+5V_P", "GNDP", fp="C0805", block=B)
@@ -403,8 +404,8 @@ R("R80", "10k", "LLC_B", "GND", fp="R0402", block=B)
 # I (cont.) INPUT OVP: VIN > 50 V -> OVP_P high -> U12 ch1 -> VIN_OVP (PA15 / HRTIM1_FLT2)
 # --------------------------------------------------------------------------------------------
 B = "I_PRI"
-R("R81", "191k 1%", "VIN", "OVP_DIV", fp="R1206", block=B, note="OVP divider top: 2.495 V x (1+191k/10k) = 50.15 V trip")
-R("R82", "10k 1%", "OVP_DIV", "GNDP", fp="R0402", block=B)
+R("R81", "191k 0.1%", "VIN", "OVP_DIV", fp="R1206", block=B, note="OVP / VIN-monitor divider top: 2.495 V x (1+191k/10k) = 50.15 V trip; 0.1 % sets the VIN reading accuracy")
+R("R82", "10k 0.1%", "OVP_DIV", "GNDP", fp="R0402", block=B)
 C("C79", "1n C0G", "OVP_DIV", "GNDP", fp="C0402", block=B, note="Noise filter, ~10 us")
 add("U15", "Comparator:LMV331", "LMV331IDBVR", "SOT23-5", {"1": "OVP_DIV", "2": "GNDP", "3": "VREF_P", "4": "OVP_P", "5": "+5V_P"}, B,
     mpn="LMV331IDBVR", note="Open-drain comparator; output high (released) = OVP")
@@ -416,15 +417,44 @@ add("U16", "Reference_Voltage:TL431DBZ", "TL431AIDBZR", "SOT23", {"1": "VREF_P",
 R("R85", "1k", "+5V_P", "VREF_P", fp="R0402", block=B, note="TL431 bias 2.5 mA")
 
 # --------------------------------------------------------------------------------------------
+# I (cont.) VIN MONITOR: linear sawtooth 0 -> VREF_P (2.495 V), compared with OVP_DIV -> PWM -> U12 VI2 -> VO2 -> PA2
+#   ramp: PNP current source (~24 uA) into 47 nF C0G -> ~5 ms; U17 detects RAMP > VREF_P, D7/C81/R107 stretch the
+#   reset to ~20 us, Q10 empties C82. U18: output high while RAMP > OVP_DIV (R110 adds ~1 % fixed hysteresis).
+#   VIN = 2.495 V / 0.04954 x (T_ramp - t_high) / T_ramp, T_ramp = period - ~20 us. Monitoring only, ~200 Hz.
+# --------------------------------------------------------------------------------------------
+R("R86", "56k 1%", "+5V_P", "PE_P", fp="R0402", block=B, note="Ramp current source emitter resistor (~24 uA)")
+R("R87", "10k 1%", "+5V_P", "PB_P", fp="R0402", block=B, note="PNP base bias 3.0 V")
+R("R88", "15k 1%", "PB_P", "GNDP", fp="R0402", block=B)
+add("Q9", "Transistor_BJT:MMBT3906", "MMBT3906", "SOT23", {"1": "PB_P", "2": "PE_P", "3": "RAMP_P"}, B,
+    lcsc="C2940", mpn="MMBT3906", note="Ramp current source")
+C("C82", "47n C0G 50V", "RAMP_P", "GNDP", fp="C0805", block=B, note="Ramp capacitor - must be C0G (X7R bends the ramp)")
+add("U17", "Comparator:LMV331", "LMV331IDBVR", "SOT23-5", {"1": "RAMP_P", "2": "GNDP", "3": "VREF_P", "4": "RST_P", "5": "+5V_P"}, B,
+    mpn="LMV331IDBVR", note="Ramp top detector: output released when RAMP > VREF_P")
+R("R106", "1k", "+5V_P", "RST_P", fp="R0402", block=B, note="Pull-up, charges the reset-hold cap fast")
+add("D7", "Device:D", "1N4148W", "SOD123", {"1": "GATE_P", "2": "RST_P"}, B, lcsc="C81598", mpn="1N4148W")
+C("C81", "1n", "GATE_P", "GNDP", fp="C0402", block=B, note="Reset hold ~20 us with R107")
+R("R107", "22k", "GATE_P", "GNDP", fp="R0402", block=B)
+add("Q10", "Transistor_FET:2N7002", "2N7002", "SOT23", {"1": "GATE_P", "2": "GNDP", "3": "DIS_P"}, B,
+    lcsc="C8545", mpn="2N7002", note="Ramp reset switch")
+R("R89", "22R", "DIS_P", "RAMP_P", fp="R0402", block=B, note="Limits discharge peak current")
+C("C83", "100n", "+5V_P", "GNDP", fp="C0402", block=B)
+R("R109", "10k", "RAMP_P", "RAMPS_P", fp="R0402", block=B, note="Series R for U18 hysteresis")
+add("U18", "Comparator:LMV331", "LMV331IDBVR", "SOT23-5", {"1": "RAMPS_P", "2": "GNDP", "3": "OVP_DIV", "4": "VINPWM_P", "5": "+5V_P"}, B,
+    mpn="LMV331IDBVR", note="PWM comparator: output high while RAMP > OVP_DIV")
+R("R110", "1M", "VINPWM_P", "RAMPS_P", fp="R0402", block=B, note="~1 % fixed hysteresis, stops chatter on the slow ramp")
+R("R108", "10k", "+5V_P", "VINPWM_P", fp="R0402", block=B, note="Pull-up -> U12 VI2 (pin 4)")
+C("C84", "100n", "+5V_P", "GNDP", fp="C0402", block=B)
+
+# --------------------------------------------------------------------------------------------
 # D (cont.) unused MCU pins: 10k to GND each
 # --------------------------------------------------------------------------------------------
 B = "D_MCU"
 UNUSED = [("2", "PC13"), ("3", "PC14"), ("4", "PC15"), ("14", "PA2"), ("17", "PA3"), ("18", "PA4"), ("21", "PA7"), ("26", "PB2"),
           ("30", "PB10"), ("38", "PC6"), ("39", "PC7"), ("44", "PA10"), ("54", "PC12"), ("55", "PD2"), ("57", "PB4"), ("58", "PB5")]
 for i, (pin, port) in enumerate(UNUSED):
-    n = f"SP_{port}"
+    n = "VIN_PWM" if port == "PA2" else f"SP_{port}"
     mcu[pin] = n
-    R(f"R{90 + i}", "10k", n, "GND", fp="R0402", block=B, note=f"Unused {port} pull-down" + (" (PA4 reserved for DAC1_OUT1)" if port == "PA4" else ""))
+    R(f"R{90 + i}", "10k", n, "GND", fp="R0402", block=B, note=("VIN_PWM pull-down (PA2 = TIM15_CH1 PWM input)" if port == "PA2" else f"Unused {port} pull-down" + (" (PA4 reserved for DAC1_OUT1)" if port == "PA4" else "")))
 
 # --------------------------------------------------------------------------------------------
 # T. TEST POINTS (rails and filtered analog nodes only; no switch nodes / gates / high-Z dividers)

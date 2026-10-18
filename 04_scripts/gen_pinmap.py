@@ -51,6 +51,8 @@ USE = {
     "SWO": ("SYS_JTDO-SWO", "AF0 (reset default)", "Out", "J7.6 trace output"),
     "VIN_OVP": ("HRTIM1_FLT2 (alt.: GPIO EXTI15)", "AF13", "In", "Rev D: primary input OVP, LMV331 + TL431 trip 50.2 V, through U12 VI1->VO1; "
                 "high = over-voltage. Configure FLT2 active-high so the HRTIM shuts all outputs in hardware"),
+    "VIN_PWM": ("TIM15_CH1 (PWM input mode)", "AF9", "In", "Rev D: isolated VIN monitor. Primary ramp/comparator PWM (~200 Hz) through U12 VI2->VO2; "
+                "10k pull-down (R93). VIN = 50.36 V x (T_ramp - t_high) / T_ramp, T_ramp = period - ~20 us; monitor only"),
     "LED_FLT": ("GPIO output", "Output push-pull", "Out", "Red FAULT LED D5 via 1k, active low"),
     "LED_RUN": ("GPIO output", "Output push-pull", "Out", "Green RUN LED D4 via 1k, active low"),
     "SR_EN": ("GPIO output", "Output push-pull", "Out", "UCC27524 ENA/ENB, high = SR drive enabled; 10k pull-downs keep it off at reset"),
