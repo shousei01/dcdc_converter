@@ -134,6 +134,21 @@ CUSTOM = {
         right=[("16", "VISO", "power_out"), ("10", "SEL", "input"), None, ("14", "VO1", "output"), ("13", "VO2", "output"),
                ("12", "VI3", "input"), ("11", "VI4", "input"), None, ("9", "GNDB", "power_out"), ("15", "GNDB", "passive")],
         width=17.78, fp=D.FP["SOIC16W"], desc="5 kVrms quad isolator (2 fwd / 2 rev) with 650 mW isolated DC-DC"),
+    "CA-IS3742": custom_symbol(
+        "CA-IS3742",
+        left=[("1", "VDDA", "power_in"), ("7", "ENA", "input"), None, ("3", "VI1", "input"), ("4", "VI2", "input"),
+              ("5", "VO3", "output"), ("6", "VO4", "output"), None, ("2", "GNDA", "power_in"), ("8", "GNDA", "passive")],
+        right=[("16", "VDDB", "power_in"), ("10", "ENB", "input"), None, ("14", "VO1", "output"), ("13", "VO2", "output"),
+               ("12", "VI3", "input"), ("11", "VI4", "input"), None, ("9", "GNDB", "power_in"), ("15", "GNDB", "passive")],
+        width=17.78, fp=D.FP["SOIC16W"], desc="5 kVrms quad digital isolator, 2 fwd / 2 rev, default-low (L) outputs"),
+    "PA3855": custom_symbol(
+        "PA3855",
+        left=[("1", "P1*", "passive"), None, ("3", "P3", "passive"), None, ("4", "AUX4*", "passive"), None,
+              ("5", "AUX5", "passive")],
+        right=[("9", "S9*", "passive"), None, ("6", "S6", "passive"), None, ("10", "S10*", "passive"), None,
+               ("7", "S7", "passive")],
+        width=15.24, ref="T", fp=D.FP["TX_EP13"],
+        desc="Pulse PA3855 EP13 flyback transformer; * = dot (winding start); pri 1-3, aux 4-5, sec 9-6 and 10-7"),
 }
 
 

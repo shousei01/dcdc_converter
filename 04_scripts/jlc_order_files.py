@@ -5,20 +5,11 @@ import csv, sys
 rel, out = sys.argv[1:3]
 N = "DCDC_LLC_4SBB_G474"
 # hand-soldered by the user (THT, custom, or own sample)
-EXCL = {"J1", "J2", "J3", "J4", "J5", "J7", "JP1", "T1", "U1"}
-DNP = {"C13", "C14", "C56", "C64", "C65", "C66", "R2", "R3", "R60", "R61"}
-LCSC = {  # first designator of the BOM line -> LCSC part
-    "C1": "C249664", "C2": "C153036", "C6": "C88219", "C15": "C14663", "C16": "C15849", "C17": "C307331",
-    "C22": "C88219", "C24": "C15850", "C27": "C45783", "C28": "C52923", "C29": "C1525", "C35": "C19666",
-    "C38": "C1547", "C41": "C113780", "C45": "C106259", "C47": "C22400107", "C49": "C15850", "C55": "C53987",
-    "C78": "C96123", "C81": "C107001", "C82": "C53134", "CR1": "C2940749", "D1": "C20883337", "D3": "C14486",
-    "D4": "C12624", "D5": "C2286", "F1": "C206980", "FB1": "C1002", "L2": "C86617", "Q9": "C53444",
-    "R1": "C2907507", "R4": "C23164", "R6": "C25744", "R16": "C23178", "R17": "C36871", "R18": "C25750",
-    "R19": "C25744", "R21": "C122538", "R22": "C186154", "R25": "C186137", "R27": "C25076", "R28": "C11702",
-    "R30": "C2933247", "R62": "C22939", "R81": "C870479", "R82": "C190095", "R84": "C11490", "R86": "C25796",
-    "R88": "C25756", "R89": "C25092", "R107": "C25741", "R110": "C227116", "RS1": "C500738", "RSH1": "C500718",
-    "TH1": "C2892547", "U15": "C34731", "U16": "C23892",
-    "SW1": "C6331172"}  # SHOU HAN 2.54-6P TPGT, SMD gull-wing 6-pos DIP
+EXCL = {"J1", "J2", "J3", "J4", "J5", "J6", "J7", "JP1", "T1", "U1"}   # J6 = SWD pads only (no part)
+DNP = {"C13", "C14", "C56", "C64", "C65", "C66", "R2", "R3", "R60", "R61", "R122", "C98"}
+# Rev E: every LCSC number comes from design.py (JLC_LCSC, checked in the JLCPCB / LCSC library), so the BOM
+# lines carry them directly; no per-line overrides any more (they went stale when lines were regrouped).
+LCSC = {}
 rows = list(csv.reader(open(f"{rel}/BOM_JLCPCB_{N}.csv")))
 bom = [["Comment", "Designator", "Footprint", "LCSC Part #"]]
 refs = set()
@@ -46,7 +37,8 @@ ROT = {**dict.fromkeys(["Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8"], 270),  
        "U7": 0, "U8": 270,                                                          # INA181A1 / INA181A2
        **dict.fromkeys(["U15", "U17", "U18"], 180),                                 # LMV331 SOT-23-5
        **dict.fromkeys(["Q9", "Q10", "U16", "U19"], 180), "D3": 270,                # SOT-23
-       **dict.fromkeys(["U5", "U14"], 180),                                         # AMS1117 SOT-223
+       **dict.fromkeys(["U14"], 180), "U5": 180,                                    # SOT-223 / TLV75533 SOT-23-5
+       "U20": 270, "U21": 270, "U22": 180, "Q11": 180,                            # Rev E flyback: SOIC-8, SOP-4, SOT-23 (check in JLC viewer)
        "SW1": 270}                                                                  # DIP-6 C6331172: 90 deg CW per JLC viewer (user, 2026-10-18)
 # Centroid offsets (mm, in the footprint's own axes, KiCad orientation 0) where JLC's 3D model of the
 # chosen part is not centred on the KiCad footprint. NCEP0160AG (C503012): body sits ~1.0 mm toward the

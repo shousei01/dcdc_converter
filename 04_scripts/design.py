@@ -1,4 +1,5 @@
-"""Design definition: STM32G474 four-switch buck-boost, 12-48 V in, 1.5-48 V / 5 A / 50 W out.
+"""Design definition (Rev E): LLC DCX + STM32G474 four-switch buck-boost, 12-48 V in, 1.5-48 V / 5 A / 50 W out.
+Rev E: isolated aux supply is a UC3843B flyback with TL431 + optocoupler secondary regulation; VREF+ = 3.3 V.
 
 Every part: ref, symbol (lib:name or custom:name), value, footprint, pin->net map, block, LCSC, MPN, notes.
 The schematic generator places parts by block and connects pins with net labels.
@@ -47,6 +48,8 @@ FP = {
     "H1x8": "Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical",
     "DIP12": "Button_Switch_SMD:SW_DIP_SPSTx06_Slide_6.7x16.8mm_W8.61mm_P2.54mm_LowProfile",
     "FB0603": "Inductor_SMD:L_0603_1608Metric",
+    "SOP4": "Package_SO:SOP-4_3.8x4.1mm_P2.54mm",
+    "TX_EP13": "custom_fp:TX_PA3855_EP13_10P",
 }
 
 
@@ -144,30 +147,33 @@ for (u, hb, ho, hs, hi, li, lo, gh, gl, cb, cv, cv2, rgh, rgl, rph, rpl, rhi, rl
     R(rli, "10k", li, "GND", fp="R0402", block=B)
 
 # --------------------------------------------------------------------------------------------
-# C. AUXILIARY SUPPLIES  VIN -> 10 V (gate drive) -> 5 V (CAN) -> 3.3 V (MCU)
+# C. SECONDARY AUX RAILS  +10 V (from the isolated flyback, block K) -> 5 V buck -> 3.3 V LDO
+#    Everything on the secondary is alive before the LLC starts: MCU, CAN, SR and 4SBB gate drivers.
 # --------------------------------------------------------------------------------------------
 B = "C_AUX"
 add("U4", "Regulator_Switching:LMR16006YQ", "LMR16006XDDCR", "SOT23-6",
-    {"1": "CB_AUX", "2": "GND", "3": "FB_AUX", "4": "EN_AUX", "5": "VBUS", "6": "SW_AUX"}, B,
-    lcsc="C87080", mpn="LMR16006XDDCR", note="60 V, 0.6 A, 700 kHz buck")
-C("C21", "2.2u 100V X7R", "VBUS", "GND", fp="C1210", block=B)
-C("C22", "100n 100V", "VBUS", "GND", fp="C0603", block=B)
-R("R16", "470k", "VBUS", "EN_AUX", fp="R0603", block=B, note="EN divider: start ~9.7 V on the isolated bus")
-R("R17", "68k", "EN_AUX", "GND", fp="R0402", block=B)
+    {"1": "CB_AUX", "2": "GND", "3": "FB_AUX", "4": "EN_AUX", "5": "+10V", "6": "SW_AUX"}, B,
+    lcsc="C87080", mpn="LMR16006XDDCR", note="+10 V -> +5 V buck, 0.6 A, 700 kHz (CAN 5 V + 3.3 V LDO input)")
+C("C21", "10u 25V X5R", "+10V", "GND", fp="C0805", block=B, note="U4 input, at pin 5")
+C("C22", "100n 25V", "+10V", "GND", fp="C0402", block=B)
+R("R16", "56k 1%", "+10V", "EN_AUX", fp="R0402", block=B, note="EN divider: U4 starts at ~6 V of the +10 V rail")
+R("R17", "15k 1%", "EN_AUX", "GND", fp="R0402", block=B)
 C("C23", "100n 25V", "CB_AUX", "SW_AUX", fp="C0402", block=B, note="LMR16006 boot cap")
 add("D2", "Device:D_Schottky", "SS110", "SMA", {"1": "SW_AUX", "2": "GND"}, B, lcsc="C224219", mpn="SS110",
-    note="100 V 1 A Schottky catch diode")
-add("L2", "Device:L", "47u 1A", "L5040", {"1": "SW_AUX", "2": "+10V"}, B, lcsc="C86617", mpn="SWPA5040S470MT",
+    note="Schottky catch diode")
+add("L2", "Device:L", "47u 1A", "L5040", {"1": "SW_AUX", "2": "+5V"}, B, lcsc="C86617", mpn="SWPA5040S470MT",
     note="47 uH, Isat >= 1 A, 5040 shielded (2nd source SRN5040-470M, NRS5040T470MMGK, NRSC5040-470M)")
-R("R18", "120k 1%", "+10V", "FB_AUX", fp="R0402", block=B, note="Vout = 0.765*(1+120k/10k) = 9.95 V")
+R("R18", "56k 1%", "+5V", "FB_AUX", fp="R0402", block=B, note="Vout = 0.765*(1+56k/10k) = 5.05 V")
 R("R19", "10k 1%", "FB_AUX", "GND", fp="R0402", block=B)
-C("C24", "10u 25V X5R", "+10V", "GND", fp="C0805", block=B)
-C("C25", "10u 25V X5R", "+10V", "GND", fp="C0805", block=B)
-add("U5", "Regulator_Linear:AMS1117-5.0", "AMS1117-5.0", "SOT223", {"1": "GND", "2": "+5V", "3": "+10V"}, B,
-    lcsc="C6187", mpn="AMS1117-5.0", note="5 V for CAN transceiver VCC (up to 125 mA dominant); live once the LLC runs")
-C("C26", "10u 25V X5R", "+5V", "GND", fp="C0805", block=B)
+C("C24", "10u 25V X5R", "+10V", "GND", fp="C0805", block=B, note="+10 V rail bulk at the 4SBB drivers")
+C("C25", "10u 25V X5R", "+10V", "GND", fp="C0805", block=B, note="+10 V rail bulk at U11 / SR")
+C("C26", "10u 25V X5R", "+5V", "GND", fp="C0805", block=B, note="U4 output")
+add("U5", "Regulator_Linear:TLV75533PDBV", "TLV75533PDBVR", "SOT23-5",
+    {"1": "+5V", "2": "GND", "3": "+5V", "4": "NC", "5": "+3V3"}, B, lcsc="C404027", mpn="TLV75533PDBVR",
+    note="3.3 V 500 mA LDO, 1 % accuracy; feeds MCU (VDD + VDDA/VREF+ via FB1), isolator side B, CAN VCCL")
+C("C86", "1u 10V", "+5V", "GND", fp="C0402", block=B, note="U5 input")
 C("C27", "22u 10V X5R", "+3V3", "GND", fp="C0805", block=B)
-add("FB1", "Device:FerriteBead_Small", "600R@100MHz", "FB0603", {"1": "+3V3", "2": "+3V3A"}, B, note="VDDA filter")
+add("FB1", "Device:FerriteBead_Small", "600R@100MHz", "FB0603", {"1": "+3V3", "2": "+3V3A"}, B, note="VDDA / VREF+ filter")
 C("C28", "1u 10V", "+3V3A", "GND", fp="C0402", block=B)
 C("C29", "100n", "+3V3A", "GND", fp="C0402", block=B)
 
@@ -180,7 +186,7 @@ mcu = {
     "16": "+3V3", "32": "+3V3", "48": "+3V3", "64": "+3V3",
     "15": "GND", "31": "GND", "47": "GND", "63": "GND", "27": "GND",   # VSS x4, VSSA
     "29": "+3V3A",        # VDDA
-    "28": "VREF_ADC",     # VREF+ from external REF3030 (3.000 V, 0.2 %); VREFBUF must stay off (HIZ)
+    "28": "+3V3A",        # VREF+ = filtered VDDA (3.3 V); VREFBUF off (HIZ); firmware trims gain with VREFINT_CAL
     "5": "OSC_IN", "6": "OSC_OUT",
     "7": "NRST", "61": "BOOT0",
     "42": "PWM_A1",       # PA8  HRTIM1_CHA1 -> Q1 (input high side)
@@ -214,11 +220,8 @@ add("U1", "MCU_ST_STM32G4:STM32G474RBTx", "STM32G474RBT6", "LQFP64", mcu, B, lcs
 for ref in ["C30", "C31", "C32", "C33", "C34"]:
     C(ref, "100n", "+3V3", "GND", fp="C0402", block=B, note="One per VDD pin + VBAT")
 C("C35", "4.7u 10V", "+3V3", "GND", fp="C0603", block=B)
-C("C36", "1u 10V", "VREF_ADC", "GND", fp="C0402", block=B, note="VREF+ decoupling, ADC charge reservoir")
-C("C37", "100n", "VREF_ADC", "GND", fp="C0402", block=B, note="VREF+ pin 28")
-add("U19", "Reference_Voltage:REF3030", "REF3030AIDBZR", "SOT23", {"1": "+3V3A", "2": "VREF_ADC", "3": "GND"}, B,
-    lcsc="C38423", mpn="REF3030AIDBZR", note="ADC reference 3.000 V +/-0.2 %, 50 ppm/C (0-70 C); dropout 50 mV max, 25 mA out; VDDA min 3.13 V")
-C("C85", "1u 10V", "+3V3A", "GND", fp="C0402", block=B, note="REF3030 input bypass (> 0.47 uF)")
+C("C36", "1u 10V", "+3V3A", "GND", fp="C0402", block=B, note="VREF+ decoupling at pin 28, ADC charge reservoir")
+C("C37", "100n", "+3V3A", "GND", fp="C0402", block=B, note="VREF+ pin 28")
 add("Y1", "Device:Crystal_GND24", "16MHz 9pF", "XTAL3225", {"1": "OSC_IN", "3": "OSC_OUT", "2": "GND", "4": "GND"}, B,
     lcsc="C13738", mpn="X322516MLB4SI", note="16 MHz HSE, 9 pF load, ESR 50 Ohm; PLL /4 x85 /2 = 170 MHz")
 C("C38", "12p C0G", "OSC_IN", "GND", fp="C0402", block=B)
@@ -230,7 +233,7 @@ R("R20", "10k", "BOOT0", "GND", fp="R0402", block=B, note="Boot from flash")
 # E. SENSING
 # --------------------------------------------------------------------------------------------
 B = "E_SENSE"
-R("R21", "100k 0.1%", "VBUS", "VBUS_SNS", fp="R0603", block=B, note="Isolated bus ~= VIN (DCX ratio 1); FS 61.8 V at 3.0 V VREF+")
+R("R21", "100k 0.1%", "VBUS", "VBUS_SNS", fp="R0603", block=B, note="Isolated bus ~= VIN (DCX ratio 1); FS 68.0 V at 3.3 V VREF+")
 R("R22", "5.1k 0.1%", "VBUS_SNS", "GND", fp="R0402", block=B)
 C("C41", "1n C0G", "VBUS_SNS", "GND", fp="C0402", block=B)
 R("R23", "100k 0.1%", "VOUT", "VOUT_SNS", fp="R0603", block=B, note="Divider referenced to GND; firmware adds Iout*RSH1")
@@ -240,8 +243,8 @@ C("C42", "1n C0G", "VOUT_SNS", "GND", fp="C0402", block=B)
 add("U7", "Amplifier_Current:INA181", "INA181A1IDBVR", "SOT23-6",
     {"1": "IL_AMP", "2": "GND", "3": "PGND", "4": "GND", "5": "IL_REF", "6": "+3V3A"}, B,
     lcsc="C2058943", mpn="INA181A1IDBVR",
-    note="Gain 20: IL_SNS = 1.50 V + 0.08 V/A * IL (+ in boost, - in buck), FS +/-18.75 A. IN+/IN- Kelvin to RS1 pads")
-R("R25", "1k 0.1%", "VREF_ADC", "IL_REF", fp="R0402", block=B, note="IL zero = VREF+/2, ratiometric")
+    note="Gain 20: IL_SNS = 1.65 V + 0.08 V/A * IL (+ in boost, - in buck), FS +/-20.6 A. IN+/IN- Kelvin to RS1 pads")
+R("R25", "1k 0.1%", "+3V3A", "IL_REF", fp="R0402", block=B, note="IL zero = VREF+/2, ratiometric")
 R("R26", "1k 0.1%", "IL_REF", "GND", fp="R0402", block=B)
 C("C43", "100n", "IL_REF", "GND", fp="C0402", block=B)
 C("C44", "100n", "+3V3A", "GND", fp="C0402", block=B)
@@ -250,12 +253,12 @@ C("C45", "470p C0G", "IL_SNS", "GND", fp="C0402", block=B, note="Keep RC fast (~
 # output current
 add("U8", "Amplifier_Current:INA181", "INA181A2IDBVR", "SOT23-6",
     {"1": "IOUT_AMP", "2": "GND", "3": "VOUT_N", "4": "GND", "5": "GND", "6": "+3V3A"}, B,
-    lcsc="C2058784", mpn="INA181A2IDBVR", note="Gain 50: 0.5 V/A, 5 A = 2.5 V, FS 6.0 A")
+    lcsc="C2058784", mpn="INA181A2IDBVR", note="Gain 50: 0.5 V/A, 5 A = 2.5 V, FS 6.6 A")
 C("C46", "100n", "+3V3A", "GND", fp="C0402", block=B)
 R("R28", "1k", "IOUT_AMP", "IOUT_SNS", fp="R0402", block=B)
 C("C47", "10n C0G", "IOUT_SNS", "GND", fp="C0402", block=B)
 # temperature (place NTC between Q1 and Q4)
-R("R29", "10k 1%", "VREF_ADC", "NTC_SNS", fp="R0402", block=B, note="Pull-up from VREF+, ratiometric")
+R("R29", "10k 1%", "+3V3A", "NTC_SNS", fp="R0402", block=B, note="Pull-up from VREF+, ratiometric")
 add("TH1", "Device:Thermistor_NTC", "10k B3950", "R0603", {"1": "NTC_SNS", "2": "GND"}, B, note="Place at hottest FET")
 C("C48", "100n", "NTC_SNS", "GND", fp="C0402", block=B)
 
@@ -375,7 +378,7 @@ R("R73", "10k", "SR1_PWM", "GND", fp="R0402", block=B)
 R("R74", "10k", "SR2_PWM", "GND", fp="R0402", block=B)
 
 # --------------------------------------------------------------------------------------------
-# I. PRIMARY AUX + ISOLATOR  (VIN -> 10 V_P -> 5 V_P; CA-IS3642LVW: power -> secondary, gates <- secondary)
+# I. PRIMARY AUX + ISOLATOR  (VIN -> 10 V_P -> 5 V_P; CA-IS3742LW: OVP / VIN-PWM -> secondary, LLC gates <- secondary)
 # --------------------------------------------------------------------------------------------
 B = "I_PRI"
 add("U13", "Regulator_Switching:LMR16006YQ", "LMR16006XDDCR", "SOT23-6",
@@ -391,18 +394,15 @@ R("R77", "120k 1%", "+10V_P", "FB_P", fp="R0402", block=B)
 R("R78", "10k 1%", "FB_P", "GNDP", fp="R0402", block=B)
 C("C72", "10u 25V X5R", "+10V_P", "GNDP", fp="C0805", block=B)
 add("U14", "Regulator_Linear:AMS1117-5.0", "AMS1117-5.0", "SOT223", {"1": "GNDP", "2": "+5V_P", "3": "+10V_P"}, B,
-    lcsc="C6187", mpn="AMS1117-5.0", note="5 V for the isolator (about 0.6 W in)")
+    lcsc="C6187", mpn="AMS1117-5.0", note="5 V_P for isolator side A, comparators, TL431 reference (~20 mA)")
 C("C73", "22u 10V X5R", "+5V_P", "GNDP", fp="C0805", block=B)
-add("U12", "custom:CA-IS3642LVW", "CA-IS3642LVW", "SOIC16W",
+add("U12", "custom:CA-IS3742", "CA-IS3742LW", "SOIC16W",
     {"1": "+5V_P", "2": "GNDP", "3": "OVP_P", "4": "VINPWM_P", "5": "LLC_HI_P", "6": "LLC_LO_P", "7": "+5V_P", "8": "GNDP",
-     "9": "GND", "10": "GND", "11": "LLC_B", "12": "LLC_A", "13": "VIN_PWM", "14": "VIN_OVP", "15": "GND", "16": "+3V3"}, B,
-    lcsc="C7422564", mpn="CA-IS3642LVW",
-    note="5 kVrms isolator, 2 fwd + 2 rev, 650 mW isolated 3.3 V (SEL=GNDB) for the MCU; L = outputs default low")
-C("C74", "10u 10V", "+5V_P", "GNDP", fp="C0805", block=B)
-C("C75", "100n", "+5V_P", "GNDP", fp="C0402", block=B)
-C("C76", "1u 10V", "+5V_P", "GNDP", fp="C0402", block=B, note="VDDL pin 7")
-C("C77", "100n", "+3V3", "GND", fp="C0402", block=B, note="VISO pin 16, within 2 mm")
-C("C78", "47u 6.3V", "+3V3", "GND", fp="C1206", block=B, note="VISO bulk (datasheet recommends 47 uF)")
+     "9": "GND", "10": "+3V3", "11": "LLC_B", "12": "LLC_A", "13": "VIN_PWM", "14": "VIN_OVP", "15": "GND", "16": "+3V3"}, B,
+    lcsc="C4944981", mpn="CA-IS3742LW",
+    note="5 kVrms 2+2 digital isolator (no isolated power), L = outputs default low; ENA/ENB tied high; alt TI ISO7742FDWR")
+C("C75", "100n", "+5V_P", "GNDP", fp="C0402", block=B, note="VDDA pin 1")
+C("C77", "100n", "+3V3", "GND", fp="C0402", block=B, note="VDDB pin 16")
 R("R79", "10k", "LLC_A", "GND", fp="R0402", block=B, note="Holds isolator input low while MCU in reset")
 R("R80", "10k", "LLC_B", "GND", fp="R0402", block=B)
 
@@ -454,6 +454,54 @@ R("R108", "10k", "+5V_P", "VINPWM_P", fp="R0402", block=B, note="Pull-up -> U12 
 C("C84", "100n", "+5V_P", "GNDP", fp="C0402", block=B)
 
 # --------------------------------------------------------------------------------------------
+# K. ISOLATED AUX FLYBACK  VIN (12-48 V) -> +10 V secondary, ~3 W capability, ~170 kHz, DCM
+#    UC3843B current mode on the primary (VCC = +10V_P from U13), PA3855.006NLT EP13 (Np:Ns = 1.33:1, Lp 21 uH),
+#    secondary-side regulation: TL431 senses +10 V, EL357N optocoupler pulls the UC3843 COMP pin (FB grounded).
+# --------------------------------------------------------------------------------------------
+B = "K_FLY"
+add("U20", "Regulator_Controller:UC3843_SOIC8", "UC3843BVD1R2G", "SOIC8",
+    {"1": "FLY_COMP", "2": "GNDP", "3": "FLY_CS", "4": "FLY_RT", "5": "GNDP", "6": "FLY_OUT", "7": "+10V_P", "8": "FLY_VREF"}, B,
+    lcsc="C231572", mpn="UC3843BVD1R2G", note="Current-mode PWM, UVLO 8.4/7.6 V, -40..105 C; FB grounded, opto drives COMP")
+C("C88", "1u 25V X7R", "+10V_P", "GNDP", fp="C0603", block=B, note="U20 VCC, at pin 7")
+C("C89", "100n 25V", "+10V_P", "GNDP", fp="C0402", block=B)
+C("C90", "100n", "FLY_VREF", "GNDP", fp="C0402", block=B, note="VREF bypass (>= 100 nF required)")
+R("R111", "10k 1%", "FLY_VREF", "FLY_RT", fp="R0402", block=B, note="RT: f ~ 1.72/(RT*CT) = 172 kHz")
+C("C91", "1n C0G", "FLY_RT", "GNDP", fp="C0402", block=B, note="CT, must be C0G")
+C("C92", "1n C0G", "FLY_COMP", "GNDP", fp="C0402", block=B, note="COMP noise filter")
+R("R112", "10R", "FLY_OUT", "FLY_G", fp="R0603", block=B, note="Gate resistor")
+R("R113", "10k", "FLY_G", "GNDP", fp="R0402", block=B, note="Gate pull-down")
+add("Q11", "Transistor_FET:2N7002", "FDN86246", "SOT23", {"1": "FLY_G", "2": "FLY_SRC", "3": "FLY_DRN"}, B,
+    lcsc="C891118", mpn="FDN86246", note="150 V, 1.6 A, 195 mOhm N-MOSFET (Vds max ~95 V incl. clamp at 50 V in)")
+R("R114", "0R5 1%", "FLY_SRC", "GNDP", fp="R1206", block=B, note="Current sense: Ipk limit 1.0 V / 0.5 R = 2.0 A (~6 W max)")
+R("R115", "1k", "FLY_SRC", "FLY_CS", fp="R0402", block=B, note="Leading-edge blanking RC 220 ns")
+C("C93", "220p C0G", "FLY_CS", "GNDP", fp="C0402", block=B)
+add("T2", "custom:PA3855", "PA3855.006NLT", "TX_EP13",
+    {"1": "FLY_DRN", "3": "VIN", "4": "NC", "5": "NC", "9": "FLY_SA", "10": "FLY_SA", "6": "GND", "7": "GND"}, B,
+    lcsc="C5718384", mpn="PA3855.006NLT",
+    note="Pulse EP13 flyback, 9-57 V, 21 uH, Np:Ns:Ns 1.33:1:1 (secondaries paralleled), Hi-pot 2250 Vdc; aux 4-5 unused")
+add("D8", "Device:D_Schottky", "SS110", "SMA", {"1": "FLY_CLP", "2": "FLY_DRN"}, B, lcsc="C224219", mpn="SS110",
+    note="RCD clamp diode")
+R("R116", "4k7", "FLY_CLP", "VIN", fp="R1206", block=B, note="RCD clamp: Vclamp ~ 25-40 V above VIN, ~0.15 W")
+C("C94", "4.7n 100V X7R", "FLY_CLP", "VIN", fp="C0603", block=B)
+C("C95", "2.2u 100V X7R", "VIN", "GNDP", fp="C1210", block=B, note="Flyback input loop cap at T2 pin 3 / R114")
+add("D9", "Device:D_Schottky", "SS110", "SMA", {"1": "+10V", "2": "FLY_SA"}, B, lcsc="C224219", mpn="SS110",
+    note="Output rectifier, Vr ~ 48 V at 50 V in")
+R("R122", "10R DNP", "FLY_SA", "FLY_SNB", fp="R0603", block=B, dnp=True, note="Rectifier RC snubber, fit if ringing")
+C("C98", "470p 100V DNP", "FLY_SNB", "+10V", fp="C0603", block=B, dnp=True)
+C("C96", "10u 25V X5R", "+10V", "GND", fp="C0805", block=B, note="Flyback output, at D9 / T2 return")
+C("C97", "10u 25V X5R", "+10V", "GND", fp="C0805", block=B)
+add("U21", "Isolator:LTV-357T", "EL357N(B)", "SOP4", {"1": "OPTO_A", "2": "OPTO_K", "3": "GNDP", "4": "FLY_COMP"}, B,
+    lcsc="C42381015", mpn="EL357N(B)(TA)-G", note="Optocoupler, CTR 130-260 %, 3.75 kVrms")
+R("R117", "1k5", "+10V", "OPTO_A", fp="R0402", block=B, note="LED series R: IF up to 3.2 mA with TL431 at 2.5 V")
+R("R118", "1k", "OPTO_A", "OPTO_K", fp="R0402", block=B, note="LED bypass: keeps TL431 >= 1 mA")
+add("U22", "Reference_Voltage:TL431DBZ", "TL431AIDBZR", "SOT23", {"1": "OPTO_K", "2": "FLY_FB", "3": "GND"}, B,
+    lcsc="C23892", mpn="TL431AIDBZR", note="TI DBZ pinout 1 K, 2 REF, 3 A")
+R("R119", "30k 1%", "+10V", "FLY_FB", fp="R0402", block=B, note="+10V = 2.495 * (1 + 30k/10k) = 9.98 V")
+R("R120", "10k 1%", "FLY_FB", "GND", fp="R0402", block=B)
+R("R121", "4k7", "OPTO_K", "FLY_CZ", fp="R0402", block=B, note="Type-2 compensation: zero 340 Hz")
+C("C99", "100n", "FLY_CZ", "FLY_FB", fp="C0402", block=B)
+
+# --------------------------------------------------------------------------------------------
 # D (cont.) unused MCU pins: 10k to GND each
 # --------------------------------------------------------------------------------------------
 B = "D_MCU"
@@ -469,7 +517,7 @@ for i, (pin, port) in enumerate(UNUSED):
 # --------------------------------------------------------------------------------------------
 B = "T_TP"
 TPS = [("TP1", "VIN", "I_PRI"), ("TP2", "GNDP", "I_PRI"), ("TP3", "+10V_P", "I_PRI"), ("TP4", "+5V_P", "I_PRI"),
-       ("TP5", "VBUS", "C_AUX"), ("TP6", "+10V", "C_AUX"), ("TP7", "+5V", "C_AUX"), ("TP8", "+3V3", "C_AUX"),
+       ("TP5", "VBUS", "A_POWER"), ("TP6", "+10V", "C_AUX"), ("TP7", "+5V", "C_AUX"), ("TP8", "+3V3", "C_AUX"),
        ("TP9", "+3V3A", "C_AUX"), ("TP10", "GND", "C_AUX"), ("TP11", "VOUT", "A_POWER"), ("TP12", "GND", "A_POWER"),
        ("TP13", "IL_SNS", "E_SENSE"), ("TP14", "IOUT_SNS", "E_SENSE"), ("TP15", "VIN_OVP", "D_MCU")]
 for ref, net, blk in TPS:
@@ -482,14 +530,15 @@ for i in range(1, 5):
         mpn="no part (M3 standoff hole)", note="3.2 mm plated-free hole, corner, 4 mm from edges")
 
 # Nets that need a PWR_FLAG for ERC (driven by connectors/passives)
-PWR_FLAG_NETS = ["VBUS", "GND", "PGND", "+10V", "+3V3A", "VISO", "GND_ISO", "VOUT", "VIN_RAW", "VIN", "GNDP", "+10V_P"]
+PWR_FLAG_NETS = ["VBUS", "GND", "PGND", "+10V", "+5V", "+3V3A", "VISO", "GND_ISO", "VOUT", "VIN_RAW", "VIN", "GNDP", "+10V_P"]
 
 BLOCK_TITLES = {
     "A_POWER": "A  Secondary 4SBB regulator - 150 kHz, L = 22 uH (input = isolated bus VBUS)",
     "B_DRIVE": "B  Gate drivers - UCC27211 x2 (HRTIM Timer A -> input leg, Timer E -> output leg)",
-    "C_AUX": "C  Secondary aux - VBUS -> 10 V -> 5 V; 3.3 V comes from isolator U12",
+    "C_AUX": "C  Secondary aux - +10 V (flyback) -> 5 V buck -> 3.3 V LDO",
     "H_LLC": "H  LLC DCX - half-bridge, PQ2620 1:2:2, ~205 kHz, centre-tapped SR  (PRIMARY | SECONDARY)",
-    "I_PRI": "I  Primary aux (VIN -> 10 V_P -> 5 V_P) and CA-IS3642LVW isolator / isolated 3.3 V",
+    "I_PRI": "I  Primary aux (VIN -> 10 V_P -> 5 V_P), CA-IS3742LW isolator, input OVP / VIN monitor",
+    "K_FLY": "K  Isolated aux flyback - UC3843B, PA3855.006NLT, TL431 + EL357N feedback, +10 V secondary",
     "D_MCU": "D  STM32G474RBT6 - HRTIM / ADC / COMP / FDCAN1",
     "E_SENSE": "E  Sensing - VBUS, VOUT, inductor current (bidirectional), output current, NTC",
     "F_CAN": "F  Isolated CAN - CA-IS3062VW (5 kVrms, integrated isolated supply)",
@@ -500,21 +549,25 @@ BLOCK_TITLES = {
 # assembly order. Applied to every part so the BOMs, schematic and PCB fields agree.
 JLC_LCSC = {
     "SW1": "C6331172",  # SHOU HAN 2.54-6P TPGT SMD DIP-6 (assembled by JLC from 18 Oct)
+    # Rev E flyback + rails (checked in the JLCPCB / LCSC library 2026-10-19)
+    "U20": "C231572", "Q11": "C891118", "T2": "C5718384", "U21": "C42381015", "U22": "C23892", "U12": "C4944981",
+    "U5": "C404027", "R112": "C22859", "R114": "C25340", "R116": "C17936", "C94": "C115052", "R117": "C25867",
+    "R119": "C25776", "R121": "C25900", "D8": "C224219", "D9": "C224219",
     **dict.fromkeys(['FB1'], 'C1002'),
     **dict.fromkeys(['C45'], 'C106259'),
-    **dict.fromkeys(['C81'], 'C107001'),
-    **dict.fromkeys(['C41', 'C42', 'C79'], 'C113780'),
+    **dict.fromkeys(['C81', 'C93'], 'C107001'),
+    **dict.fromkeys(['C41', 'C42', 'C79', 'C91', 'C92'], 'C113780'),
     **dict.fromkeys(['R84'], 'C11490'),
-    **dict.fromkeys(['R106', 'R109', 'R28', 'R38', 'R39', 'R40', 'R41', 'R42', 'R43', 'R44', 'R45', 'R85'], 'C11702'),
+    **dict.fromkeys(['R106', 'R109', 'R28', 'R38', 'R39', 'R40', 'R41', 'R42', 'R43', 'R44', 'R45', 'R85', 'R115', 'R118'], 'C11702'),
     **dict.fromkeys(['R21', 'R23'], 'C122538'),
     **dict.fromkeys(['D4'], 'C12624'),
     **dict.fromkeys(['D3'], 'C14486'),
     **dict.fromkeys(['C15', 'C18', 'C67'], 'C14663'),
-    **dict.fromkeys(['C29', 'C30', 'C31', 'C32', 'C33', 'C34', 'C37', 'C40', 'C43', 'C44', 'C46', 'C48', 'C50', 'C53', 'C54', 'C75', 'C77', 'C80', 'C83', 'C84'], 'C1525'),
-    **dict.fromkeys(['C10', 'C2', 'C21', 'C3', 'C4', 'C5', 'C61', 'C62', 'C63', 'C7', 'C70', 'C8', 'C9'], 'C153036'),
+    **dict.fromkeys(['C90', 'C99', 'C29', 'C30', 'C31', 'C32', 'C33', 'C34', 'C37', 'C40', 'C43', 'C44', 'C46', 'C48', 'C50', 'C53', 'C54', 'C75', 'C77', 'C80', 'C83', 'C84'], 'C1525'),
+    **dict.fromkeys(['C10', 'C2', 'C3', 'C4', 'C5', 'C61', 'C62', 'C63', 'C7', 'C70', 'C8', 'C9', 'C95'], 'C153036'),
     **dict.fromkeys(['C38', 'C39'], 'C1547'),
-    **dict.fromkeys(['C16', 'C19', 'C68', 'C69'], 'C15849'),
-    **dict.fromkeys(['C24', 'C25', 'C26', 'C49', 'C52', 'C72', 'C74'], 'C15850'),
+    **dict.fromkeys(['C16', 'C19', 'C68', 'C69', 'C88'], 'C15849'),
+    **dict.fromkeys(['C21', 'C24', 'C25', 'C26', 'C49', 'C52', 'C72', 'C96', 'C97'], 'C15850'),
     **dict.fromkeys(['R25', 'R26'], 'C186137'),
     **dict.fromkeys(['R22', 'R24'], 'C186154'),
     **dict.fromkeys(['R82'], 'C190095'),
@@ -525,33 +578,33 @@ JLC_LCSC = {
     **dict.fromkeys(['D5'], 'C2286'),
     **dict.fromkeys(['R62', 'R63'], 'C22939'),
     **dict.fromkeys(['R10', 'R11', 'R4', 'R5', 'R68', 'R69'], 'C23164'),
-    **dict.fromkeys(['R16', 'R75'], 'C23178'),
+    **dict.fromkeys(['R75'], 'C23178'),
     **dict.fromkeys(['U16'], 'C23892'),
     **dict.fromkeys(['C1', 'C11', 'C60'], 'C249664'),
     **dict.fromkeys(['R27'], 'C25076'),
     **dict.fromkeys(['R89'], 'C25092'),
     **dict.fromkeys(['R107'], 'C25741'),
-    **dict.fromkeys(['R100', 'R101', 'R102', 'R103', 'R104', 'R105', 'R108', 'R12', 'R13', 'R14', 'R15', 'R19', 'R20', 'R29', 'R32', 'R33', 'R34', 'R35', 'R36', 'R37', 'R6', 'R64', 'R65', 'R66', 'R67', 'R7', 'R70', 'R71', 'R72', 'R73', 'R74', 'R78', 'R79', 'R8', 'R80', 'R83', 'R87', 'R9', 'R90', 'R91', 'R92', 'R93', 'R94', 'R95', 'R96', 'R97', 'R98', 'R99'], 'C25744'),
-    **dict.fromkeys(['R18', 'R77'], 'C25750'),
-    **dict.fromkeys(['R88'], 'C25756'),
-    **dict.fromkeys(['R86'], 'C25796'),
+    **dict.fromkeys(['R100', 'R101', 'R102', 'R103', 'R104', 'R105', 'R108', 'R12', 'R13', 'R14', 'R15', 'R19', 'R20', 'R29', 'R32', 'R33', 'R34', 'R35', 'R36', 'R37', 'R6', 'R64', 'R65', 'R66', 'R67', 'R7', 'R70', 'R71', 'R72', 'R73', 'R74', 'R78', 'R79', 'R8', 'R80', 'R83', 'R87', 'R9', 'R90', 'R91', 'R92', 'R93', 'R94', 'R95', 'R96', 'R97', 'R98', 'R99', 'R111', 'R113', 'R120'], 'C25744'),
+    **dict.fromkeys(['R77'], 'C25750'),
+    **dict.fromkeys(['R88', 'R17'], 'C25756'),
+    **dict.fromkeys(['R86', 'R16', 'R18'], 'C25796'),
     **dict.fromkeys(['TH1'], 'C2892547'),
     **dict.fromkeys(['R1'], 'C2907507'),
     **dict.fromkeys(['R30', 'R31'], 'C2933247'),
     **dict.fromkeys(['CR1', 'CR2', 'CR3', 'CR4', 'CR5', 'CR6'], 'C2940749'),
-    **dict.fromkeys(['C17', 'C20', 'C23', 'C71'], 'C307331'),
+    **dict.fromkeys(['C17', 'C20', 'C22', 'C23', 'C71', 'C89'], 'C307331'),
     **dict.fromkeys(['U15', 'U17', 'U18'], 'C34731'),
-    **dict.fromkeys(['R17', 'R76'], 'C36871'),
+    **dict.fromkeys(['R76'], 'C36871'),
     **dict.fromkeys(['C27', 'C73'], 'C45783'),
     **dict.fromkeys(['RSH1'], 'C500718'),
     **dict.fromkeys(['RS1'], 'C500738'),
-    **dict.fromkeys(['C28', 'C36', 'C51', 'C76', 'C85'], 'C52923'),
+    **dict.fromkeys(['C28', 'C36', 'C51', 'C86'], 'C52923'),
     **dict.fromkeys(['C82'], 'C53134'),
     **dict.fromkeys(['Q9'], 'C53444'),
     **dict.fromkeys(['C55'], 'C53987'),
     **dict.fromkeys(['R81'], 'C870479'),
-    **dict.fromkeys(['C12', 'C22', 'C6'], 'C88219'),
-    **dict.fromkeys(['C78'], 'C96123'),
+    **dict.fromkeys(['C12', 'C6'], 'C88219'),
+    **dict.fromkeys([], 'C96123'),
 }
 for _p in P:
     if _p.ref in JLC_LCSC:

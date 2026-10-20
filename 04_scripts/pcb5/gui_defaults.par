@@ -1,0 +1,5 @@
+(gui_defaults
+  (parameter
+    (ignore_conduction_areas off)
+  )
+)

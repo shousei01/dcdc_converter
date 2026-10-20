@@ -1,5 +1,5 @@
 (version 1)
-# JLCPCB 4-layer limits (jlcpcb.com/capabilities/pcb-capabilities, checked 2026-10-18), outer copper 2 oz.
+# JLCPCB 4-layer limits (jlcpcb.com/capabilities/pcb-capabilities), Rev E stack: 1 oz outer / 0.5 oz inner, 1.6 mm.
 # Board-wide minimums are in Board Setup (track 0.15, clearance 0.2, via 0.5/0.3, hole-hole 0.25, edge 0.5).
 
 (rule "JLC: PTH pad to track/via >= 0.28 mm"
@@ -20,7 +20,7 @@
 	(constraint hole_to_hole (min 0.45mm))
 	(condition "A.Type == 'Pad' && B.Type == 'Pad'"))
 
-(rule "JLC: PTH annular ring (2 oz) >= 0.254 mm"
+(rule "JLC: PTH annular ring >= 0.254 mm"
 	(constraint annular_width (min 0.254mm))
 	(condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole'"))
 
@@ -28,7 +28,7 @@
 	(constraint annular_width (min 0.05mm))
 	(condition "A.Type == 'Via'"))
 
-(rule "JLC: 2 oz outer trace width >= 0.15 mm"
+(rule "JLC: outer trace width >= 0.15 mm (design minimum; JLC 1 oz allows 0.09)"
 	(layer outer)
 	(constraint track_width (min 0.15mm)))
 
@@ -39,3 +39,11 @@
 (rule "JLC: silkscreen text height >= 1.0 mm"
 	(layer "?.Silkscreen")
 	(constraint text_height (min 1.0mm)))
+
+(rule "Isolation: primary/secondary copper keep-out band is a rule area (4 mm); creepage checked on parts"
+	(constraint clearance (min 0.2mm))
+	(condition "A.NetClass == 'never'"))
+
+(rule "Inner 0.5 oz trace width >= 0.15 mm"
+	(layer inner)
+	(constraint track_width (min 0.15mm)))

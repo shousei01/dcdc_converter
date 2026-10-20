@@ -1,0 +1,42 @@
+=== Rail budget ===
++3V3  :   55.1 mA  -> TLV75533 loss  96.4 mW
++5V   :  175.2 mA  (buck U4 from +10 V, eta 0.85)
++10V  :  135.0 mA = 1.35 W  [4SBB drivers 22.1 mA, SR driver 8.8 mA, buck in 104.1 mA]
++10V_P:   41.7 mA  [LLC driver 19.0 mA, UC3843 13.1 mA, 5V_P loads 9.7 mA]  (U13 rated 600 mA)
+U14 AMS1117-5 (primary) dissipation 48 mW
+
+=== Flyback operating points (DCM check: ton + treset < T) ===
+Vr (reflected) = 14.1 V,  f = 172-180 kHz,  Ipk limit = 2.00 A
+Pout  Vin   Lp     Ipk    ton    trst   T      mode  D     Bpk[G] Irms_FET Pfet[mW] Vclamp Vds_max Vr_diode
+1.35   12  21.0u   0.97   1.69u  1.44u  5.81u DCM   0.29    564   0.301      63    19.8   36.8    19.0
+1.35   12  18.9u   1.00   1.57u  1.34u  5.56u DCM   0.28    581   0.306      67    20.3   37.3    19.0
+1.35   24  21.0u   0.97   0.85u  1.44u  5.81u DCM   0.15    564   0.213      67    19.8   48.8    28.0
+1.35   24  18.9u   1.00   0.78u  1.34u  5.56u DCM   0.14    581   0.216      73    20.3   49.3    28.0
+1.35   48  21.0u   0.97   0.42u  1.44u  5.81u DCM   0.07    564   0.151      95    19.8   72.8    46.1
+1.35   48  18.9u   1.00   0.39u  1.34u  5.56u DCM   0.07    581   0.153     103    20.3   73.3    46.1
+1.35   50  21.0u   0.97   0.41u  1.44u  5.81u DCM   0.07    564   0.147      98    19.8   74.8    47.6
+1.35   50  18.9u   1.00   0.38u  1.34u  5.56u DCM   0.07    581   0.150     106    20.3   75.3    47.6
+3.00   12  21.0u   1.44   2.52u  2.15u  5.81u DCM   0.43    841   0.548     143    24.4   41.4    19.0
+3.00   12  18.9u   1.48   2.34u  1.99u  5.56u DCM   0.42    866   0.556     152    25.2   42.2    19.0
+3.00   24  21.0u   1.44   1.26u  2.15u  5.81u DCM   0.22    841   0.387     129    24.4   53.4    28.0
+3.00   24  18.9u   1.48   1.17u  1.99u  5.56u DCM   0.21    866   0.393     139    25.2   54.2    28.0
+3.00   48  21.0u   1.44   0.63u  2.15u  5.81u DCM   0.11    841   0.274     158    24.4   77.4    46.1
+3.00   48  18.9u   1.48   0.58u  1.99u  5.56u DCM   0.11    866   0.278     171    25.2   78.2    46.1
+3.00   50  21.0u   1.44   0.61u  2.15u  5.81u DCM   0.10    841   0.268     162    24.4   79.4    47.6
+3.00   50  18.9u   1.48   0.56u  1.99u  5.56u DCM   0.10    866   0.272     175    25.2   80.2    47.6
+Current limit: Ipk 2.00 A -> Bpk 1167 G (< 2700 G), max input power ~7.2 W (DCM bound), FET 1.6 A cont / 6 A pulsed
+At current limit: Vclamp 30.2 V, R116 194 mW (1206, 250 mW), Vds at 50 V in 85 V, at 82 V TVS clamp 117 V (FDN86246 150 V)
+Clamp RC time constant 22 us >> T 5.8 us
+
+D9 SS110: Iavg 0.30 A max (0.13 A typ), Ipk_sec 1.92 A, Vr 48 V + ringing (100 V part), Pd 180 mW max
+Output ripple (C96+C97 ~12 uF eff. at 10 V): 145 mV p-p at 3 W, 65 mV at typ load (+ C24/C25 at the drivers)
+R114 sense: Irms 0.55 A -> 150 mW at 12 V / 3 W
+
+=== Secondary regulation ===
++10V set point 9.98 V; with TL431A 1 % and 1 % resistors: 9.68 .. 10.28 V
+  TL431 at Vka 2.5 V: total 4.27 mA, LED max 3.17 mA (needed ~1.0-1.5 mA: UC3843B EA source 0.8 mA typ / CTR >= 1)
+  TL431 at Vka 3.0 V: total 3.93 mA, LED max 2.83 mA (needed ~1.0-1.5 mA: UC3843B EA source 0.8 mA typ / CTR >= 1)
+  TL431 minimum cathode current from R118 alone 1.1 mA (> 1 mA)
+  Compensation zero R121 4.7k / C99 100 nF: 339 Hz; integrator 1/(2 pi Rtop C99) = 53 Hz; verify crossover (target 0.5-2 kHz) with a 50-100 % load step on the bench
+  Opto EL357N(B): CTR 130-260 % (5 mA), 3.75 kVrms; transformer Hi-pot 2250 Vdc pri-sec (functional isolation,
+  same class as PoE magnetics); creepage on the PCB >= 6 mm under T2/U21 by layout.

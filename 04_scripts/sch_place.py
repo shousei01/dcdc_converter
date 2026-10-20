@@ -2,7 +2,8 @@
 
 SHEETS = {
     "llc":     (["H_LLC"],  "LLC isolation stage - half-bridge, PQ2620, synchronous rectifier"),
-    "pri_aux": (["I_PRI"],  "Primary aux supply and CA-IS3642 isolator"),
+    "pri_aux": (["I_PRI"],  "Primary aux supply, CA-IS3742 isolator, input OVP and VIN monitor"),
+    "iso_pwr": (["K_FLY"],  "Isolated aux flyback - UC3843B, PA3855, TL431 + optocoupler"),
     "sbb":     (["A_POWER", "B_DRIVE"], "4SBB regulator - power stage and gate drivers"),
     "sec_aux": (["C_AUX"],  "Secondary aux supplies"),
     "mcu":     (["D_MCU"],  "STM32G474RBT6 MCU"),
@@ -70,14 +71,11 @@ put("R78", 137.16, 109.22)
 put("C72", 147.32, 93.98)
 put("U14", 175.26, 83.82)
 put("C73", 193.04, 93.98)
-put("C74", 205.74, 93.98)
 put("C75", 218.44, 93.98)
-put("C76", 231.14, 93.98)
 put("U12", 264.16, 101.6)
 put("R79", 297.18, 121.92)
 put("R80", 309.88, 121.92)
 put("C77", 309.88, 93.98)
-put("C78", 322.58, 93.98)
 
 # ============================ 4SBB power + drivers (A_POWER + B_DRIVE) ============================
 for i, r in enumerate(["C1", "C2", "C3", "C4", "C5", "C6"]):
@@ -134,6 +132,7 @@ put("C24", 154.94, 93.98)
 put("C25", 167.64, 93.98)
 put("U5", 190.5, 83.82)
 put("C26", 208.28, 93.98)
+put("C86", 220.98, 93.98)
 put("C27", 236.22, 93.98)
 put("FB1", 251.46, 83.82, 90)
 put("C28", 266.7, 93.98)
@@ -145,8 +144,6 @@ for i, r in enumerate(["C30", "C31", "C32", "C33", "C34", "C35"]):
     put(r, 129.54 + 12.7 * i, 63.5)
 put("C36", 218.44, 63.5)
 put("C37", 231.14, 63.5)
-put("U19", 254.0, 60.96)            # ADC reference REF3030
-put("C85", 271.78, 63.5)             # REF3030 input bypass
 put("Y1", 149.86, 96.52, 0)
 put("C38", 137.16, 102.87)
 put("C39", 162.56, 102.87)
@@ -301,3 +298,44 @@ _pulldowns()
 NOTES["mcu"] = [(129.54, 203.2, "Unused GPIOs (PC13-15, PA3-4, PA7, PA10, PB2, PB4, PB5, PB10, PC6, PC7, PC12, PD2):\n"
                                  "10k pull-down to GND each (R90-R105). PA4 is kept free for DAC1_OUT1 (Test_pin_DAC).\n"
                                  "PA2 = VIN_PWM (TIM15_CH1 PWM input, VIN monitor from the primary); R93 is its pull-down.")]
+
+
+# ============================ Rev E: isolated aux flyback (K_FLY), primary left | secondary right ============================
+put("C89", 68.58, 101.6)             # U20 VCC 100n
+put("C88", 76.2, 101.6)              # U20 VCC 1u
+put("U20", 101.6, 119.38)
+put("C92", 60.96, 118.11)            # COMP filter (top pin on the COMP line)
+put("C90", 68.58, 125.73)            # VREF bypass (top pin on the VREF line)
+put("R111", 76.2, 127.0)             # RT: VREF -> RT/CT
+put("C91", 83.82, 134.62)            # CT
+put("R112", 124.46, 114.3, 90)       # gate R: OUT left, gate right
+put("R113", 132.08, 121.92)          # gate pull-down
+put("Q11", 139.7, 114.3)             # FDN86246
+put("R114", 142.24, 134.62)          # current sense
+put("R115", 124.46, 124.46, 270)     # CS filter R: FLY_SRC right, FLY_CS left
+put("C93", 116.84, 132.08)           # CS filter C
+put("D8", 172.72, 55.88, 270)        # clamp diode: anode = drain (bottom), cathode = FLY_CLP (top)
+put("C94", 182.88, 45.72, 90)        # clamp C  FLY_CLP | VIN
+put("R116", 182.88, 38.1, 90)        # clamp R  FLY_CLP | VIN
+put("C95", 195.58, 88.9)             # VIN loop cap at T2
+put("T2", 215.9, 76.2)               # PA3855: primary pins left, secondary right
+put("D9", 238.76, 68.58, 180)        # rectifier: FLY_SA left, +10V right
+put("R122", 238.76, 58.42, 90)       # DNP snubber
+put("C98", 250.19, 58.42, 90)
+put("C96", 256.54, 76.2)
+put("C97", 266.7, 76.2)
+put("U21", 241.3, 177.8, 0, True)    # opto mirrored: transistor (primary) left, LED (secondary) right
+put("R117", 254.0, 167.64)           # +10V -> OPTO_A
+put("R118", 259.08, 179.07)          # LED bypass OPTO_A (top) / OPTO_K (bottom)
+put("U22", 284.48, 177.8, 0, True)   # TL431 mirrored: K left, A right, REF up
+put("R119", 284.48, 154.94)          # +10V -> FLY_FB
+put("R120", 292.1, 166.37)           # FLY_FB -> GND
+put("C99", 271.78, 166.37, 180)      # FLY_FB (top) / FLY_CZ (bottom)
+put("R121", 271.78, 173.99, 180)     # FLY_CZ (top) / OPTO_K (bottom)
+NOWIRE |= {("U21", "4")}            # FLY_COMP by label (no wire across Q11)
+NOTES["iso_pwr"] = [(30.48, 195.58,
+    "Isolated aux flyback: VIN 12-48 V -> +10 V secondary (1.35 W typ, 3 W design, ~170 kHz DCM).\n"
+    "UC3843B current mode, VCC = +10V_P (U13). Ipk limit 1.0 V / R114 = 2.0 A. RCD clamp D8/R116/C94: Vds < 85 V at 50 V in (150 V FET).\n"
+    "PA3855.006NLT: Np:Ns 1.33:1, Lp 21 uH; secondaries 9-6 and 10-7 in parallel; aux 4-5 not used. Hi-pot 2250 Vdc.\n"
+    "Regulation on the secondary: TL431 U22 (+10V = 2.495 x (1 + R119/R120) = 9.98 V) drives the EL357N LED; the opto\n"
+    "transistor pulls COMP down (FB grounded). Type-2 compensation R121/C99 (zero 340 Hz). Check the step response on the bench.")]

@@ -1,4 +1,15 @@
-** Drc report for DCDC_LLC_4SBB_G474.kicad_pcb **
-** Created on 2026-10-18 18:07:34 **
+** Drc report for /tmp/claude-0/dr5/DCDC_LLC_4SBB_G474.kicad_pcb **
+** Created on 2026-10-20 07:12:19 **
+** Rev E (2026-10-20), JLCPCB rules (DCDC_LLC_4SBB_G474.kicad_dru), 1 oz outer / 0.5 oz inner **
 
-** Found 0 DRC violations ** (JLCPCB rules; 199 "footprint differs from library" notices omitted - silk widths / text sizes changed for JLC)
+Errors:           clearance 0, unconnected 0, hole / annular / edge 0, silkscreen overlap 0, text size 0
+Notices kept:
+  footprint differs from library   199  (silk widths / text sizes changed for JLC)
+  courtyard overlap (accepted)     16  : C34 / U1, C69 / U11, C94 / D8, C95 / T2, C98 / R122, CR1 / T1, CR2 / T1, CR3 / T1, CR5 / T1, CR6 / T1, D8 / Q11, D8 / R116, D8 / T2, Q11 / R114, Q11 / T2, R64 / T1
+      flyback / MCU parts: inside the courtyard pad zone, outside the part body; R122/C98 = DNP snubber pair.
+      CR1-CR6 / R64 vs T1: the cap ends sit up to 0.35 mm inside T1's 29.8 mm fab outline (same as Rev D) -
+      fine with a bobbin on stand-offs; check against the PQ2620 bobbin you use.
+  silk clipped by solder mask      4  (footprint pin-1 marks; JLC clips silk at pads)
+Isolation: no track, via or pour inside the 4 mm primary/secondary and CAN keep-out bands
+          (only T1, T2, U12, U21 bridge them).
+Netlist vs schematic: 772 pads, 0 net mismatches; schematic check 148 nets / 284 parts, 0 errors.

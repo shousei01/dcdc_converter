@@ -587,7 +587,7 @@ def to_file(sh, path, title, page_text):
     sch = Schematic.create_new()
     sch.version, sch.generator, sch.uuid = 20211123, "eeschema", uid()
     sch.paper = PageSettings(paperSize="A3")
-    sch.titleBlock = TitleBlock(title=title, date="2026-10-18", revision="D",
+    sch.titleBlock = TitleBlock(title=title, date="2026-10-19", revision="E",
                                 comments={1: "DCDC LLC + 4SBB, 12-48 V in, 1.5-48 V / 5 A out, STM32G474",
                                           2: page_text})
     for libid, s in sh.libsyms.items():
@@ -620,7 +620,7 @@ def build(outdir):
     root = Schematic.create_new()
     root.version, root.generator, root.uuid = 20211123, "eeschema", uid()
     root.paper = PageSettings(paperSize="A3")
-    root.titleBlock = TitleBlock(title="DCDC LLC + 4SBB G474 - top level", date="2026-10-18", revision="D",
+    root.titleBlock = TitleBlock(title="DCDC LLC + 4SBB G474 - top level", date="2026-10-19", revision="E",
                                  comments={1: "Isolated 12-48 V -> 1.5-48 V / 5 A / 50 W; STM32G474RBT6; isolated CAN",
                                            2: "Sheets connect through global labels and power symbols"})
     sheet_insts = [HierarchicalSheetInstance(instancePath="/", page="1")]

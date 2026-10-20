@@ -1,0 +1,32 @@
+path                                               I  layers       len   min w (layer)   R mOhm   P mW  dV mV
+J1 -> F1 (input)                                 4.6  F            5.3      4.67 (  F)     0.67     14    3.1
+F1 -> C60 -> C61 -> Q5 drain                     4.6  F           31.9      7.22 (  F)     2.08     44    9.6
+Q6 source -> C61..C63 -> C60 -> J1 return        4.6  F+In1+B     40.0      5.19 (  F)     0.50     11    2.3
+LLC half-bridge -> T1 (HB_SW)                   10.1  F            4.5      6.42 (  F)     0.28     28    2.8
+Q6 drain -> T1 (HB_SW)                          10.1  F            5.4      5.24 (  F)     0.38     38    3.8
+T1 -> resonant caps (CR_MID)                    10.1  F            9.2      5.00 (  F)     0.89     90    8.9
+T1 -> Q7 (SR_D1)                                 3.6  F            4.8      8.88 (  F)     0.31      4    1.1
+T1 -> Q8 (SR_D2)                                 3.6  F            4.8      8.30 (  F)     0.33      4    1.2
+T1 centre tap -> C2..C4 (VBUS)                   4.5  F+B          4.2     10.80 (  F)     0.11      2    0.5
+SR side -> 4SBB input (VBUS, bottom link)        4.5  F+B         23.3      1.16 (  F)     1.27     26    5.7
+SR sources -> C2..C4 return (GND strip)          4.5  F+In1+B     19.0      2.73 (  F)     0.58     12    2.6
+Q1 / Q2 -> L1 (SW1)                              5.2  F           12.4      6.84 (  F)     0.93     25    4.8
+Q3 / Q4 -> L1 (SW2)                              5.2  F           12.1      6.61 (  F)     0.92     25    4.8
+Q2 sources -> RS1 (PGND)                         5.0  F+B         12.0      1.78 (  F)     1.06     27    5.3
+Q4 sources -> RS1 (PGND)                         5.0  F+B         15.7      1.92 (  F)     1.33     33    6.6
+Q3 -> output caps -> C11 -> J2 (VOUT)            5.0  F+B         53.8      3.40 (  F)     2.77     69   13.9
+J2 return -> RSH1 (VOUT_N)                       5.0  F            9.1      2.35 (  F)     1.63     41    8.2
+RSH1 -> RS1 -> SR return (GND)                   5.0  In1+B+F     61.2      1.32 (In1)     1.99     50   10.0
+total I^2R in these paths: 0.54 W (worst case, 50 W out at 12 V in)
+
+Notes (Rev E, 1 oz outer = 35 um, 0.5 oz inner = 17.5 um, copper at 70 C):
+- "min w" is the narrowest cross-section of the first listed layer along the path; parallel layers carry the rest.
+- IPC-2221 external layer, 1 oz, 20 C rise: 5 A needs ~1.8 mm, 4.5 A ~1.6 mm, 10 A ~4.7 mm continuous width.
+  All high-current runs meet that on F.Cu alone except two short necks that have a parallel layer:
+  PGND bar at the Q2/Q4 gate pockets (1.8-1.9 mm on F, plus the B.Cu bar copy stitched every 1.7 mm),
+  VBUS F neck at the SR side (1.2 mm, in parallel with the 9 x 19 mm B.Cu VBUS link).
+- Inner layers carry no power path except the In1 ground planes (return current spreads over the plane).
+- Total conduction loss in the board copper at the 50 W / 12 V-in corner: ~0.5 W, spread over the power area
+  (largest single path 90 mW in the CR_MID resonant run) -> no local hot spot; MOSFET/inductor losses dominate.
+- Power via fields (VBUS, VOUT, PGND top<->bottom) use 0.6/0.3 vias at 1.7 mm pitch so the In1 ground plane keeps
+  a continuous web between the via antipads (no slot under the power stage).
