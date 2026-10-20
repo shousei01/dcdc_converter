@@ -8,4 +8,6 @@ python3 pcb6/fix_moves.py pcb6/t2.kicad_pcb pcb6/t3.kicad_pcb # re-attach copper
 python3 pcb6/silk_sub.py pcb6/t3.kicad_pcb pcb6/t4.kicad_pcb R123,R124,R125,R126,R127,R128,R129,R114
 python3 pcb6/post.py pcb6/t4.kicad_pcb pcb5/DCDC_LLC_4SBB_G474_revE_preE2.kicad_pcb pcb6/t6.kicad_pcb   # lock state of Rev E
 python3 pcb6/finish_e2.py pcb6/t6.kicad_pcb pcb6/final_E2.kicad_pcb
-python3 pcb6/drc.py pcb6/final_E2.kicad_pcb               # expect {} and unconnected: 0
+python3 pcb6/fix_j3.py pcb6/final_E2.kicad_pcb pcb6/final_E2b.kicad_pcb   # J3 pin 3 In2 thermal spokes
+python3 pcb6/fix_vip.py pcb6/final_E2b.kicad_pcb pcb6/final_E2c.kicad_pcb   # via holes out of SMD pads
+python3 pcb6/drc.py pcb6/final_E2c.kicad_pcb              # expect {} and unconnected: 0

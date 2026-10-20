@@ -12,6 +12,13 @@ Rev E -> E2:
   - The 16 courtyard overlaps that Rev E accepted are now cleared: C34/U1, C69/U11, C94/D8, C95/T2,
     C98/R122, CR1-CR3/CR5/CR6/T1, D8/Q11, D8/R116, D8/T2, Q11/R114, Q11/T2, R64/T1 (parts moved 0.05-2 mm,
     tracks re-attached). The 4 "silk clipped by solder mask" notices are gone as well.
+  - J3 pin 3 (GND_ISO): the J3 -> J4 CANL link moved from In2 to B.Cu so the pin reaches the GND_ISO plane with
+    2 spokes on In2 and B.Cu (KiCad 8+ 'thermal relief connection incomplete'; it had 1 spoke into a cut-off scrap).
+  - Via holes kept out of SMD pads (solder wicking): C69.2 / C95.2 vias moved clear after the courtyard moves,
+    J7.5 GND via moved beside the pad, R64 0.15 mm up off the Q5 gate via. U12.2 keeps its GNDP via (hole edge
+    0.15 mm into the pad; the +5V_P track leaves no room) - as in Rev E.
+  - Short-risk review: vias are tented (both sides); closest other-net copper 0.20 mm on F.Cu / In2 / B.Cu,
+    0.25 mm on In1; closest via to another net's pad 0.203 mm (U1 fan-out); every thermal-relief pad has 2+ spokes.
   - R124-R128 references are on the Fab (assembly) layer only: no room for 1.0 mm silk text in that row.
 Isolation: no track, via or pour inside the 4 mm primary/secondary and CAN keep-out bands
           (only T1, T2, U12, U21 bridge them).
