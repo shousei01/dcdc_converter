@@ -8,7 +8,7 @@
     (title "DCDC LLC + 4SBB G474 - top level")
     (date "2026-10-19")
     (rev "E")
-    (comment 1 "Isolated 12-48 V -> 1.5-48 V / 5 A / 50 W; STM32G474RBT6; isolated CAN")
+    (comment 1 "Isolated 12-48 V -> 1.5-48 V / 5 A / 50 W; STM32G474RBT3; isolated CAN")
     (comment 2 "Sheets connect through global labels and power symbols")
   )
   (lib_symbols)
@@ -77,7 +77,7 @@
     (stroke (width 0.1524) (type solid))
     (fill (color 0 0 0 0))
     (uuid f23a9dab-1901-42af-8a11-726c269e245c)
-    (property "Sheet name" "STM32G474RBT6 MCU" (id 0) (at 120 109.3 0)
+    (property "Sheet name" "STM32G474RBT3 MCU" (id 0) (at 120 109.3 0)
       (effects (font (size 1.27 1.27)) (justify left bottom))
     )
     (property "Sheet file" "mcu.kicad_sch" (id 1) (at 120 160.6 0)
@@ -286,10 +286,10 @@
       (reference "C63") (unit 1) (value "2.2u 100V X7R") (footprint "Capacitor_SMD:C_1210_3225Metric")
     )
     (path "/cae3053b-20cc-4557-ac72-ae2b74fe45c3/b8495fbe-d60e-461a-9db5-3653245d483e"
-      (reference "Q5") (unit 1) (value "NCEP0160AG") (footprint "Package_TO_SOT_SMD:TDSON-8-1")
+      (reference "Q5") (unit 1) (value "NCEP068N10G") (footprint "Package_TO_SOT_SMD:TDSON-8-1")
     )
     (path "/cae3053b-20cc-4557-ac72-ae2b74fe45c3/7d59ffc5-fd0e-4fcb-a4c0-caf0214c72cb"
-      (reference "Q6") (unit 1) (value "NCEP0160AG") (footprint "Package_TO_SOT_SMD:TDSON-8-1")
+      (reference "Q6") (unit 1) (value "NCEP068N10G") (footprint "Package_TO_SOT_SMD:TDSON-8-1")
     )
     (path "/cae3053b-20cc-4557-ac72-ae2b74fe45c3/65d74259-5126-4e8a-804f-47846c3f4761"
       (reference "CR1") (unit 1) (value "100n 100V C0G") (footprint "Capacitor_SMD:C_1206_3216Metric")
@@ -652,7 +652,7 @@
       (reference "Q9") (unit 1) (value "MMBT3906") (footprint "Package_TO_SOT_SMD:SOT-23")
     )
     (path "/6a8270f3-b6c3-406d-a936-9cd18ffa1121/9a74c2d6-7770-4647-8700-4a27a1e9df52"
-      (reference "C82") (unit 1) (value "47n C0G 50V") (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (reference "C82") (unit 1) (value "47n C0G 25V") (footprint "Capacitor_SMD:C_0805_2012Metric")
     )
     (path "/6a8270f3-b6c3-406d-a936-9cd18ffa1121/3290ab0b-8622-4cb6-ba37-08be6992472a"
       (reference "U17") (unit 1) (value "LMV331IDBVR") (footprint "Package_TO_SOT_SMD:SOT-23-5")
@@ -1084,10 +1084,10 @@
       (reference "Q1") (unit 1) (value "NCEP0140AG") (footprint "Package_TO_SOT_SMD:TDSON-8-1")
     )
     (path "/6b39169d-dfa3-4565-a594-5f779a6e82b8/b9af9a14-dd26-4d4a-8ead-b6f1580abbe5"
-      (reference "Q2") (unit 1) (value "NCEP0160AG") (footprint "Package_TO_SOT_SMD:TDSON-8-1")
+      (reference "Q2") (unit 1) (value "NCEP068N10G") (footprint "Package_TO_SOT_SMD:TDSON-8-1")
     )
     (path "/6b39169d-dfa3-4565-a594-5f779a6e82b8/ba1fc9a8-c44f-4774-8272-5e58e868ca04"
-      (reference "Q3") (unit 1) (value "NCEP0160AG") (footprint "Package_TO_SOT_SMD:TDSON-8-1")
+      (reference "Q3") (unit 1) (value "NCEP068N10G") (footprint "Package_TO_SOT_SMD:TDSON-8-1")
     )
     (path "/6b39169d-dfa3-4565-a594-5f779a6e82b8/100d591b-4573-4b1c-b449-f9ab9100e952"
       (reference "Q4") (unit 1) (value "NCEP0140AG") (footprint "Package_TO_SOT_SMD:TDSON-8-1")
@@ -1492,7 +1492,7 @@
       (reference "#PWRMCU035") (unit 1) (value "+3V3A") (footprint "")
     )
     (path "/f23a9dab-1901-42af-8a11-726c269e245c/8dca7355-4cfa-4b04-bb85-4231c36850ce"
-      (reference "U1") (unit 1) (value "STM32G474RBT6") (footprint "Package_QFP:LQFP-64_10x10mm_P0.5mm")
+      (reference "U1") (unit 1) (value "STM32G474RBT3") (footprint "Package_QFP:LQFP-64_10x10mm_P0.5mm")
     )
     (path "/f23a9dab-1901-42af-8a11-726c269e245c/6a6a916d-7bd3-49b7-8e40-8b1d4be032e0"
       (reference "C30") (unit 1) (value "100n") (footprint "Capacitor_SMD:C_0402_1005Metric")

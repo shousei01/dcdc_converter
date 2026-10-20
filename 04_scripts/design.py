@@ -97,11 +97,11 @@ C("C6", "100n 100V X7R", "VBUS", "GND", fp="C0603", block=B)
 add("Q1", "Transistor_FET:BSC040N10NS5", "NCEP0140AG", "DFN5x6",
     {"1": "SW1", "2": "SW1", "3": "SW1", "4": "G1", "5": "VBUS"}, B, lcsc="C503009", mpn="NCEP0140AG",
     note="Input leg high side: hard-switched in buck -> low Qgd part (100 V, 18 mOhm, 26 nC)")
-add("Q2", "Transistor_FET:BSC040N10NS5", "NCEP0160AG", "DFN5x6",
-    {"1": "PGND", "2": "PGND", "3": "PGND", "4": "G2", "5": "SW1"}, B, lcsc="C503012", mpn="NCEP0160AG",
+add("Q2", "Transistor_FET:BSC040N10NS5", "NCEP068N10G", "DFN5x6",
+    {"1": "PGND", "2": "PGND", "3": "PGND", "4": "G2", "5": "SW1"}, B, lcsc="C503061", mpn="NCEP068N10G",
     note="Input leg low side: sync rectifier in buck at up to 5 A -> low Rds part (100 V, 8.5 mOhm)")
-add("Q3", "Transistor_FET:BSC040N10NS5", "NCEP0160AG", "DFN5x6",
-    {"1": "SW2", "2": "SW2", "3": "SW2", "4": "G3", "5": "VOUT"}, B, lcsc="C503012", mpn="NCEP0160AG",
+add("Q3", "Transistor_FET:BSC040N10NS5", "NCEP068N10G", "DFN5x6",
+    {"1": "SW2", "2": "SW2", "3": "SW2", "4": "G3", "5": "VOUT"}, B, lcsc="C503061", mpn="NCEP068N10G",
     note="Output leg high side: static-on in buck (carries full 5 A) / SR in boost")
 add("Q4", "Transistor_FET:BSC040N10NS5", "NCEP0140AG", "DFN5x6",
     {"1": "PGND", "2": "PGND", "3": "PGND", "4": "G4", "5": "SW2"}, B, lcsc="C503009", mpn="NCEP0140AG",
@@ -159,9 +159,9 @@ C("C22", "100n 25V", "+10V", "GND", fp="C0402", block=B)
 R("R16", "56k 1%", "+10V", "EN_AUX", fp="R0402", block=B, note="EN divider: U4 starts at ~6 V of the +10 V rail")
 R("R17", "15k 1%", "EN_AUX", "GND", fp="R0402", block=B)
 C("C23", "100n 25V", "CB_AUX", "SW_AUX", fp="C0402", block=B, note="LMR16006 boot cap")
-add("D2", "Device:D_Schottky", "SS110", "SMA", {"1": "SW_AUX", "2": "GND"}, B, lcsc="C224219", mpn="SS110",
+add("D2", "Device:D_Schottky", "SS110", "SMA", {"1": "SW_AUX", "2": "GND"}, B, lcsc="C2482", mpn="SS110",
     note="Schottky catch diode")
-add("L2", "Device:L", "47u 1A", "L5040", {"1": "SW_AUX", "2": "+5V"}, B, lcsc="C86617", mpn="SWPA5040S470MT",
+add("L2", "Device:L", "47u 1A", "L5040", {"1": "SW_AUX", "2": "+5V"}, B, lcsc="C167974", mpn="FNR5040S470MT",
     note="47 uH, Isat >= 1 A, 5040 shielded (2nd source SRN5040-470M, NRS5040T470MMGK, NRSC5040-470M)")
 R("R18", "56k 1%", "+5V", "FB_AUX", fp="R0402", block=B, note="Vout = 0.765*(1+56k/10k) = 5.05 V")
 R("R19", "10k 1%", "FB_AUX", "GND", fp="R0402", block=B)
@@ -173,7 +173,7 @@ add("U5", "Regulator_Linear:TLV75533PDBV", "TLV75533PDBVR", "SOT23-5",
     note="3.3 V 500 mA LDO, 1 % accuracy; feeds MCU (VDD + VDDA/VREF+ via FB1), isolator side B, CAN VCCL")
 C("C86", "1u 10V", "+5V", "GND", fp="C0402", block=B, note="U5 input")
 C("C27", "22u 10V X5R", "+3V3", "GND", fp="C0805", block=B)
-add("FB1", "Device:FerriteBead_Small", "600R@100MHz", "FB0603", {"1": "+3V3", "2": "+3V3A"}, B, note="VDDA / VREF+ filter")
+add("FB1", "Device:FerriteBead_Small", "600R@100MHz", "FB0603", {"1": "+3V3", "2": "+3V3A"}, B, mpn="BLM18KG601SN1D", note="VDDA / VREF+ filter")
 C("C28", "1u 10V", "+3V3A", "GND", fp="C0402", block=B)
 C("C29", "100n", "+3V3A", "GND", fp="C0402", block=B)
 
@@ -215,7 +215,7 @@ mcu = {
     "62": "LED_RUN",      # PB9 (moved from PC13 for PCB routing)
     "52": "LED_FLT",      # PC10
 }
-add("U1", "MCU_ST_STM32G4:STM32G474RBTx", "STM32G474RBT6", "LQFP64", mcu, B, lcsc="C529413", mpn="STM32G474RBT6",
+add("U1", "MCU_ST_STM32G4:STM32G474RBTx", "STM32G474RBT3", "LQFP64", mcu, B, lcsc="C1235414", mpn="STM32G474RBT3",
     note="Pin-compatible STM32G474RET6 (C521608) if RB is out of stock")
 for ref in ["C30", "C31", "C32", "C33", "C34"]:
     C(ref, "100n", "+3V3", "GND", fp="C0402", block=B, note="One per VDD pin + VBAT")
@@ -327,11 +327,11 @@ add("D1", "Device:D_Zener", "SMBJ51A", "SMB", {"1": "VIN", "2": "GNDP"}, B, mpn=
 CP("C60", "47u 63V", "VIN", "GNDP", block=B, note="Primary bulk, low-ESR")
 for ref in ["C61", "C62", "C63"]:
     C(ref, "2.2u 100V X7R", "VIN", "GNDP", fp="C1210", block=B, note="Half-bridge decoupling at Q5 drain / Q6 source")
-add("Q5", "Transistor_FET:BSC040N10NS5", "NCEP0160AG", "DFN5x6",
-    {"1": "HB_SW", "2": "HB_SW", "3": "HB_SW", "4": "G5", "5": "VIN"}, B, lcsc="C503012", mpn="NCEP0160AG",
+add("Q5", "Transistor_FET:BSC040N10NS5", "NCEP068N10G", "DFN5x6",
+    {"1": "HB_SW", "2": "HB_SW", "3": "HB_SW", "4": "G5", "5": "VIN"}, B, lcsc="C503061", mpn="NCEP068N10G",
     note="LLC high side, ZVS; 10 A rms at 12 V in -> lowest-Rds part")
-add("Q6", "Transistor_FET:BSC040N10NS5", "NCEP0160AG", "DFN5x6",
-    {"1": "GNDP", "2": "GNDP", "3": "GNDP", "4": "G6", "5": "HB_SW"}, B, lcsc="C503012", mpn="NCEP0160AG",
+add("Q6", "Transistor_FET:BSC040N10NS5", "NCEP068N10G", "DFN5x6",
+    {"1": "GNDP", "2": "GNDP", "3": "GNDP", "4": "G6", "5": "HB_SW"}, B, lcsc="C503061", mpn="NCEP068N10G",
     note="LLC low side, ZVS")
 for ref in ["CR1", "CR2", "CR3"]:
     C(ref, "100n 100V C0G", "VIN", "CR_MID", fp="C1206", block=B, note="Split resonant cap, upper half (3 x 100 nF)")
@@ -388,8 +388,8 @@ C("C70", "2.2u 100V X7R", "VIN", "GNDP", fp="C1210", block=B)
 R("R75", "470k", "VIN", "EN_P", fp="R0603", block=B, note="Primary UVLO ~9.7 V")
 R("R76", "68k", "EN_P", "GNDP", fp="R0402", block=B)
 C("C71", "100n 25V", "CB_P", "SW_P", fp="C0402", block=B)
-add("D6", "Device:D_Schottky", "SS110", "SMA", {"1": "SW_P", "2": "GNDP"}, B, lcsc="C224219", mpn="SS110", note="100 V 1 A Schottky catch diode")
-add("L3", "Device:L", "47u 1A", "L5040", {"1": "SW_P", "2": "+10V_P"}, B, lcsc="C86617", mpn="SWPA5040S470MT")
+add("D6", "Device:D_Schottky", "SS110", "SMA", {"1": "SW_P", "2": "GNDP"}, B, lcsc="C2482", mpn="SS110", note="100 V 1 A Schottky catch diode")
+add("L3", "Device:L", "47u 1A", "L5040", {"1": "SW_P", "2": "+10V_P"}, B, lcsc="C167974", mpn="FNR5040S470MT")
 R("R77", "120k 1%", "+10V_P", "FB_P", fp="R0402", block=B)
 R("R78", "10k 1%", "FB_P", "GNDP", fp="R0402", block=B)
 C("C72", "10u 25V X5R", "+10V_P", "GNDP", fp="C0805", block=B)
@@ -435,7 +435,7 @@ R("R87", "10k 1%", "+5V_P", "PB_P", fp="R0402", block=B, note="PNP base bias 3.0
 R("R88", "15k 1%", "PB_P", "GNDP", fp="R0402", block=B)
 add("Q9", "Transistor_BJT:MMBT3906", "MMBT3906", "SOT23", {"1": "PB_P", "2": "PE_P", "3": "RAMP_P"}, B,
     lcsc="C2940", mpn="MMBT3906", note="Ramp current source")
-C("C82", "47n C0G 50V", "RAMP_P", "GNDP", fp="C0805", block=B, note="Ramp capacitor - must be C0G (X7R bends the ramp)")
+C("C82", "47n C0G 25V", "RAMP_P", "GNDP", fp="C0805", block=B, note="Ramp capacitor - must be C0G (X7R bends the ramp)")
 add("U17", "Comparator:LMV331", "LMV331IDBVR", "SOT23-5", {"1": "RAMP_P", "2": "GNDP", "3": "VREF_P", "4": "RST_P", "5": "+5V_P"}, B,
     mpn="LMV331IDBVR", note="Ramp top detector: output released when RAMP > VREF_P")
 R("R106", "1k", "+5V_P", "RST_P", fp="R0402", block=B, note="Pull-up, charges the reset-hold cap fast")
@@ -479,12 +479,12 @@ add("T2", "custom:PA3855", "PA3855.006NLT", "TX_EP13",
     {"1": "FLY_DRN", "3": "VIN", "4": "NC", "5": "NC", "9": "FLY_SA", "10": "FLY_SA", "6": "GND", "7": "GND"}, B,
     lcsc="C5718384", mpn="PA3855.006NLT",
     note="Pulse EP13 flyback, 9-57 V, 21 uH, Np:Ns:Ns 1.33:1:1 (secondaries paralleled), Hi-pot 2250 Vdc; aux 4-5 unused")
-add("D8", "Device:D_Schottky", "SS110", "SMA", {"1": "FLY_CLP", "2": "FLY_DRN"}, B, lcsc="C224219", mpn="SS110",
+add("D8", "Device:D_Schottky", "SS110", "SMA", {"1": "FLY_CLP", "2": "FLY_DRN"}, B, lcsc="C2482", mpn="SS110",
     note="RCD clamp diode")
 R("R116", "4k7", "FLY_CLP", "VIN", fp="R1206", block=B, note="RCD clamp: Vclamp ~ 25-40 V above VIN, ~0.15 W")
 C("C94", "4.7n 100V X7R", "FLY_CLP", "VIN", fp="C0603", block=B)
 C("C95", "2.2u 100V X7R", "VIN", "GNDP", fp="C1210", block=B, note="Flyback input loop cap at T2 pin 3 / R114")
-add("D9", "Device:D_Schottky", "SS110", "SMA", {"1": "+10V", "2": "FLY_SA"}, B, lcsc="C224219", mpn="SS110",
+add("D9", "Device:D_Schottky", "SS110", "SMA", {"1": "+10V", "2": "FLY_SA"}, B, lcsc="C2482", mpn="SS110",
     note="Output rectifier, Vr ~ 48 V at 50 V in")
 R("R122", "10R DNP", "FLY_SA", "FLY_SNB", fp="R0603", block=B, dnp=True, note="Rectifier RC snubber, fit if ringing")
 C("C98", "470p 100V DNP", "FLY_SNB", "+10V", fp="C0603", block=B, dnp=True)
@@ -539,7 +539,7 @@ BLOCK_TITLES = {
     "H_LLC": "H  LLC DCX - half-bridge, PQ2620 1:2:2, ~205 kHz, centre-tapped SR  (PRIMARY | SECONDARY)",
     "I_PRI": "I  Primary aux (VIN -> 10 V_P -> 5 V_P), CA-IS3742LW isolator, input OVP / VIN monitor",
     "K_FLY": "K  Isolated aux flyback - UC3843B, PA3855.006NLT, TL431 + EL357N feedback, +10 V secondary",
-    "D_MCU": "D  STM32G474RBT6 - HRTIM / ADC / COMP / FDCAN1",
+    "D_MCU": "D  STM32G474RBT3 - HRTIM / ADC / COMP / FDCAN1",
     "E_SENSE": "E  Sensing - VBUS, VOUT, inductor current (bidirectional), output current, NTC",
     "F_CAN": "F  Isolated CAN - CA-IS3062VW (5 kVrms, integrated isolated supply)",
     "G_IO": "G  Address (6-bit DIP + header), programming pads + ARM 10-pin SWD, status LEDs",
@@ -552,8 +552,8 @@ JLC_LCSC = {
     # Rev E flyback + rails (checked in the JLCPCB / LCSC library 2026-10-19)
     "U20": "C231572", "Q11": "C891118", "T2": "C5718384", "U21": "C42381015", "U22": "C23892", "U12": "C4944981",
     "U5": "C404027", "R112": "C22859", "R114": "C25340", "R116": "C17936", "C94": "C115052", "R117": "C25867",
-    "R119": "C25776", "R121": "C25900", "D8": "C224219", "D9": "C224219",
-    **dict.fromkeys(['FB1'], 'C1002'),
+    "R119": "C25776", "R121": "C25900", "D8": "C2482", "D9": "C2482",
+    **dict.fromkeys(['FB1'], 'C85833'),
     **dict.fromkeys(['C45'], 'C106259'),
     **dict.fromkeys(['C81', 'C93'], 'C107001'),
     **dict.fromkeys(['C41', 'C42', 'C79', 'C91', 'C92'], 'C113780'),
@@ -563,28 +563,28 @@ JLC_LCSC = {
     **dict.fromkeys(['D4'], 'C12624'),
     **dict.fromkeys(['D3'], 'C14486'),
     **dict.fromkeys(['C15', 'C18', 'C67'], 'C14663'),
-    **dict.fromkeys(['C90', 'C99', 'C29', 'C30', 'C31', 'C32', 'C33', 'C34', 'C37', 'C40', 'C43', 'C44', 'C46', 'C48', 'C50', 'C53', 'C54', 'C75', 'C77', 'C80', 'C83', 'C84'], 'C1525'),
+    **dict.fromkeys(['C90', 'C99', 'C29', 'C30', 'C31', 'C32', 'C33', 'C34', 'C37', 'C40', 'C43', 'C44', 'C46', 'C48', 'C50', 'C53', 'C54', 'C75', 'C77', 'C80', 'C83', 'C84'], 'C307331'),
     **dict.fromkeys(['C10', 'C2', 'C3', 'C4', 'C5', 'C61', 'C62', 'C63', 'C7', 'C70', 'C8', 'C9', 'C95'], 'C153036'),
     **dict.fromkeys(['C38', 'C39'], 'C1547'),
     **dict.fromkeys(['C16', 'C19', 'C68', 'C69', 'C88'], 'C15849'),
     **dict.fromkeys(['C21', 'C24', 'C25', 'C26', 'C49', 'C52', 'C72', 'C96', 'C97'], 'C15850'),
     **dict.fromkeys(['R25', 'R26'], 'C186137'),
     **dict.fromkeys(['R22', 'R24'], 'C186154'),
-    **dict.fromkeys(['R82'], 'C190095'),
+    **dict.fromkeys(['R82'], 'C844452'),
     **dict.fromkeys(['C35'], 'C19666'),
     **dict.fromkeys(['D1'], 'C20883337'),
     **dict.fromkeys(['C47'], 'C22400107'),
     **dict.fromkeys(['R110'], 'C227116'),
     **dict.fromkeys(['D5'], 'C2286'),
-    **dict.fromkeys(['R62', 'R63'], 'C22939'),
+    **dict.fromkeys(['R62', 'R63'], 'C2907006'),
     **dict.fromkeys(['R10', 'R11', 'R4', 'R5', 'R68', 'R69'], 'C23164'),
     **dict.fromkeys(['R75'], 'C23178'),
     **dict.fromkeys(['U16'], 'C23892'),
     **dict.fromkeys(['C1', 'C11', 'C60'], 'C249664'),
     **dict.fromkeys(['R27'], 'C25076'),
-    **dict.fromkeys(['R89'], 'C25092'),
+    **dict.fromkeys(['R89'], 'C2929994'),
     **dict.fromkeys(['R107'], 'C25741'),
-    **dict.fromkeys(['R100', 'R101', 'R102', 'R103', 'R104', 'R105', 'R108', 'R12', 'R13', 'R14', 'R15', 'R19', 'R20', 'R29', 'R32', 'R33', 'R34', 'R35', 'R36', 'R37', 'R6', 'R64', 'R65', 'R66', 'R67', 'R7', 'R70', 'R71', 'R72', 'R73', 'R74', 'R78', 'R79', 'R8', 'R80', 'R83', 'R87', 'R9', 'R90', 'R91', 'R92', 'R93', 'R94', 'R95', 'R96', 'R97', 'R98', 'R99', 'R111', 'R113', 'R120'], 'C25744'),
+    **dict.fromkeys(['R100', 'R101', 'R102', 'R103', 'R104', 'R105', 'R108', 'R12', 'R13', 'R14', 'R15', 'R19', 'R20', 'R29', 'R32', 'R33', 'R34', 'R35', 'R36', 'R37', 'R6', 'R64', 'R65', 'R66', 'R67', 'R7', 'R70', 'R71', 'R72', 'R73', 'R74', 'R78', 'R79', 'R8', 'R80', 'R83', 'R87', 'R9', 'R90', 'R91', 'R92', 'R93', 'R94', 'R95', 'R96', 'R97', 'R98', 'R99', 'R111', 'R113', 'R120'], 'C2906861'),
     **dict.fromkeys(['R77'], 'C25750'),
     **dict.fromkeys(['R88', 'R17'], 'C25756'),
     **dict.fromkeys(['R86', 'R16', 'R18'], 'C25796'),
@@ -597,18 +597,29 @@ JLC_LCSC = {
     **dict.fromkeys(['R76'], 'C36871'),
     **dict.fromkeys(['C27', 'C73'], 'C45783'),
     **dict.fromkeys(['RSH1'], 'C500718'),
-    **dict.fromkeys(['RS1'], 'C500738'),
-    **dict.fromkeys(['C28', 'C36', 'C51', 'C86'], 'C52923'),
-    **dict.fromkeys(['C82'], 'C53134'),
+    **dict.fromkeys(['RS1'], 'C2904236'),
+    **dict.fromkeys(['C28', 'C36', 'C51', 'C86'], 'C20539426'),
+    **dict.fromkeys(['C82'], 'C2233314'),
     **dict.fromkeys(['Q9'], 'C53444'),
     **dict.fromkeys(['C55'], 'C53987'),
     **dict.fromkeys(['R81'], 'C870479'),
     **dict.fromkeys(['C12', 'C6'], 'C88219'),
+    "J1": "C441204",
+    "J2": "C441204",
+    "J3": "C42419910",
+    "J4": "C42419910",
+    "J5": "C42419913",
+    "JP1": "C45384660",
+    "J7": "C41376037",
     **dict.fromkeys([], 'C96123'),
 }
+MPN_FIX = {'RS1': 'HoJLR2512-3W-4mR-1%', 'J1': 'KF2EDGR-5.08-2P', 'J2': 'KF2EDGR-5.08-2P', 'J3': 'PZ254V-11-03P-A40',
+           'J4': 'PZ254V-11-03P-A40', 'J5': 'PZ254V-11-06P-A40', 'JP1': 'PZ254V-12-04P-A40', 'J7': 'HX PZ1.27-2x5P TP'}
 for _p in P:
     if _p.ref in JLC_LCSC:
         _p.lcsc = JLC_LCSC[_p.ref]
+    if _p.ref in MPN_FIX:
+        _p.mpn = MPN_FIX[_p.ref]
 
 if __name__ == "__main__":
     refs = [p.ref for p in P]

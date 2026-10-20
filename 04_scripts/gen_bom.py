@@ -5,6 +5,8 @@ OUT = "/home/claude/dcdc/out"
 # unit price @100 pcs (USD). src: 'LCSC' = read from LCSC listing Oct 2026, 'est' = typical estimate
 PRICE = {
     "STM32G474RBT6": (7.24, "LCSC C529413 (out of stock; RET6 C521608 $10.24)"),
+    "STM32G474RBT3": (2.92, "LCSC C1235414 (2026-10-20, from-price)"),
+    "NCEP068N10G": (0.64, "LCSC C503061 (2026-10-20)"),
     "UCC27211DDAR": (1.611, "LCSC C141980"),
     "NCEP0140AG": (0.40, "LCSC C503009: $0.62@1, $0.286@1k -> ~0.40@100"),
     "NCEP0160AG": (0.7357, "LCSC C503012"),
@@ -16,10 +18,10 @@ PRICE = {
     "AMS1117-5.0": (0.12, "est"), "AMS1117-3.3": (0.10, "est"),
     "2.2u 100V X7R": (0.3626, "LCSC C153036 FS32X225K101EGG (C55151 Samsung out of stock)"),
     "47u 63V": (0.10, "est"), "SMBJ51A": (0.05, "est"), "NUP2105L": (0.06, "est"), "B1100": (0.03, "est"),
-    "47u 1A": (0.12, "LCSC C86617 SWPA5040S470MT"), "8MHz 12pF": (0.12, "est"), "7A": (0.20, "est"), "7A 63V": (0.45, "LCSC C206980 0458007.DR"), "DIP-6": (0.25, "est"),
+    "47u 1A": (0.05, "LCSC C167974 FNR5040S470MT"), "8MHz 12pF": (0.12, "est"), "7A": (0.20, "est"), "7A 63V": (0.45, "LCSC C206980 0458007.DR"), "DIP-6": (0.25, "est"),
     "VIN 12-48V": (0.25, "est"), "VOUT 1.5-48V": (0.25, "est"), "CAN A": (0.04, "est"), "CAN B": (0.04, "est"),
     "TERM": (0.02, "est"), "ADDR HDR": (0.05, "est"), "SWD/UART": (0.06, "est"),
-    "4m 1% 2W": (0.08, "est"), "10m 1% 1W": (0.05, "est"), "10k B3950": (0.02, "est"),
+    "4m 1% 2W": (0.05, "LCSC C2904236 HoJLR2512-3W-4mR"), "10m 1% 1W": (0.05, "est"), "10k B3950": (0.02, "est"),
     "600R@100MHz": (0.01, "est"),
     "BSC160N15NS5": (0.7523, "LCSC C459172"),
     "UCC27524DR": (0.2143, "LCSC C465729"),
