@@ -303,11 +303,17 @@ for k in range(6):
 add("J5", "Connector_Generic:Conn_01x06", "ADDR HDR", "H1x6", {str(k + 1): f"ADDR_H{k}" for k in range(6)}, B,
     note="Shorting a pin to GND (via harness) sets bit = 0; parallel with SW1")
 add("J6", "Connector_Generic:Conn_01x08", "PROG PADS", "TP8",
-    {"1": "SWDIO", "2": "SWCLK", "3": "TP_DAC", "4": "TP_GPIO1", "5": "TP_GPIO2", "6": "NRST", "7": "+3V3", "8": "GND"}, B,
+    {"1": "SWDIO_C", "2": "SWCLK_C", "3": "TP_DAC_C", "4": "TP_GPIO1_C", "5": "TP_GPIO2_C", "6": "NRST_C", "7": "PROG_3V3", "8": "GND"}, B,
     note="8 round test pads, 2.54 mm pitch, pad 1 square (pogo-pin programming fixture)")
 add("J7", "Connector_Generic:Conn_02x05_Odd_Even", "ARM SWD 10", "SWD10",
-    {"1": "+3V3", "2": "SWDIO", "3": "GND", "4": "SWCLK", "5": "GND", "6": "SWO", "7": "NC", "8": "NC", "9": "GND", "10": "NRST"}, B,
+    {"1": "PROG_3V3", "2": "SWDIO_C", "3": "GND", "4": "SWCLK_C", "5": "GND", "6": "SWO", "7": "NC", "8": "NC", "9": "GND", "10": "NRST_C"}, B,
     mpn="FTSH-105-01-L-DV-K or equiv.", note="ARM Cortex Debug 10-pin, 1.27 mm (1 VTref, 2 SWDIO, 4 SWCLK, 6 SWO, 10 nRESET, 7 key)")
+# Rev E2: series resistors between the MCU and the programming / debug connectors (J6 pads, J7 SWD)
+for _r, _n in (("R123", "SWDIO"), ("R124", "SWCLK"), ("R125", "TP_DAC"), ("R126", "TP_GPIO1"), ("R127", "TP_GPIO2"), ("R128", "NRST")):
+    R(_r, "47.5R 1%", _n, _n + "_C", fp="R0402", block=B, lcsc="C82290", mpn="0402WGF475JTCE",
+      note="Series resistor MCU -> J6/J7 (damping, fault-current limit)")
+R("R129", "2R 1%", "+3V3", "PROG_3V3", fp="R0603", block=B, lcsc="C2933191", mpn="FRC0603F2R00TS",
+  note="Series resistor +3V3 -> J6 pin 7 / J7 VTref")
 add("D4", "Device:LED", "GREEN RUN", "LED0603", {"1": "LED_RUN_K", "2": "+3V3"}, B)
 R("R44", "1k", "LED_RUN_K", "LED_RUN", fp="R0402", block=B)
 add("D5", "Device:LED", "RED FAULT", "LED0603", {"1": "LED_FLT_K", "2": "+3V3"}, B)
@@ -435,7 +441,7 @@ R("R87", "10k 1%", "+5V_P", "PB_P", fp="R0402", block=B, note="PNP base bias 3.0
 R("R88", "15k 1%", "PB_P", "GNDP", fp="R0402", block=B)
 add("Q9", "Transistor_BJT:MMBT3906", "MMBT3906", "SOT23", {"1": "PB_P", "2": "PE_P", "3": "RAMP_P"}, B,
     lcsc="C2940", mpn="MMBT3906", note="Ramp current source")
-C("C82", "47n C0G 25V", "RAMP_P", "GNDP", fp="C0805", block=B, note="Ramp capacitor - must be C0G (X7R bends the ramp)")
+C("C82", "47n C0G 25V", "RAMP_P", "GNDP", fp="C0805", block=B, mpn="C0805C473F3GECAUTO", note="Ramp capacitor - must be C0G (X7R bends the ramp)")
 add("U17", "Comparator:LMV331", "LMV331IDBVR", "SOT23-5", {"1": "RAMP_P", "2": "GNDP", "3": "VREF_P", "4": "RST_P", "5": "+5V_P"}, B,
     mpn="LMV331IDBVR", note="Ramp top detector: output released when RAMP > VREF_P")
 R("R106", "1k", "+5V_P", "RST_P", fp="R0402", block=B, note="Pull-up, charges the reset-hold cap fast")

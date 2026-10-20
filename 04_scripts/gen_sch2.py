@@ -621,7 +621,7 @@ def build(outdir):
     root.version, root.generator, root.uuid = 20211123, "eeschema", uid()
     root.paper = PageSettings(paperSize="A3")
     root.titleBlock = TitleBlock(title="DCDC LLC + 4SBB G474 - top level", date="2026-10-19", revision="E",
-                                 comments={1: "Isolated 12-48 V -> 1.5-48 V / 5 A / 50 W; STM32G474RBT6; isolated CAN",
+                                 comments={1: "Isolated 12-48 V -> 1.5-48 V / 5 A / 50 W; STM32G474RBT3; isolated CAN",
                                            2: "Sheets connect through global labels and power symbols"})
     sheet_insts = [HierarchicalSheetInstance(instancePath="/", page="1")]
     sym_insts, report = [], {}

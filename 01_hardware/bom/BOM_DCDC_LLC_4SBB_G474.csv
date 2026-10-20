@@ -21,7 +21,7 @@ C56,1,2.2n 2kV DNP,,,C_Disc_D8.0mm_W5.0mm_P7.50mm,DNP,0.003,0,est,Optional Y-cap
 "C64,C65",2,1n 200V DNP,,,C_0805_2012Metric,DNP,0.003,0,est,
 C66,1,1n Y1 DNP,,,C_Disc_D8.0mm_W5.0mm_P7.50mm,DNP,0.15,0,est,Optional pri-sec Y-cap for EMI: must be Y1/Y2 safety-rated if fitted; else leave empty
 "C81,C93",2,220p C0G,,C107001,C_0402_1005Metric,,0.003,0.006,est,Reset hold ~20 us with R107; small so the gate charges fully (0.2 us) before U17 lets go
-C82,1,47n C0G 25V,,C2233314,C_0805_2012Metric,,0.003,0.003,est,Ramp capacitor - must be C0G (X7R bends the ramp)
+C82,1,47n C0G 25V,C0805C473F3GECAUTO,C2233314,C_0805_2012Metric,,0.003,0.003,est,Ramp capacitor - must be C0G (X7R bends the ramp)
 C94,1,4.7n 100V X7R,,C115052,C_0603_1608Metric,,0.03,0.03,est,
 C98,1,470p 100V DNP,,,C_0603_1608Metric,DNP,0.03,0,est,
 "CR1,CR2,CR3,CR4,CR5,CR6",6,100n 100V C0G,,C2940749,C_1206_3216Metric,,0.08,0.48,"est, 1206 C0G","Split resonant cap, upper half (3 x 100 nF)"
@@ -79,6 +79,8 @@ R117,1,1k5,,C25867,R_0402_1005Metric,,0.003,0.003,est,LED series R: IF up to 3.2
 R119,1,30k 1%,,C25776,R_0402_1005Metric,,0.003,0.003,est,+10V = 2.495 * (1 + 30k/10k) = 9.98 V
 R121,1,4k7,,C25900,R_0402_1005Metric,,0.003,0.003,est,Type-2 compensation: zero 340 Hz
 R122,1,10R DNP,,,R_0603_1608Metric,DNP,0.003,0,est,"Rectifier RC snubber, fit if ringing"
+"R123,R124,R125,R126,R127,R128",6,47.5R 1%,0402WGF475JTCE,C82290,R_0402_1005Metric,,0.003,0.018,est,"Series resistor MCU -> J6/J7 (damping, fault-current limit)"
+R129,1,2R 1%,FRC0603F2R00TS,C2933191,R_0603_1608Metric,,0.003,0.003,est,Series resistor +3V3 -> J6 pin 7 / J7 VTref
 RS1,1,4m 1% 2W,HoJLR2512-3W-4mR-1%,C2904236,R_2512_6332Metric,,0.05,0.05,LCSC C2904236 HoJLR2512-3W-4mR,Bridge-return current sense (both low-side FET sources). Kelvin traces to U7. Low-ESL 2512 wide-terminal preferred
 RSH1,1,10m 1% 1W,,C500718,R_2512_6332Metric,,0.05,0.05,est,"Output current shunt (CC loop), Kelvin to U8"
 SW1,1,DIP-6,,C6331172,SW_DIP_SPSTx06_Slide_6.7x16.8mm_W8.61mm_P2.54mm_LowProfile,,0.25,0.25,est,ON = 0. Address = ~ADDR[5:0]

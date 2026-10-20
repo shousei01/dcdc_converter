@@ -1,4 +1,4 @@
-DCDC converter - LLC (isolated) + 4-switch buck-boost, STM32G474RBT6          Rev E (2026-10-20)
+DCDC converter - LLC (isolated) + 4-switch buck-boost, STM32G474RBT3          Rev E2 (2026-10-20)
 12-48 V in, 1.5-48 V / 5 A / 50 W out, basic isolation, isolated CAN
 
 01_hardware
@@ -18,6 +18,15 @@ DCDC converter - LLC (isolated) + 4-switch buck-boost, STM32G474RBT6          Re
                    (Rev E copper widths / losses of the high-current paths on the finished board)
 04_scripts         generator, routing and clean-up scripts that build this release (Rev E layout: 04_scripts\pcb5)
 
+Rev E2 changes (20 Oct)
+  - Debug-port series resistors: R123-R128 47.5 Ohm 0402 (UNI-ROYAL 0402WGF475JTCE, C82290) in SWDIO, SWCLK,
+    TP_DAC, TP_GPIO1, TP_GPIO2, NRST; R129 2 Ohm 0603 (FOJAN FRC0603F2R00TS, C2933191) from +3V3 to J6 pin 7 /
+    J7 VTref (net PROG_3V3). Each sits on the MCU side of the J6 / J7 branch, put into the existing traces.
+  - DRC clean-up: the 16 courtyard overlaps Rev E accepted (T1 / CR1-CR6 / R64, T2 / D8 / C94 / R116 / C95 /
+    Q11 / R114, C98 / R122, C69 / U11, C34 / U1) are cleared by 0.05-2 mm moves with the tracks re-attached;
+    the 4 silk-over-pad notices are gone too. DRC: 0 errors, 0 warnings, 0 unconnected (docs\DRC_report.txt).
+  - Board-edit scripts: 04_scripts\pcb6 (build_e2.sh lists the order).
+
 Rev E changes
   - Isolated aux supply: the isolator's built-in 3.3 V is gone. New flyback (sheet "Isolated aux flyback"):
     UC3843B U20 from +10V_P, FDN86246 Q11, PA3855.006NLT EP13 transformer T2 (Np:Ns 1.33:1, 2250 Vdc hi-pot),
@@ -34,8 +43,8 @@ Rev E changes
     copy on B.Cu, signals on In2 / B.Cu under ground floods. Gate loops as tight HO + HS pairs (0.4 mm) on
     B.Cu / In2; power via fields at 1.7 mm pitch so In1 keeps a ground web; own GND via on every small R/C in the
     MCU area. Board copper loss ~0.5 W at 50 W / 12 V in (03_calculations\copper_check.txt).
-PCB status: 160 x 105 mm, 4 layers, 284 footprints, 772 vias; 0 DRC errors / 0 unconnected with the JLC rules
-loaded (docs\DRC_report.txt lists the accepted notices); no copper in the primary-secondary or CAN bands.
+PCB status: 160 x 105 mm, 4 layers, 291 footprints, 779 vias; 0 DRC errors / 0 warnings / 0 unconnected with the
+JLC rules loaded (docs\DRC_report.txt); no copper in the primary-secondary or CAN bands.
 Order: 4 layers, 1.6 mm, 1 oz outer / 0.5 oz inner copper, JLC04161H-7628 stack-up;
 upload fabrication\*_gerbers_JLCPCB.zip, DCDC_JLC_BOM.csv and DCDC_JLC_CPL.csv.
 New parts to check in the JLC placement viewer: U20 (SOIC-8), U21 (SOP-4), U22 (SOT-23), Q11 (SOT-23),

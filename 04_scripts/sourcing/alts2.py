@@ -12,6 +12,12 @@ DEF = "De-facto standard (many makers)"
 VEN = "Vendor-specific"
 
 ALTS2 = {
+ # ---------------- Rev E2 debug-port series resistors
+ "C82290": dict(pkg=STD + " (0402)", alts=[
+     ("C5159689", "EQ", "FOJAN FRC0402F47R5TS 47.5 R 1% 0402 62.5 mW"),
+     ("C159023", "EQ", "RALEC RTT0247R5FTH 47.5 R 1% 0402 62.5 mW")]),
+ "C2933191": dict(pkg=STD + " (0603)", alts=[
+     ("C2930558", "EQ", "YAGEO RC0603FR-7W2RL 2 R 1% 0603 200 mW")]),
  # ---------------- capacitors
  "C249664": dict(pkg=STD + " (SMD alu 10x10.5)", alts=[
      ("C46527630", "EQ", "ChengTao RVE1J470M1010: 47 uF 63 V 10x10.5, 105 C"),

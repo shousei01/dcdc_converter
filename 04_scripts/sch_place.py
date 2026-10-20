@@ -6,7 +6,7 @@ SHEETS = {
     "iso_pwr": (["K_FLY"],  "Isolated aux flyback - UC3843B, PA3855, TL431 + optocoupler"),
     "sbb":     (["A_POWER", "B_DRIVE"], "4SBB regulator - power stage and gate drivers"),
     "sec_aux": (["C_AUX"],  "Secondary aux supplies"),
-    "mcu":     (["D_MCU"],  "STM32G474RBT6 MCU"),
+    "mcu":     (["D_MCU"],  "STM32G474RBT3 MCU"),
     "sense":   (["E_SENSE"], "Sensing - VBUS, VOUT, inductor and output current, NTC"),
     "can":     (["F_CAN"],  "Isolated CAN"),
     "io":      (["G_IO"],   "Address switch, programming pads, ARM SWD, LEDs"),
@@ -201,6 +201,8 @@ for i in range(6):
 put("J5", 96.52, 157.48, 270)
 put("J6", 172.72, 180.34)
 put("J7", 228.6, 180.34)
+for _i, _r in enumerate(["R123", "R124", "R125", "R126", "R127", "R128", "R129"]):
+    put(_r, 139.7, 157.48 + 7.62 * _i, 90)          # Rev E2 series resistors MCU -> J6 / J7
 put("D4", 274.32, 76.2)
 put("R44", 254.0, 76.2, 270)
 put("D5", 274.32, 96.52)
